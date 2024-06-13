@@ -16,14 +16,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/nameTextInputLayout"
+        android:id="@+id/emailTextInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
-        app:boxBackgroundColor="?colorContainer"
+        app:boxBackgroundColor="@color/background"
         app:boxCornerRadiusBottomEnd="50dp"
         app:boxCornerRadiusBottomStart="50dp"
         app:boxCornerRadiusTopEnd="50dp"
@@ -35,42 +36,14 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/nameET"
-            android:layout_width="match_parent"
-            android:layout_height="61dp"
-            android:hint="Name"
-            android:textColor="@color/text"
-            android:textColorHint="@color/btn_disabled" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/emailTextInputLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
-        app:boxBackgroundColor="@color/background"
-        app:boxCornerRadiusBottomEnd="50dp"
-        app:boxCornerRadiusBottomStart="50dp"
-        app:boxCornerRadiusTopEnd="50dp"
-        app:boxCornerRadiusTopStart="50dp"
-        app:boxStrokeColor="@color/accent"
-        app:boxStrokeWidth="2dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nameTextInputLayout">
-
-        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/emailET"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Email"
-            app:cornerRadius="50dp"
             android:inputType="textEmailAddress"
             android:textColor="@color/text"
-            android:textColorHint="@color/btn_disabled" />
+            android:textColorHint="@color/btn_disabled"
+            app:cornerRadius="50dp" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -124,6 +97,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:textSize="18sp"
+        android:textColor="@color/secondary"
         android:text="@string/join_homeswap"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

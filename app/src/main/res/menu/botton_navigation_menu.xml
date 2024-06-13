@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/navigation_explore"
+        android:icon="@drawable/search_48px"
+        android:title="explore"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/navigation_liked"
+        android:icon="@drawable/favorite_48px"
+        android:title="liked"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/navigation_flights"
+        android:icon="@drawable/connecting_airports_48px"
+        android:title="flights"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/navigation_inbox"
+        android:icon="@drawable/mail_48px"
+        android:title="inbox"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/navigation_personal"
+        android:icon="@drawable/account_circle_48px"
+        android:title="personal"
+        app:showAsAction="never"/>
+</menu>

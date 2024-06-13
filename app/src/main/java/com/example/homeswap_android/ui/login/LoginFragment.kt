@@ -61,5 +61,9 @@ class LoginFragment : Fragment() {
 //        binding.openCalendarBTN.setOnClickListener {
 //            findNavController().navigate(R.id.calendarFragment)
 //        }
+
+        binding.joinTextView.setOnClickListener {
+            findNavController().navigate(R.id.registerFragment)
+        }
     }
 }

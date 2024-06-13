@@ -40,7 +40,7 @@ class RegisterProfileDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.profilePicIV.setOnClickListener {
+        binding.uploadProfilePicIV.setOnClickListener {
             getContent.launch("image/*")
         }
 
@@ -49,7 +49,7 @@ class RegisterProfileDetailsFragment : Fragment() {
                 Log.d("UserProfile", value.data.toString())
                 value.toObject(UserData::class.java)?.let { profile ->
                     if (profile.profilePic.isNotEmpty()) {
-                        binding.profilePicIV.load(profile.profilePic) {
+                        binding.uploadProfilePicIV.load(profile.profilePic) {
                             crossfade(true)
                             placeholder(R.drawable.ic_launcher_foreground)
                         }
@@ -58,7 +58,7 @@ class RegisterProfileDetailsFragment : Fragment() {
             }
         }
 
-        binding.uploadPicBTN.setOnClickListener {
+        binding.continueBTN.setOnClickListener {
             findNavController().navigate(R.id.usersListHomeFragment)
         }
     }

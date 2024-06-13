@@ -29,10 +29,10 @@ class RegisterFragment : Fragment() {
 
 
 
-        binding.registerButton.setOnClickListener {
-            val name = binding.nameEditText.text.toString().trim()
-            val email = binding.emailEditText.text.toString().trim()
-            val password = binding.passwordEditText.text.toString().trim()
+        binding.continueBTN.setOnClickListener {
+            val name = binding.nameET.text.toString().trim()
+            val email = binding.emailET.text.toString().trim()
+            val password = binding.passwordET.text.toString().trim()
 
             val newUserData = UserData(
                 name = name,
