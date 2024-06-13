@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "5405112049",
+    "project_id": "homeswap-c6a3b",
+    "storage_bucket": "homeswap-c6a3b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:5405112049:android:0ba6b57a709462a46c1b50",
+        "android_client_info": {
+          "package_name": "com.example.homeswap_android"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_uXNvKi5fqBlOQGHk18mBOfOevMRBu4M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
