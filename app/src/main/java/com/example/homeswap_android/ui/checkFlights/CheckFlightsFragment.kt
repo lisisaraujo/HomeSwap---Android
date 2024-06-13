@@ -1,4 +1,4 @@
-package com.example.homeswap_android.ui
+package com.example.homeswap_android.ui.checkFlights
 
 import android.os.Bundle
 import android.util.Log

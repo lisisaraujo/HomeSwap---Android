@@ -1,4 +1,4 @@
-package com.example.homeswap_android.ui
+package com.example.homeswap_android.ui.registration
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -12,8 +12,6 @@ import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.data.models.UserData
 import com.example.homeswap_android.databinding.FragmentRegisterBinding
 import com.example.homeswap_android.viewModels.FirebaseViewModel
-import java.text.DateFormat
-import java.util.Date
 
 class RegisterFragment : Fragment() {
     private lateinit var binding: FragmentRegisterBinding

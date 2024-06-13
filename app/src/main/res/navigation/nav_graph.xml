@@ -12,32 +12,32 @@
         tools:layout="@layout/fragment_calendar" />
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.example.homeswap_android.ui.LoginFragment"
+        android:name="com.example.homeswap_android.ui.login.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" />
     <fragment
         android:id="@+id/userProfileFragment"
-        android:name="com.example.homeswap_android.ui.UserProfileFragment"
+        android:name="com.example.homeswap_android.ui.user.UserProfileFragment"
         android:label="fragment_user_profile"
         tools:layout="@layout/fragment_user_profile" />
     <fragment
         android:id="@+id/usersListHomeFragment"
-        android:name="com.example.homeswap_android.ui.UsersListHomeFragment"
+        android:name="com.example.homeswap_android.ui.home.UsersListHomeFragment"
         android:label="fragment_users_list_home"
         tools:layout="@layout/fragment_users_list_home" />
     <fragment
         android:id="@+id/registerFragment"
-        android:name="com.example.homeswap_android.ui.RegisterFragment"
+        android:name="com.example.homeswap_android.ui.registration.RegisterFragment"
         android:label="RegisterFragment"
         tools:layout="@layout/fragment_register"/>
     <fragment
         android:id="@+id/registerProfileDetailsFragment"
-        android:name="com.example.homeswap_android.ui.RegisterProfileDetailsFragment"
+        android:name="com.example.homeswap_android.ui.registration.RegisterProfileDetailsFragment"
         android:label="fragment_register_profile_details"
         tools:layout="@layout/fragment_register_profile_details" />
     <fragment
         android:id="@+id/checkFlightsFragment"
-        android:name="com.example.homeswap_android.ui.CheckFlightsFragment"
+        android:name="com.example.homeswap_android.ui.checkFlights.CheckFlightsFragment"
         android:label="fragment_check_flights"
         tools:layout="@layout/fragment_check_flights" />
 </navigation>

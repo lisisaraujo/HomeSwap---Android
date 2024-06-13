@@ -1,4 +1,4 @@
-package com.example.homeswap_android.ui
+package com.example.homeswap_android.ui.registration
 
 import android.net.Uri
 import android.os.Bundle
