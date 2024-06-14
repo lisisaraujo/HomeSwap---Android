@@ -3,14 +3,14 @@ package com.example.homeswap_android
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.activityViewModels
+
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
@@ -33,8 +33,6 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
         val navController = navHostFragment.navController
 
-        binding.bottomNavView.setupWithNavController(navController)
-
         //Listener der bei jeder Navigation ausgeführt
         navController.addOnDestinationChangedListener{ navController: NavController, navDestination: NavDestination, bundle: Bundle? ->
 
@@ -45,7 +43,10 @@ class MainActivity : AppCompatActivity() {
                 //Entfernt alle Destinations vom Stack bis zum ersten Destination mit der angegebenen id
                 R.id.usersListHomeFragment -> navController.popBackStack(R.id.usersListHomeFragment, false)
                 R.id.checkFlightsFragment -> navController.popBackStack(R.id.checkFlightsFragment, false)
+                R.id.personalFragment -> navController.popBackStack(R.id.personalFragment, false)
             }
+
+            viewmodel.hideBottomNavBar()
         }
 
         //Listener der bei BottomNavigation Klick ausgeführt
@@ -86,6 +87,15 @@ class MainActivity : AppCompatActivity() {
             }
 
         })
+
+        viewmodel.bottomNavBarVisible.observe(this) { isVisible ->
+            if (isVisible!!) {
+                binding.bottomNavView.visibility = View.VISIBLE
+                binding.bottomNavView.setupWithNavController(navController)
+            } else {
+                binding.bottomNavView.visibility = View.GONE
+            }
+        }
 
     }
 

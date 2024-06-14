@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -12,12 +13,14 @@ import com.example.homeswap_android.R
 import com.example.homeswap_android.adapter.UserAdapter
 import com.example.homeswap_android.data.models.UserData
 import com.example.homeswap_android.databinding.FragmentUsersListHomeBinding
+import com.example.homeswap_android.viewModels.BottomNavViewModel
 import com.example.homeswap_android.viewModels.FirebaseViewModel
 import com.google.firebase.firestore.toObject
 
 class UsersListHomeFragment : Fragment() {
     private lateinit var binding: FragmentUsersListHomeBinding
-    private val viewModel: FirebaseViewModel by activityViewModels()
+    private val viewModelFirebase: FirebaseViewModel by activityViewModels()
+    val viewmodelBottomNav: BottomNavViewModel by activityViewModels()
     private lateinit var userAdapter: UserAdapter
 
     override fun onCreateView(
@@ -31,6 +34,8 @@ class UsersListHomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewmodelBottomNav.showBottomNavBar()
+
         val itemClickedCallback: (UserData) -> Unit = {
             findNavController().navigate(R.id.userProfileFragment)
         }
@@ -38,18 +43,18 @@ class UsersListHomeFragment : Fragment() {
         userAdapter = UserAdapter(emptyList(), itemClickedCallback)
         binding.rvUsersList.adapter = userAdapter
 
-        viewModel.fetchUsers()
-        val users = viewModel.users.value
+        viewModelFirebase.fetchUsers()
+        val users = viewModelFirebase.users.value
         Log.d("Users", users.toString())
 
-        viewModel.users.observe(viewLifecycleOwner) { users ->
+        viewModelFirebase.users.observe(viewLifecycleOwner) { users ->
             userAdapter.updateUsers(users)
         }
 
-        viewModel.userDataDocumentReference?.addSnapshotListener { value, error ->
+        viewModelFirebase.userDataDocumentReference?.addSnapshotListener { value, error ->
             val profile = value?.toObject<UserData>()
             if (profile != null) {
-                viewModel.setProfile(profile)
+                viewModelFirebase.setProfile(profile)
             }
         }
 

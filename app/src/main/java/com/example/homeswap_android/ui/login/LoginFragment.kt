@@ -10,6 +10,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.homeswap_android.R
 import com.example.homeswap_android.databinding.FragmentLoginBinding
+import com.example.homeswap_android.viewModels.BottomNavViewModel
 import com.example.homeswap_android.viewModels.FirebaseViewModel
 
 class LoginFragment : Fragment() {
@@ -28,7 +29,6 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
 //        viewModel.signOut()
 
         binding.loginBTN.setOnClickListener {
@@ -39,7 +39,7 @@ class LoginFragment : Fragment() {
         }
 
         binding.joinTextView.setOnClickListener {
-        findNavController().navigate(R.id.registerFragment)
+            findNavController().navigate(R.id.registerFragment)
         }
 
         viewModel.currentUser.observe(viewLifecycleOwner) { user ->
@@ -55,7 +55,7 @@ class LoginFragment : Fragment() {
         }
 
         binding.checkFlightsBTN.setOnClickListener {
-         findNavController().navigate(R.id.checkFlightsFragment)
+            findNavController().navigate(R.id.checkFlightsFragment)
         }
 
 //        binding.openCalendarBTN.setOnClickListener {
