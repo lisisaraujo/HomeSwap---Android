@@ -1,7 +1,10 @@
 package com.example.homeswap_android.viewModels
 
+import android.content.Context
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,9 +14,12 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import java.security.AccessController.getContext
 
 
 class FirebaseViewModel : ViewModel() {
+
+    private lateinit var context: Context
 
     //Firebase Dienst Instanzen laden
     val auth = FirebaseAuth.getInstance()
@@ -30,6 +36,10 @@ class FirebaseViewModel : ViewModel() {
     private val _users = MutableLiveData<List<UserData>>()
     val users: LiveData<List<UserData>>
         get() = _users
+
+    private val _registrationSuccess = MutableLiveData<Boolean>()
+    val registrationSuccess: LiveData<Boolean>
+        get() = _registrationSuccess
 
     init {
         setupUserEnv()
@@ -63,22 +73,55 @@ class FirebaseViewModel : ViewModel() {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnSuccessListener { authResult ->
                 setupUserEnv()
-                val user = authResult.user
-                if (user != null) {
-                    usersCollectionReference.document(user.uid).set(userData)
-                        .addOnSuccessListener {
-                            Log.d("FirebaseViewModel", "New user profile created successfully")
-                            fetchUsers()
+                val user = authResult.user!!
+
+                // send email verification
+                user.sendEmailVerification()
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            Log.d(TAG, "Email sent.")
                         }
-                        .addOnFailureListener { exception ->
-                            Log.e(
-                                "FirebaseViewModel",
-                                "Error creating new user profile: $exception"
-                            )
+                    }.addOnFailureListener { exception ->
+                        Log.d(TAG, "onFailure: Email not sent" + exception.message)
+                    }
+
+                // Wait for the user to confirm their email before creating the user profile
+                val emailConfirmedListener = object : FirebaseAuth.IdTokenListener {
+                    override fun onIdTokenChanged(p0: FirebaseAuth) {
+                        val currentUser = auth.currentUser
+                        if (currentUser != null && currentUser.isEmailVerified) {
+                            // User has confirmed their email, create the user profile
+                            usersCollectionReference.document(currentUser.uid).set(userData)
+                                .addOnSuccessListener {
+                                    Log.d(
+                                        "FirebaseViewModel",
+                                        "New user profile created successfully"
+                                    )
+                                    fetchUsers()
+                                    auth.removeIdTokenListener(this)
+                                    _registrationSuccess.postValue(true)
+                                }
+                                .addOnFailureListener { exception ->
+                                    Log.e(
+                                        "FirebaseViewModel",
+                                        "Error creating new user profile: $exception"
+                                    )
+                                    auth.removeIdTokenListener(this)
+                                    _registrationSuccess.postValue(false)
+                                }
                         }
+                    }
                 }
+
+                // Add the email confirmed listener
+                auth.addIdTokenListener(emailConfirmedListener)
             }
-    }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Error creating user: $exception")
+                _registrationSuccess.postValue(false)
+            }
+
+}
 
     fun signOut() {
         auth.signOut()

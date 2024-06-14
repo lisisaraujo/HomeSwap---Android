@@ -1,15 +1,21 @@
 package com.example.homeswap_android
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.activityViewModels
+import androidx.core.content.ContextCompat
+
 
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
@@ -54,20 +60,18 @@ class MainActivity : AppCompatActivity() {
 
             //Rufe die Funktion auf die standardmäßig für die bottom navigation zuständig ist.
             NavigationUI.onNavDestinationSelected(menuItem, navController)
-
             navController.popBackStack(menuItem.itemId, false)
 
+//            changeMenuItemColor(menuItem, this)
             true
+
         }
 
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
 
-
                 if (navController.currentDestination?.id == R.id.usersListHomeFragment) {
-
-
                     val builder = AlertDialog.Builder(this@MainActivity)
                     builder.setTitle("Bitte Bestätigen")
 
@@ -115,3 +119,10 @@ class MainActivity : AppCompatActivity() {
         Log.d("Backstack", backStackString.toString())
     }
 }
+
+//private fun changeMenuItemColor(item: MenuItem, context: Context) {
+//    val color = ContextCompat.getColor(context, R.color.primary)
+//    item.title = SpannableString(item.title).apply {
+//        setSpan(ForegroundColorSpan(color), 0, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+//    }
+//}

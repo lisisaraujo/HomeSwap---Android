@@ -45,4 +45,9 @@
         android:name="com.example.homeswap_android.ui.personal.PersonalFragment"
         android:label="fragment_personal"
         tools:layout="@layout/fragment_personal" />
+    <fragment
+        android:id="@+id/verifyEmailFragment"
+        android:name="com.example.homeswap_android.ui.registration.VerifyEmailFragment"
+        android:label="fragment_verify_email"
+        tools:layout="@layout/fragment_verify_email" />
 </navigation>
