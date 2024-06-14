@@ -1,16 +1,11 @@
 package com.example.homeswap_android.ui.home
 
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.homeswap_android.R
@@ -44,7 +39,7 @@ class UsersListHomeFragment : Fragment() {
         binding.rvUsersList.adapter = userAdapter
 
         viewModel.fetchUsers()
-        val users = viewModel.fetchUsers()
+        val users = viewModel.users.value
         Log.d("Users", users.toString())
 
         viewModel.users.observe(viewLifecycleOwner) { users ->
@@ -57,42 +52,8 @@ class UsersListHomeFragment : Fragment() {
                 viewModel.setProfile(profile)
             }
         }
+
+
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.navigation_explore -> {
-                changeMenuItemColor(item)
-                true
-            }
-            R.id.navigation_liked -> {
-                // Handle click for menu item 2
-                changeMenuItemColor(item)
-                true
-            }
-            R.id.navigation_flights -> {
-                // Handle click for menu item 2
-                changeMenuItemColor(item)
-                true
-            }
-            R.id.navigation_inbox -> {
-                // Handle click for menu item 2
-                changeMenuItemColor(item)
-                true
-            }
-            R.id.navigation_personal -> {
-                // Handle click for menu item 2
-                changeMenuItemColor(item)
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-    private fun changeMenuItemColor(item: MenuItem) {
-        val color = ContextCompat.getColor(requireContext(), R.color.primary) // Replace with your desired color
-        item.title = SpannableString(item.title).apply {
-            setSpan(ForegroundColorSpan(color), 0, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        }
-    }
 }
-

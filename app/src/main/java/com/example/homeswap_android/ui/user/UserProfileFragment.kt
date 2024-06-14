@@ -29,7 +29,6 @@ class UserProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         viewModel.userDataDocumentReference?.addSnapshotListener { value, error ->
             val user = value?.toObject<UserData>()
             binding.userProfileNameTV.text = user?.name
