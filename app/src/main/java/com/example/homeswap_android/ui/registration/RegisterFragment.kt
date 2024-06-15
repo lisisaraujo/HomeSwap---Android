@@ -36,17 +36,14 @@ class RegisterFragment : Fragment() {
             val newUserData = UserData(
                 name = name,
                 email = email,
-                profilePic = "",
-                reviews = emptyList(),
-                apartment = Apartment("", "", "", "", "", listOf(), listOf())
             )
 
             viewModel.register(email, password, newUserData)
             viewModel.currentUser.observe(viewLifecycleOwner){user ->
                 if(user != null) {
-                    findNavController().navigate(R.id.verifyEmailFragment)
+                    Toast.makeText(requireContext(), "Invalid or already existing email.", Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(requireContext(), "An account with this email already exists.", Toast.LENGTH_SHORT).show()
+                    findNavController().navigate(R.id.verifyEmailFragment)
                 }
             }
         }
