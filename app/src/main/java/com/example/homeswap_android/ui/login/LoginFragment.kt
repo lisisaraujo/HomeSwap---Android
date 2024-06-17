@@ -1,5 +1,6 @@
 package com.example.homeswap_android.ui.login
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -28,6 +29,7 @@ class LoginFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -49,8 +51,15 @@ class LoginFragment : Fragment() {
                         showToastInCenter("Invalid email or password. Please try again.")
                     } else {
                         if (!user.isEmailVerified) {
-                            findNavController().navigate(R.id.verifyEmailFragment)
-//                            showToastInCenter("Please verify your email to continue.")
+                            showResendEmailBTN()
+                            binding.resendVerificationEmailBTN.setOnClickListener {
+                                viewModel.sendEmailVerification(user)
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Verification email sent",
+                                    Toast.LENGTH_SHORT
+                                )
+                            }
                         } else {
                             findNavController().navigate(R.id.usersListHomeFragment)
                         }
@@ -71,4 +80,11 @@ class LoginFragment : Fragment() {
         toast.setGravity(Gravity.CENTER, 0, 0)
         toast.show()
     }
+
+    fun showResendEmailBTN() {
+        binding.errorTextView.visibility = View.VISIBLE
+        binding.errorTextView.text = "Please verify your email to continue."
+        binding.resendVerificationEmailBTN.visibility = View.VISIBLE
+    }
 }
+
