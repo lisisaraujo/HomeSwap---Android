@@ -37,13 +37,14 @@ class RegisterFragment : Fragment() {
                 name = name,
                 email = email,
             )
-
             viewModel.register(email, password, newUserData)
             viewModel.currentUser.observe(viewLifecycleOwner){user ->
                 if(user != null) {
                     Toast.makeText(requireContext(), "Invalid or already existing email.", Toast.LENGTH_SHORT).show()
                 } else {
-                    findNavController().navigate(R.id.verifyEmailFragment)
+
+                    findNavController().navigate(R.id.registerProfileDetailsFragment)
+
                 }
             }
         }

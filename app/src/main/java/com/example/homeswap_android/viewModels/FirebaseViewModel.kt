@@ -41,6 +41,8 @@ class FirebaseViewModel : ViewModel() {
         if (user != null) {
             //Immer wenn der User eingeloggt ist muss diese Variable definiert sein
             userDataDocumentReference = usersCollectionReference.document(user.uid)
+        } else {
+            Log.d(TAG, "user already exists.")
         }
     }
 

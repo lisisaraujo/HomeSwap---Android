@@ -31,8 +31,9 @@ class VerifyEmailFragment : Fragment() {
 
         binding.continueBTN.setOnClickListener {
             viewModel.currentUser.observe(viewLifecycleOwner) { user ->
-                findNavController().navigate(R.id.loginFragment)
-            }
+                if (user!!.isEmailVerified) findNavController().navigate(R.id.registerProfileDetailsFragment)
+                else findNavController().navigate(R.id.loginFragment)
             }
         }
+    }
 }
