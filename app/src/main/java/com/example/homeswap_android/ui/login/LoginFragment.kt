@@ -31,6 +31,8 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.signOut()
+
         binding.loginBTN.setOnClickListener {
             val email = binding.emailET.text.toString()
             val password = binding.passwordET.text.toString()
@@ -41,19 +43,21 @@ class LoginFragment : Fragment() {
             } else {
                 binding.errorTextView.visibility = View.GONE
                 viewModel.login(email, password)
+
                 viewModel.currentUser.observe(viewLifecycleOwner) { user ->
                     if (user == null) {
                         showToastInCenter("Invalid email or password. Please try again.")
-                        Log.d("CurrentUser", "No user logged in")
                     } else {
-                        if (user.isEmailVerified) {
-                            findNavController().navigate(R.id.usersListHomeFragment)
+                        if (!user.isEmailVerified) {
+                            findNavController().navigate(R.id.verifyEmailFragment)
+//                            showToastInCenter("Please verify your email to continue.")
                         } else {
-                            showToastInCenter("Please verify your email to continue.")
+                            findNavController().navigate(R.id.usersListHomeFragment)
                         }
                     }
                 }
             }
+
         }
 
 

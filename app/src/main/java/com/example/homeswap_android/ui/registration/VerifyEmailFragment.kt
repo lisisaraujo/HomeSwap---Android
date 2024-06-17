@@ -28,11 +28,12 @@ class VerifyEmailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         Toast.makeText(requireContext(), "Verification email sent", Toast.LENGTH_SHORT).show()
+        viewModel.currentUser.observe(viewLifecycleOwner) { user ->
+            if (!user!!.isEmailVerified) binding.emailNotVerifiedTextView.visibility = View.VISIBLE
 
-        binding.continueBTN.setOnClickListener {
-            viewModel.currentUser.observe(viewLifecycleOwner) { user ->
-                findNavController().navigate(R.id.loginFragment)
-            }
-            }
         }
+        binding.continueBTN.setOnClickListener {
+            findNavController().navigate(R.id.loginFragment)
+        }
+    }
 }

@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".ui.registration.VerifyEmailFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
         android:id="@+id/emailNotVerifiedTextView"
         android:layout_width="wrap_content"
