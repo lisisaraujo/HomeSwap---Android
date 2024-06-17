@@ -41,6 +41,7 @@ class FirebaseViewModel : ViewModel() {
         if (user != null) {
             //Immer wenn der User eingeloggt ist muss diese Variable definiert sein
             userDataDocumentReference = usersCollectionReference.document(user.uid)
+            Log.d("NewUser", user.email.toString())
         }
     }
 
@@ -50,6 +51,7 @@ class FirebaseViewModel : ViewModel() {
             return
         }
         userDataDocumentReference!!.set(profile)
+        Log.d("NewProfile", profile.name)
     }
 
 
@@ -65,6 +67,7 @@ class FirebaseViewModel : ViewModel() {
                 setupUserEnv()
                 val user = authResult.user!!
                 sendEmailVerification(user)
+                setProfile(userData)
             }
             .addOnFailureListener { exception ->
                 Log.e(TAG, "Error creating user: $exception")
