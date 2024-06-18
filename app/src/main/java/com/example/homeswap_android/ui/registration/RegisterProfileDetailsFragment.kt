@@ -14,11 +14,11 @@ import coil.load
 import com.example.homeswap_android.R
 import com.example.homeswap_android.data.models.UserData
 import com.example.homeswap_android.databinding.FragmentRegisterProfileDetailsBinding
-import com.example.homeswap_android.viewModels.FirebaseViewModel
+import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 
 class RegisterProfileDetailsFragment : Fragment() {
     private lateinit var binding: FragmentRegisterProfileDetailsBinding
-    private val viewModel: FirebaseViewModel by activityViewModels()
+    private val viewModel: FirebaseUsersViewModel by activityViewModels()
 
     private val getContent =
         registerForActivityResult(
@@ -59,7 +59,7 @@ class RegisterProfileDetailsFragment : Fragment() {
         }
 
         binding.continueBTN.setOnClickListener {
-            findNavController().navigate(R.id.usersListHomeFragment)
+            findNavController().navigate(R.id.addApartmentFragment)
         }
     }
 }

@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
                 //Entfernt alle Destinations vom Stack bis zum ersten Destination mit der angegebenen id
                 R.id.usersListHomeFragment -> navController.popBackStack(R.id.usersListHomeFragment, false)
                 R.id.checkFlightsFragment -> navController.popBackStack(R.id.checkFlightsFragment, false)
-                R.id.personalFragment -> navController.popBackStack(R.id.personalFragment, false)
+                R.id.userProfileFragment -> navController.popBackStack(R.id.userProfileFragment, false)
             }
 
             viewmodel.hideBottomNavBar()

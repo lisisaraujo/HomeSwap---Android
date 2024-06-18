@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import com.example.homeswap_android.R
 import com.example.homeswap_android.databinding.FragmentCalendarBinding
-import com.example.homeswap_android.viewModels.FirebaseViewModel
+import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -19,7 +19,7 @@ class CalendarFragment : Fragment() {
     private lateinit var binding: FragmentCalendarBinding
 //    private val args: CalendarFragmentArgs by navArgs()
 
-    private val viewModel: FirebaseViewModel by activityViewModels()
+    private val viewModel: FirebaseUsersViewModel by activityViewModels()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

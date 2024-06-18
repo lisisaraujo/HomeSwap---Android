@@ -17,7 +17,7 @@
         tools:layout="@layout/fragment_login" />
     <fragment
         android:id="@+id/userProfileFragment"
-        android:name="com.example.homeswap_android.ui.user.UserProfileFragment"
+        android:name="com.example.homeswap_android.ui.personal.UserProfileFragment"
         android:label="fragment_user_profile"
         tools:layout="@layout/fragment_user_profile" />
     <fragment
@@ -41,13 +41,25 @@
         android:label="fragment_check_flights"
         tools:layout="@layout/fragment_check_flights" />
     <fragment
-        android:id="@+id/personalFragment"
-        android:name="com.example.homeswap_android.ui.personal.PersonalFragment"
-        android:label="fragment_personal"
-        tools:layout="@layout/fragment_personal" />
+        android:id="@+id/settingsFragment"
+        android:name="com.example.homeswap_android.ui.personal.options.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
     <fragment
-        android:id="@+id/verifyEmailFragment"
-        android:name="com.example.homeswap_android.ui.registration.VerifyEmailFragment"
-        android:label="fragment_verify_email"
-        tools:layout="@layout/fragment_verify_email" />
+        android:id="@+id/addApartmentFragment"
+        android:name="com.example.homeswap_android.ui.apartment.AddApartmentFragment"
+        android:label="fragment_add_apartment"
+        tools:layout="@layout/fragment_add_apartment" />
+    <fragment
+        android:id="@+id/apartmentDetails"
+        android:name="com.example.homeswap_android.ui.apartment.ApartmentDetails"
+        android:label="fragment_apartment_details"
+        tools:layout="@layout/fragment_apartment_details" />
+    <fragment
+        android:id="@+id/apartmentsListHomeFragment"
+        android:name="com.example.homeswap_android.ui.home.ApartmentsListHomeFragment"
+        android:label="fragment_apartments_list_home"
+        tools:layout="@layout/fragment_apartments_list_home" />
+
+
 </navigation>

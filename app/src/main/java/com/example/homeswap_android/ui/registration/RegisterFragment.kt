@@ -9,14 +9,13 @@ import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.homeswap_android.R
-import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.data.models.UserData
 import com.example.homeswap_android.databinding.FragmentRegisterBinding
-import com.example.homeswap_android.viewModels.FirebaseViewModel
+import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 
 class RegisterFragment : Fragment() {
     private lateinit var binding: FragmentRegisterBinding
-    private val viewModel: FirebaseViewModel by activityViewModels()
+    private val viewModel: FirebaseUsersViewModel by activityViewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -40,14 +39,9 @@ class RegisterFragment : Fragment() {
             viewModel.register(email, password, newUserData)
             viewModel.login(email, password)
             viewModel.currentUser.observe(viewLifecycleOwner){user ->
-                if(user != null) {
-                    findNavController().navigate(R.id.verifyEmailFragment)
-                    Toast.makeText(requireContext(), "Invalid or already existing email.", Toast.LENGTH_SHORT).show()
-                } else {
-                    findNavController().navigate(R.id.registerProfileDetailsFragment)
-
+                if(user != null) Toast.makeText(requireContext(), "Invalid or already existing email.", Toast.LENGTH_SHORT).show()
+                 else findNavController().navigate(R.id.registerProfileDetailsFragment)
                 }
             }
         }
     }
-}
