@@ -12,7 +12,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 
 
-class FirebaseViewModel : ViewModel() {
+class FirebaseUsersViewModel : ViewModel() {
 
     //Firebase Dienst Instanzen laden
     val auth = FirebaseAuth.getInstance()
@@ -42,6 +42,7 @@ class FirebaseViewModel : ViewModel() {
             //Immer wenn der User eingeloggt ist muss diese Variable definiert sein
             userDataDocumentReference = usersCollectionReference.document(user.uid)
             Log.d("NewUser", user.email.toString())
+
         }
     }
 
@@ -67,13 +68,24 @@ class FirebaseViewModel : ViewModel() {
                 setupUserEnv()
                 val user = authResult.user!!
                 sendEmailVerification(user)
-                setProfile(userData)
+
+                // create the user profile
+                usersCollectionReference.document(user.uid).set(userData)
+                    .addOnSuccessListener {
+                        Log.d("FirebaseViewModel", "New user profile created successfully")
+
+                        // create an empty apartments collection for the new user
+//                        usersCollectionReference.document(user.uid).collection("apartments").document().set(mapOf())
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.e("FirebaseViewModel", "Error creating new user profile: $exception")
+                    }
             }
             .addOnFailureListener { exception ->
                 Log.e(TAG, "Error creating user: $exception")
             }
-
     }
+
 
     fun sendEmailVerification(user: FirebaseUser) {
         user.sendEmailVerification()

@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -14,12 +13,12 @@ import com.example.homeswap_android.adapter.UserAdapter
 import com.example.homeswap_android.data.models.UserData
 import com.example.homeswap_android.databinding.FragmentUsersListHomeBinding
 import com.example.homeswap_android.viewModels.BottomNavViewModel
-import com.example.homeswap_android.viewModels.FirebaseViewModel
+import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 import com.google.firebase.firestore.toObject
 
 class UsersListHomeFragment : Fragment() {
     private lateinit var binding: FragmentUsersListHomeBinding
-    private val viewModelFirebase: FirebaseViewModel by activityViewModels()
+    private val viewModelFirebase: FirebaseUsersViewModel by activityViewModels()
     val viewmodelBottomNav: BottomNavViewModel by activityViewModels()
     private lateinit var userAdapter: UserAdapter
 

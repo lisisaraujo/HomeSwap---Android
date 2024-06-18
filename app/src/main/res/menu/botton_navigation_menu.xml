@@ -18,7 +18,7 @@
         android:icon="@drawable/mail_48px"
         android:title="inbox" />
     <item
-        android:id="@+id/personalFragment"
+        android:id="@+id/userProfileFragment"
         android:icon="@drawable/account_circle_48px"
         android:title="personal" />
 </menu>

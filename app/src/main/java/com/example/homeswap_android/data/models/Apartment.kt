@@ -1,8 +1,9 @@
 package com.example.homeswap_android.data.models
 
-import android.graphics.Picture
 
 data class Apartment (
+    val apartmentID: String = "",
+    val userID: String = "",
     val title: String = "",
     val country: String = "",
     val city: String = "",

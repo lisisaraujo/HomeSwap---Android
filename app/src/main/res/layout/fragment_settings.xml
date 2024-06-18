@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.personal.PersonalFragment">
+    tools:context=".ui.personal.options.SettingsFragment">
+
 
     <LinearLayout
         android:id="@+id/ll_personal_options"
@@ -15,6 +16,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
 
         <TextView
             android:id="@+id/tv_my_profile"
@@ -46,6 +48,17 @@
     </LinearLayout>
 
     <Button
+        android:id="@+id/addApartmentBTN"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        android:text="Add Apartment"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ll_personal_options" />
+
+    <Button
         android:id="@+id/logoutBTN"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -53,6 +66,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ll_personal_options" />
+        app:layout_constraintTop_toBottomOf="@+id/addApartmentBTN" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
