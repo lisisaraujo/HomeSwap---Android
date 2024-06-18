@@ -14,12 +14,11 @@ import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.databinding.FragmentApartmentsListHomeBinding
 import com.example.homeswap_android.viewModels.BottomNavViewModel
 import com.example.homeswap_android.viewModels.FirebaseApartmentViewModel
-import com.google.firebase.firestore.toObject
 
 class ApartmentsListHomeFragment : Fragment() {
     private lateinit var binding: FragmentApartmentsListHomeBinding
     private val viewModelApartmentFB: FirebaseApartmentViewModel by activityViewModels()
-    val viewmodelBottomNav: BottomNavViewModel by activityViewModels()
+    val viewModelBottomNav: BottomNavViewModel by activityViewModels()
     private lateinit var apartmentAdapter: ApartmentAdapter
 
     override fun onCreateView(
@@ -33,7 +32,7 @@ class ApartmentsListHomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewmodelBottomNav.showBottomNavBar()
+        viewModelBottomNav.showBottomNavBar()
 
         val itemClickedCallback: (Apartment) -> Unit = {
             findNavController().navigate(R.id.apartmentDetails)
@@ -43,21 +42,10 @@ class ApartmentsListHomeFragment : Fragment() {
         binding.rvApartmentsList.adapter = apartmentAdapter
 
         viewModelApartmentFB.fetchApartments()
-        val apartments = viewModelApartmentFB.apartments.value
-        Log.d("Apartments", apartments.toString())
 
         viewModelApartmentFB.apartments.observe(viewLifecycleOwner) { apartments ->
+            Log.d("Apartments", apartments.toString())
             apartmentAdapter.updateApartments(apartments)
         }
-
-        viewModelApartmentFB.apartmentDataDocumentReference?.addSnapshotListener { value, error ->
-            val apartment = value?.toObject<Apartment>()
-            if (apartment != null) {
-                viewModelApartmentFB.setApartment(apartment)
-            }
-        }
-
-
     }
-
 }

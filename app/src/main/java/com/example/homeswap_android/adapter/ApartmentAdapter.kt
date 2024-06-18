@@ -5,19 +5,22 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.example.homeswap_android.R
 import com.example.homeswap_android.data.models.Apartment
-import com.example.homeswap_android.databinding.ApartmentsListItemBinding
+import com.example.homeswap_android.databinding.ApartmentListItemBinding
 
-class ApartmentAdapter(private var apartments: List<Apartment>,
-private val itemClickedCallback: (Apartment) -> Unit
+class ApartmentAdapter(
+    private var apartments: List<Apartment>,
+    private val itemClickedCallback: (Apartment) -> Unit
 ) :
-RecyclerView.Adapter<ApartmentAdapter.MyViewHolder>() {
+    RecyclerView.Adapter<ApartmentAdapter.MyViewHolder>() {
 
-    class MyViewHolder(val binding: ApartmentsListItemBinding) : RecyclerView.ViewHolder(binding.root)
+    class MyViewHolder(val binding: ApartmentListItemBinding) :
+        RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         return MyViewHolder(
-            ApartmentsListItemBinding.inflate(
+            ApartmentListItemBinding.inflate(
                 LayoutInflater.from(parent.context), parent, false
             )
         )
@@ -28,10 +31,13 @@ RecyclerView.Adapter<ApartmentAdapter.MyViewHolder>() {
 
 
         holder.binding.apartmentTitleTV.text = apartment.title
-        holder.binding.apartmentcityTV.text = apartment.city
-        holder.binding.apartmentReviewsTV.text = apartment.reviews.size.toString()
-//        holder.binding.apartmentPicIV.load(apartment.pictures.first())
+        holder.binding.apartmentCityTV.text = apartment.city
 
+        if (apartment.pictures.isNotEmpty()) {
+            holder.binding.apartmentImageIV.load(apartment.pictures.first())
+        } else {
+            holder.binding.apartmentImageIV.setImageResource(R.drawable.ic_launcher_foreground)
+        }
         holder.binding.apartmentListCV.setOnClickListener {
             Log.d("ClickedApartment", apartment.title)
             itemClickedCallback(apartment)

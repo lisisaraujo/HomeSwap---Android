@@ -9,7 +9,7 @@ data class Apartment (
     val city: String = "",
     val address: String = "",
     val availableDates: String = "",
-    val reviews: List<ApartmentReview> = listOf(),
-    val pictures: List<Picture> = listOf(),
+    val reviews: MutableList<ApartmentReview> = mutableListOf(),
+    val pictures: MutableList<String> = mutableListOf(),
     val isLiked: Boolean = false
 )

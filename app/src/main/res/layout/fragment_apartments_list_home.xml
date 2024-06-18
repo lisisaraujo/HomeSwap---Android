@@ -8,4 +8,4 @@
     android:background="@color/cardview_light_background"
     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
     tools:context=".ui.home.ApartmentsListHomeFragment"
-    tools:listitem="@layout/apartments_list_item" />
+    tools:listitem="@layout/apartment_list_item" />

@@ -10,11 +10,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import coil.load
 import com.example.homeswap_android.R
 import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.databinding.FragmentAddApartmentBinding
 import com.example.homeswap_android.viewModels.FirebaseApartmentViewModel
-
 
 val TAG = "AddApartmentFragment"
 
@@ -23,16 +23,15 @@ class AddApartmentFragment : Fragment() {
     private lateinit var binding: FragmentAddApartmentBinding
     private val viewModel: FirebaseApartmentViewModel by activityViewModels()
 
+    private var selectedImageUri: Uri? = null
+
     private val getContent =
         registerForActivityResult(
             ActivityResultContracts.GetContent()
         ) { uri: Uri? ->
             uri?.let {
-                viewModel.currentApartment.observe(viewLifecycleOwner) { apartment ->
-                    if (apartment != null) {
-                        viewModel.uploadImage(it, apartment.apartmentID)
-                    }
-                }
+                selectedImageUri = it
+                binding.apartmentImageIV.load(it)
             }
         }
 
@@ -61,20 +60,38 @@ class AddApartmentFragment : Fragment() {
             )
 
             viewModel.addApartment(newApartment)
-
             viewModel.currentApartment.observe(viewLifecycleOwner) { apartment ->
                 if (apartment != null) {
+                    selectedImageUri?.let { uri ->
+                        viewModel.uploadApartmentImage(uri, apartment.apartmentID)
+                    }
                     findNavController().navigate(R.id.apartmentsListHomeFragment)
                 }
             }
         }
 
-        binding.uploadPicBTN.setOnClickListener {
-            getContent.launch("image/apartments/*")
+        binding.apartmentImageIV.setOnClickListener {
+            getContent.launch("image/*")
         }
 
         viewModel.currentApartment.observe(viewLifecycleOwner) { apartment ->
             Log.d(TAG, apartment.title)
+        }
+
+        viewModel.apartmentDataDocumentReference?.addSnapshotListener { value, error ->
+            if (value != null) {
+                Log.d("Apartment", value.data.toString())
+                value.toObject(Apartment::class.java)?.let { apartment ->
+                    if (apartment.pictures.isNotEmpty()) {
+                        binding.apartmentImageIV.load(apartment.pictures.first()) {
+                            crossfade(true)
+                            placeholder(R.drawable.ic_launcher_foreground)
+                        }
+                    } else {
+                        binding.apartmentImageIV.setImageResource(R.drawable.ic_launcher_foreground)
+                    }
+                }
+            }
         }
     }
 }
