@@ -99,8 +99,8 @@
 
                 <ImageView
                     android:id="@+id/profilePicIV"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:srcCompat="@tools:sample/avatars" />
@@ -111,6 +111,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     app:layout_constraintBottom_toBottomOf="@+id/profilePicIV"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/profilePicIV"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="User Name" />
