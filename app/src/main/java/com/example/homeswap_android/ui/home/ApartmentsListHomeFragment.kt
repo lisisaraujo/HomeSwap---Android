@@ -34,8 +34,9 @@ class ApartmentsListHomeFragment : Fragment() {
 
         viewModelBottomNav.showBottomNavBar()
 
-        val itemClickedCallback: (Apartment) -> Unit = {
-            findNavController().navigate(R.id.apartmentDetails)
+        val itemClickedCallback: (Apartment) -> Unit = { apartment ->
+            Log.d("ItemCallbackApartment", apartment.apartmentID)
+            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToApartmentDetailsFragment(apartment.apartmentID))
         }
 
         apartmentAdapter = ApartmentAdapter(emptyList(), itemClickedCallback)

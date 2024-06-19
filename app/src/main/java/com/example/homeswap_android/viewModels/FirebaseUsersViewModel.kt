@@ -26,6 +26,10 @@ class FirebaseUsersViewModel : ViewModel() {
     val currentUser: LiveData<FirebaseUser?>
         get() = _currentUser
 
+    private val _currentUserData = MutableLiveData<UserData?>()
+    val currentUserData: LiveData<UserData?>
+        get() = _currentUserData
+
     private val _users = MutableLiveData<List<UserData>>()
     val users: LiveData<List<UserData>>
         get() = _users
@@ -115,7 +119,19 @@ class FirebaseUsersViewModel : ViewModel() {
             }
     }
 
-    fun deleteAllUsers() {
+    fun fetchUserData(userID: String) {
+        usersCollectionReference.document(userID).get()
+            .addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    val userData = documentSnapshot.toObject(UserData::class.java)
+                    _currentUserData.postValue(userData)
+                } else {
+                    Log.d("FirebaseUsersViewModel", "User data not found for ID: $userID")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e("FirebaseUsersViewModel", "Error fetching user data: $exception")
+            }
     }
 
     fun uploadImage(uri: Uri) {
@@ -141,5 +157,6 @@ class FirebaseUsersViewModel : ViewModel() {
             Log.e("FirebaseViewModel", "User is not authenticated")
         }
     }
+
 
 }

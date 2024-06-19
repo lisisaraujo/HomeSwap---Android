@@ -65,7 +65,7 @@ class AddApartmentFragment : Fragment() {
                     selectedImageUri?.let { uri ->
                         viewModel.uploadApartmentImage(uri, apartment.apartmentID)
                     }
-                    findNavController().navigate(R.id.apartmentsListHomeFragment)
+                    findNavController().navigate(AddApartmentFragmentDirections.actionAddApartmentFragmentToHomeFragment(true))
                 }
             }
         }

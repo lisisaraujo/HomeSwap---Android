@@ -1,18 +1,22 @@
 package com.example.homeswap_android.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
 import com.example.homeswap_android.adapter.ViewPagerAdapter
 import com.example.homeswap_android.databinding.FragmentHomeBinding
+import com.example.homeswap_android.ui.apartment.ApartmentDetailsFragmentArgs
 import com.google.android.material.tabs.TabLayout
 
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
+    private val args: HomeFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,7 +31,9 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val fragments = listOf(UsersListHomeFragment(), ApartmentsListHomeFragment())
-        val adapter = ViewPagerAdapter(requireActivity().supportFragmentManager, lifecycle, fragments)
+        val adapter =
+            ViewPagerAdapter(requireActivity().supportFragmentManager, lifecycle, fragments)
+
 
         binding.viewPager.adapter = adapter
         binding.tabLayout.addTab(binding.tabLayout.newTab().setText("Users"))
@@ -35,7 +41,8 @@ class HomeFragment : Fragment() {
 
         binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                binding.viewPager.currentItem = tab?.position ?: 0
+                if (args.isApartments) binding.viewPager.currentItem = 1
+                else binding.viewPager.currentItem = tab?.position ?: 0
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
@@ -44,8 +51,12 @@ class HomeFragment : Fragment() {
 
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-                binding.tabLayout.selectTab(binding.tabLayout.getTabAt(position))
+                if (args.isApartments) binding.tabLayout.selectTab(binding.tabLayout.getTabAt(1))
+                else binding.tabLayout.selectTab(binding.tabLayout.getTabAt(position))
+                Log.d("HomeTab", position.toString())
             }
         })
     }
 }
+
+

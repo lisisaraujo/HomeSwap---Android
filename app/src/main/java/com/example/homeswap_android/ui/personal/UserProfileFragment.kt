@@ -1,6 +1,7 @@
 package com.example.homeswap_android.ui.personal
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +20,7 @@ class UserProfileFragment : Fragment() {
     private lateinit var binding: FragmentUserProfileBinding
     private val viewModel: FirebaseUsersViewModel by activityViewModels ()
     val viewmodelBottomNav: BottomNavViewModel by activityViewModels()
+    val TAG = "UserProfileFragment"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,6 +37,7 @@ class UserProfileFragment : Fragment() {
 
         viewModel.userDataDocumentReference?.addSnapshotListener { value, error ->
             val user = value?.toObject<UserData>()
+
             binding.userProfileNameTV.text = user?.name
             binding.userProfileEmailTV.text = user?.email
             binding.userProfileReviewsTV.text = user?.reviews?.size.toString()

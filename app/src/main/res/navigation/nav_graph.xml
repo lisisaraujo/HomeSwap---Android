@@ -49,21 +49,41 @@
         android:id="@+id/addApartmentFragment"
         android:name="com.example.homeswap_android.ui.apartment.AddApartmentFragment"
         android:label="fragment_add_apartment"
-        tools:layout="@layout/fragment_add_apartment" />
+        tools:layout="@layout/fragment_add_apartment" >
+        <action
+            android:id="@+id/action_addApartmentFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
     <fragment
-        android:id="@+id/apartmentDetails"
-        android:name="com.example.homeswap_android.ui.apartment.ApartmentDetails"
+        android:id="@+id/apartmentDetailsFragment"
+        android:name="com.example.homeswap_android.ui.apartment.ApartmentDetailsFragment"
         android:label="fragment_apartment_details"
-        tools:layout="@layout/fragment_apartment_details" />
+        tools:layout="@layout/fragment_apartment_details" >
+        <argument
+            android:name="apartmentID"
+            app:argType="string" />
+    </fragment>
     <fragment
         android:id="@+id/apartmentsListHomeFragment"
         android:name="com.example.homeswap_android.ui.home.ApartmentsListHomeFragment"
         android:label="fragment_apartments_list_home"
-        tools:layout="@layout/fragment_apartments_list_home" />
+        tools:layout="@layout/fragment_apartments_list_home" >
+        <action
+            android:id="@+id/action_apartmentsListHomeFragment_to_apartmentDetailsFragment"
+            app:destination="@id/apartmentDetailsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.example.homeswap_android.ui.home.HomeFragment"
         android:label="HomeFragment"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_apartmentDetailsFragment"
+            app:destination="@id/apartmentDetailsFragment" />
+        <argument
+            android:name="isApartments"
+            app:argType="boolean"
+            android:defaultValue="false" />
+    </fragment>
 
 </navigation>

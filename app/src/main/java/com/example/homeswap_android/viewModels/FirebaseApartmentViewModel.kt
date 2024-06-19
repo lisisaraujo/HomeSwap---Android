@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.homeswap_android.data.models.Apartment
+import com.example.homeswap_android.data.models.UserData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
@@ -45,6 +46,21 @@ class FirebaseApartmentViewModel : ViewModel() {
             }
     }
 
+    fun fetchApartment(apartmentID: String) {
+        apartmentsCollectionReference.document(apartmentID).get()
+            .addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    val apartmentData = documentSnapshot.toObject(Apartment::class.java)
+                    _currentApartment.postValue(apartmentData!!)
+                } else {
+                    Log.d(TAG, "Apartment data not found for ID: $apartmentID")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Error fetching apartment data: $exception")
+            }
+    }
+
     fun addApartment(apartment: Apartment) {
         val currentUser = auth.currentUser ?: return
 
@@ -52,12 +68,14 @@ class FirebaseApartmentViewModel : ViewModel() {
 
         apartmentsCollectionReference.add(newApartment)
             .addOnSuccessListener { documentReference ->
-                Log.d("FirebaseApartmentViewModel", "Apartment added with ID: ${documentReference.id}")
+                Log.d(TAG, "Apartment added with ID: ${documentReference.id}")
                 _currentApartment.postValue(newApartment.copy(apartmentID = documentReference.id))
+                documentReference.update("apartmentID", documentReference.id)
             }
             .addOnFailureListener { exception ->
-                Log.e("FirebaseApartmentViewModel", "Error adding apartment: $exception")
+                Log.e(TAG, "Error adding apartment: $exception")
             }
+        fetchApartments()
     }
 
     fun uploadApartmentImage(uri: Uri, apartmentId: String) {

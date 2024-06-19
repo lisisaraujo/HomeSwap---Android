@@ -28,6 +28,7 @@ class ApartmentAdapter(
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val apartment = apartments[position]
+        Log.d("ApartmentID", apartment.apartmentID)
 
 
         holder.binding.apartmentTitleTV.text = apartment.title

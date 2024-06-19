@@ -2,7 +2,7 @@ package com.example.homeswap_android.data.models
 
 
 data class Apartment (
-    val apartmentID: String = "",
+    var apartmentID: String = "",
     val userID: String = "",
     val title: String = "",
     val country: String = "",
