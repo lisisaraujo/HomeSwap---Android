@@ -13,6 +13,7 @@ import com.example.homeswap_android.R
 import com.example.homeswap_android.adapter.ApartmentAdapter
 import com.example.homeswap_android.databinding.FragmentUserDetailsBinding
 import com.example.homeswap_android.ui.apartment.AddApartmentFragmentDirections
+import com.example.homeswap_android.ui.apartment.ApartmentDetailsFragmentDirections
 import com.example.homeswap_android.viewModels.FirebaseApartmentViewModel
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 
@@ -50,7 +51,9 @@ class UserDetailsFragment : Fragment() {
         }
 
         apartmentAdapter = ApartmentAdapter(emptyList()) { apartment ->
-
+            findNavController().navigate(
+                UserDetailsFragmentDirections.actionUserDetailsFragmentToApartmentDetailsFragment(apartment.apartmentID)
+            )
         }
         binding.apartmentsRecyclerView.adapter = apartmentAdapter
 

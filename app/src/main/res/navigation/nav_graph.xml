@@ -69,6 +69,9 @@
         <action
             android:id="@+id/action_apartmentDetailsFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_apartmentDetailsFragment_to_userDetailsFragment"
+            app:destination="@id/userDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/apartmentsListHomeFragment"
@@ -111,6 +114,9 @@
         <action
             android:id="@+id/action_userDetailsFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_userDetailsFragment_to_apartmentDetailsFragment"
+            app:destination="@id/apartmentDetailsFragment" />
     </fragment>
 
 </navigation>

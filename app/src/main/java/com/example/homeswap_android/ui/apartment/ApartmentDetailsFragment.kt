@@ -14,6 +14,7 @@ import com.example.homeswap_android.R
 import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.data.models.UserData
 import com.example.homeswap_android.databinding.FragmentApartmentDetailsBinding
+import com.example.homeswap_android.ui.home.HomeFragmentDirections
 import com.example.homeswap_android.viewModels.FirebaseApartmentViewModel
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 import com.google.firebase.firestore.toObject
@@ -57,6 +58,10 @@ class ApartmentDetailsFragment : Fragment() {
             if (user != null) {
                 binding.userNameTV.text = user.name
                 binding.profilePicIV.load(user.profilePic)
+            }
+
+            binding.userDetailsCV.setOnClickListener {
+                findNavController().navigate(ApartmentDetailsFragmentDirections.actionApartmentDetailsFragmentToUserDetailsFragment(user!!.userID))
             }
         }
 
