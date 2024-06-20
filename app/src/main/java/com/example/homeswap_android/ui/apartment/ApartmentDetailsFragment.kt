@@ -61,7 +61,7 @@ class ApartmentDetailsFragment : Fragment() {
         }
 
         binding.apartmentDetailsBackBTN.setOnClickListener {
-            findNavController().navigateUp()
+            findNavController().navigate(ApartmentDetailsFragmentDirections.actionApartmentDetailsFragmentToHomeFragment(isApartments = true))
         }
 
         apartmentViewModel.currentApartment.observe(viewLifecycleOwner) {

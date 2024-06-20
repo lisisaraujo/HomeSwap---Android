@@ -56,6 +56,11 @@ class HomeFragment : Fragment() {
             binding.tabLayout.selectTab(binding.tabLayout.getTabAt(1))
             binding.viewPager.setCurrentItem(1, false)
         }
+
+        if (args.isUsers) {
+            binding.tabLayout.selectTab(binding.tabLayout.getTabAt(0))
+            binding.viewPager.setCurrentItem(0, false)
+        }
     }
 
 

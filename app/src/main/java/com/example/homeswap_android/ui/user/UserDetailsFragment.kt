@@ -12,6 +12,7 @@ import coil.load
 import com.example.homeswap_android.R
 import com.example.homeswap_android.adapter.ApartmentAdapter
 import com.example.homeswap_android.databinding.FragmentUserDetailsBinding
+import com.example.homeswap_android.ui.apartment.AddApartmentFragmentDirections
 import com.example.homeswap_android.viewModels.FirebaseApartmentViewModel
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 
@@ -60,7 +61,8 @@ class UserDetailsFragment : Fragment() {
         }
 
         binding.backBTN.setOnClickListener {
-            findNavController().navigateUp()
+            findNavController().navigate(UserDetailsFragmentDirections.actionUserDetailsFragmentToHomeFragment(isUsers = true))
+
         }
 
         userViewModel.currentUser.observe(viewLifecycleOwner) {
