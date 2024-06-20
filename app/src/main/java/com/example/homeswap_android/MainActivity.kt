@@ -1,34 +1,21 @@
 package com.example.homeswap_android
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
 import android.util.Log
-import android.view.MenuItem
 import android.view.View
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-
-
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
-import androidx.navigation.ui.setupWithNavController
 import com.example.homeswap_android.databinding.ActivityMainBinding
-import com.example.homeswap_android.viewModels.BottomNavViewModel
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    val viewmodel: BottomNavViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,19 +27,31 @@ class MainActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
 
         //Listener der bei jeder Navigation ausgeführt
-        navController.addOnDestinationChangedListener{ navController: NavController, navDestination: NavDestination, bundle: Bundle? ->
+        navController.addOnDestinationChangedListener { navController: NavController, navDestination: NavDestination, bundle: Bundle? ->
 
             logBackStack(navController)
             Log.d("navDestination", navDestination.label.toString())
 
-            when(navDestination.id){
+            when (navDestination.id) {
                 //Entfernt alle Destinations vom Stack bis zum ersten Destination mit der angegebenen id
-                R.id.usersListHomeFragment -> navController.popBackStack(R.id.usersListHomeFragment, false)
-                R.id.checkFlightsFragment -> navController.popBackStack(R.id.checkFlightsFragment, false)
-                R.id.userProfileFragment -> navController.popBackStack(R.id.userProfileFragment, false)
+                R.id.homeFragment -> {
+                    navController.popBackStack(R.id.homeFragment, false)
+                    binding.bottomNavView.visibility = View.VISIBLE
+                }
+
+                R.id.checkFlightsFragment -> {
+                    navController.popBackStack(R.id.checkFlightsFragment, false)
+                    binding.bottomNavView.visibility = View.VISIBLE
+                }
+
+                R.id.userProfileFragment -> {
+                    navController.popBackStack(R.id.userProfileFragment, false)
+                    binding.bottomNavView.visibility = View.VISIBLE
+                }
+
+                else -> binding.bottomNavView.visibility = View.GONE
             }
 
-            viewmodel.hideBottomNavBar()
         }
 
         //Listener der bei BottomNavigation Klick ausgeführt
@@ -61,8 +60,6 @@ class MainActivity : AppCompatActivity() {
             //Rufe die Funktion auf die standardmäßig für die bottom navigation zuständig ist.
             NavigationUI.onNavDestinationSelected(menuItem, navController)
             navController.popBackStack(menuItem.itemId, false)
-
-//            changeMenuItemColor(menuItem, this)
             true
 
         }
@@ -92,15 +89,6 @@ class MainActivity : AppCompatActivity() {
 
         })
 
-        viewmodel.bottomNavBarVisible.observe(this) { isVisible ->
-            if (isVisible!!) {
-                binding.bottomNavView.visibility = View.VISIBLE
-                binding.bottomNavView.setupWithNavController(navController)
-            } else {
-                binding.bottomNavView.visibility = View.GONE
-            }
-        }
-
     }
 
 
@@ -119,10 +107,3 @@ class MainActivity : AppCompatActivity() {
         Log.d("Backstack", backStackString.toString())
     }
 }
-
-//private fun changeMenuItemColor(item: MenuItem, context: Context) {
-//    val color = ContextCompat.getColor(context, R.color.primary)
-//    item.title = SpannableString(item.title).apply {
-//        setSpan(ForegroundColorSpan(color), 0, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-//    }
-//}

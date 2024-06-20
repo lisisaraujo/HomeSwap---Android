@@ -12,13 +12,11 @@ import com.example.homeswap_android.R
 import com.example.homeswap_android.adapter.ApartmentAdapter
 import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.databinding.FragmentApartmentsListHomeBinding
-import com.example.homeswap_android.viewModels.BottomNavViewModel
 import com.example.homeswap_android.viewModels.FirebaseApartmentViewModel
 
 class ApartmentsListHomeFragment : Fragment() {
     private lateinit var binding: FragmentApartmentsListHomeBinding
     private val viewModelApartmentFB: FirebaseApartmentViewModel by activityViewModels()
-    val viewModelBottomNav: BottomNavViewModel by activityViewModels()
     private lateinit var apartmentAdapter: ApartmentAdapter
 
     override fun onCreateView(
@@ -31,8 +29,6 @@ class ApartmentsListHomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        viewModelBottomNav.showBottomNavBar()
 
         val itemClickedCallback: (Apartment) -> Unit = { apartment ->
             Log.d("ItemCallbackApartment", apartment.apartmentID)

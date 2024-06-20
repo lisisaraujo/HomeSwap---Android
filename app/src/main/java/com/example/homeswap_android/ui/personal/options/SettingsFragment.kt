@@ -9,13 +9,11 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.homeswap_android.R
 import com.example.homeswap_android.databinding.FragmentSettingsBinding
-import com.example.homeswap_android.viewModels.BottomNavViewModel
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 
 class SettingsFragment : Fragment() {
     private lateinit var binding: FragmentSettingsBinding
     private val viewModel: FirebaseUsersViewModel by activityViewModels ()
-    val viewmodelBottomNav: BottomNavViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,7 +26,6 @@ class SettingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewmodelBottomNav.showBottomNavBar()
         binding.logoutBTN.setOnClickListener {
             viewModel.signOut()
             findNavController().navigate(R.id.loginFragment)

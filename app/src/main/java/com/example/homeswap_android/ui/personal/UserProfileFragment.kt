@@ -12,14 +12,12 @@ import coil.load
 import com.example.homeswap_android.R
 import com.example.homeswap_android.data.models.UserData
 import com.example.homeswap_android.databinding.FragmentUserProfileBinding
-import com.example.homeswap_android.viewModels.BottomNavViewModel
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 import com.google.firebase.firestore.toObject
 
 class UserProfileFragment : Fragment() {
     private lateinit var binding: FragmentUserProfileBinding
     private val viewModel: FirebaseUsersViewModel by activityViewModels ()
-    val viewmodelBottomNav: BottomNavViewModel by activityViewModels()
     val TAG = "UserProfileFragment"
 
     override fun onCreateView(
@@ -32,8 +30,6 @@ class UserProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        viewmodelBottomNav.showBottomNavBar()
 
         viewModel.userDataDocumentReference?.addSnapshotListener { value, error ->
             val user = value?.toObject<UserData>()
