@@ -30,10 +30,16 @@ class FirebaseApartmentViewModel : ViewModel() {
     private val _currentApartment = MutableLiveData<Apartment>()
     val currentApartment: LiveData<Apartment>
         get() = _currentApartment
+    private val _userApartments = MutableLiveData<List<Apartment>>()
+    val userApartments: LiveData<List<Apartment>>
+        get() = _userApartments
+
+
 
     init {
         fetchApartments()
     }
+
 
     fun fetchApartments() {
         apartmentsCollectionReference.get()
@@ -58,6 +64,18 @@ class FirebaseApartmentViewModel : ViewModel() {
             }
             .addOnFailureListener { exception ->
                 Log.e(TAG, "Error fetching apartment data: $exception")
+            }
+    }
+
+    fun fetchUserApartments(userID: String) {
+        apartmentsCollectionReference.whereEqualTo("userID", userID).get()
+            .addOnSuccessListener { querySnapshot ->
+                val apartmentsList = querySnapshot.toObjects(Apartment::class.java)
+                _userApartments.postValue(apartmentsList)
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Error fetching apartments: $exception")
+                _userApartments.postValue(emptyList())
             }
     }
 

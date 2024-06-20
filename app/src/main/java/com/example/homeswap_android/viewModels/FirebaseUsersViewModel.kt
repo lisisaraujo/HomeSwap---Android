@@ -56,7 +56,8 @@ class FirebaseUsersViewModel : ViewModel() {
             return
         }
         userDataDocumentReference!!.set(profile)
-        Log.d("NewProfile", profile.name)
+        userDataDocumentReference!!.update("userID", userDataDocumentReference!!.id)
+        Log.d("NewProfile", profile.userID)
     }
 
 
@@ -77,9 +78,6 @@ class FirebaseUsersViewModel : ViewModel() {
                 usersCollectionReference.document(user.uid).set(userData)
                     .addOnSuccessListener {
                         Log.d("FirebaseViewModel", "New user profile created successfully")
-
-                        // create an empty apartments collection for the new user
-//                        usersCollectionReference.document(user.uid).collection("apartments").document().set(mapOf())
                     }
                     .addOnFailureListener { exception ->
                         Log.e("FirebaseViewModel", "Error creating new user profile: $exception")

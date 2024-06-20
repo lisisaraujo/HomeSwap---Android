@@ -32,8 +32,9 @@ class UsersListHomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val itemClickedCallback: (UserData) -> Unit = {
-            findNavController().navigate(R.id.userProfileFragment)
+        val itemClickedCallback: (UserData) -> Unit = {userData ->
+            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToUserDetailsFragment(userData.userID))
+
         }
 
         userAdapter = UserAdapter(emptyList(), itemClickedCallback)

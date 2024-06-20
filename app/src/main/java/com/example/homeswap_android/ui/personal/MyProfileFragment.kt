@@ -1,7 +1,6 @@
 package com.example.homeswap_android.ui.personal
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,12 +10,12 @@ import androidx.navigation.fragment.findNavController
 import coil.load
 import com.example.homeswap_android.R
 import com.example.homeswap_android.data.models.UserData
-import com.example.homeswap_android.databinding.FragmentUserProfileBinding
+import com.example.homeswap_android.databinding.FragmentMyProfileBinding
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 import com.google.firebase.firestore.toObject
 
-class UserProfileFragment : Fragment() {
-    private lateinit var binding: FragmentUserProfileBinding
+class MyProfileFragment : Fragment() {
+    private lateinit var binding: FragmentMyProfileBinding
     private val viewModel: FirebaseUsersViewModel by activityViewModels ()
     val TAG = "UserProfileFragment"
 
@@ -24,7 +23,7 @@ class UserProfileFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentUserProfileBinding.inflate(inflater, container, false)
+        binding = FragmentMyProfileBinding.inflate(inflater, container, false)
         return binding.root
     }
 
