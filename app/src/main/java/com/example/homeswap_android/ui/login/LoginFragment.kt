@@ -59,7 +59,7 @@ class LoginFragment : Fragment() {
                             )
                         }
                     } else {
-                        findNavController().navigate(R.id.usersListHomeFragment)
+                        findNavController().navigate(R.id.homeFragment)
                     }
                 }
             }

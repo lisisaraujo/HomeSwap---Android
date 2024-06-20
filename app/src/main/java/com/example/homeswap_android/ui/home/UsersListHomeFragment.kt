@@ -12,6 +12,7 @@ import com.example.homeswap_android.R
 import com.example.homeswap_android.adapter.UserAdapter
 import com.example.homeswap_android.data.models.UserData
 import com.example.homeswap_android.databinding.FragmentUsersListHomeBinding
+import com.example.homeswap_android.viewModels.BottomNavViewModel
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 import com.google.firebase.firestore.toObject
 

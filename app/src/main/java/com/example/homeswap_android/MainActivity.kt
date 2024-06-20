@@ -1,5 +1,4 @@
 package com.example.homeswap_android
-
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
@@ -35,20 +34,21 @@ class MainActivity : AppCompatActivity() {
             when (navDestination.id) {
                 //Entfernt alle Destinations vom Stack bis zum ersten Destination mit der angegebenen id
                 R.id.homeFragment -> {
-                    navController.popBackStack(R.id.homeFragment, false)
+//                    navController.popBackStack(R.id.homeFragment, false)
                     binding.bottomNavView.visibility = View.VISIBLE
                 }
 
                 R.id.checkFlightsFragment -> {
-                    navController.popBackStack(R.id.checkFlightsFragment, false)
+//                    navController.popBackStack(R.id.checkFlightsFragment, false)
+//                    binding.bottomNavView.selectedItemId = R.id.checkFlightsFragment
                     binding.bottomNavView.visibility = View.VISIBLE
                 }
 
                 R.id.userProfileFragment -> {
-                    navController.popBackStack(R.id.userProfileFragment, false)
+//                    navController.popBackStack(R.id.userProfileFragment, false)
+//                    binding.bottomNavView.selectedItemId = R.id.userProfileFragment
                     binding.bottomNavView.visibility = View.VISIBLE
                 }
-
                 else -> binding.bottomNavView.visibility = View.GONE
             }
 
@@ -61,7 +61,6 @@ class MainActivity : AppCompatActivity() {
             NavigationUI.onNavDestinationSelected(menuItem, navController)
             navController.popBackStack(menuItem.itemId, false)
             true
-
         }
 
 

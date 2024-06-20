@@ -10,6 +10,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
 import com.example.homeswap_android.adapter.ViewPagerAdapter
 import com.example.homeswap_android.databinding.FragmentHomeBinding
+import com.example.homeswap_android.ui.apartment.AddApartmentFragmentDirections
 import com.example.homeswap_android.ui.apartment.ApartmentDetailsFragmentArgs
 import com.google.android.material.tabs.TabLayout
 
@@ -41,22 +42,21 @@ class HomeFragment : Fragment() {
 
         binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                if (args.isApartments) binding.viewPager.currentItem = 1
-                else binding.viewPager.currentItem = tab?.position ?: 0
+                binding.viewPager.currentItem = tab?.position ?: 0
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
             override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
 
-        binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                if (args.isApartments) binding.tabLayout.selectTab(binding.tabLayout.getTabAt(1))
-                else binding.tabLayout.selectTab(binding.tabLayout.getTabAt(position))
-                Log.d("HomeTab", position.toString())
-            }
-        })
+
+        Log.d("TabChangeHome", args.isApartments.toString())
+
+        if (args.isApartments) {
+            binding.tabLayout.selectTab(binding.tabLayout.getTabAt(1))
+            binding.viewPager.currentItem = 1
+        }
     }
+
+
 }
-
-
