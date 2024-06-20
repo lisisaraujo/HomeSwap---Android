@@ -54,7 +54,7 @@ class HomeFragment : Fragment() {
 
         if (args.isApartments) {
             binding.tabLayout.selectTab(binding.tabLayout.getTabAt(1))
-            binding.viewPager.currentItem = 1
+            binding.viewPager.setCurrentItem(1, false)
         }
     }
 

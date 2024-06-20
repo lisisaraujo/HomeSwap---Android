@@ -1,4 +1,5 @@
 package com.example.homeswap_android
+
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
@@ -34,21 +35,21 @@ class MainActivity : AppCompatActivity() {
             when (navDestination.id) {
                 //Entfernt alle Destinations vom Stack bis zum ersten Destination mit der angegebenen id
                 R.id.homeFragment -> {
-//                    navController.popBackStack(R.id.homeFragment, false)
+                    binding.bottomNavView.selectedItemId = R.id.homeFragment
+
                     binding.bottomNavView.visibility = View.VISIBLE
                 }
 
                 R.id.checkFlightsFragment -> {
-//                    navController.popBackStack(R.id.checkFlightsFragment, false)
-//                    binding.bottomNavView.selectedItemId = R.id.checkFlightsFragment
+                    binding.bottomNavView.selectedItemId = R.id.checkFlightsFragment
                     binding.bottomNavView.visibility = View.VISIBLE
                 }
 
                 R.id.userProfileFragment -> {
-//                    navController.popBackStack(R.id.userProfileFragment, false)
-//                    binding.bottomNavView.selectedItemId = R.id.userProfileFragment
+                    binding.bottomNavView.selectedItemId = R.id.userProfileFragment
                     binding.bottomNavView.visibility = View.VISIBLE
                 }
+
                 else -> binding.bottomNavView.visibility = View.GONE
             }
 
@@ -58,7 +59,9 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavView.setOnItemSelectedListener { menuItem ->
 
             //Rufe die Funktion auf die standardmäßig für die bottom navigation zuständig ist.
-            NavigationUI.onNavDestinationSelected(menuItem, navController)
+            if (navController.currentDestination?.id != menuItem.itemId) {
+                navController.navigate(menuItem.itemId)
+            }
             navController.popBackStack(menuItem.itemId, false)
             true
         }
