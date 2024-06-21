@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.data.models.UserData
 import com.google.firebase.auth.FirebaseAuth
@@ -12,6 +13,7 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.launch
 
 class FirebaseApartmentViewModel : ViewModel() {
     val TAG = "FirebaseApartmentViewModel"
@@ -129,5 +131,25 @@ class FirebaseApartmentViewModel : ViewModel() {
             .addOnFailureListener { exception ->
                 Log.e(TAG, "Error updating apartment picture: $exception")
             }
+    }
+
+    fun deleteApartment(apartmentId: String) {
+        viewModelScope.launch {
+            apartmentsCollectionReference.document(apartmentId).delete()
+                .addOnSuccessListener {
+                    // refresh the user's apartments list
+                    fetchUserApartments(auth.currentUser?.uid ?: return@addOnSuccessListener)
+                }
+        }
+    }
+
+    fun updateApartment(apartment: Apartment) {
+        viewModelScope.launch {
+            apartmentsCollectionReference.document(apartment.apartmentID).set(apartment)
+                .addOnSuccessListener {
+                    // refresh the user's apartments list
+                    fetchUserApartments(auth.currentUser?.uid ?: return@addOnSuccessListener)
+                }
+        }
     }
 }

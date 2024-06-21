@@ -46,7 +46,7 @@
         tools:layout="@layout/fragment_check_flights" />
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.example.homeswap_android.ui.personal.options.SettingsFragment"
+        android:name="com.example.homeswap_android.ui.personal.SettingsFragment"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" />
     <fragment
@@ -117,6 +117,24 @@
         <action
             android:id="@+id/action_userDetailsFragment_to_apartmentDetailsFragment"
             app:destination="@id/apartmentDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/myListingsFragment"
+        android:name="com.example.homeswap_android.ui.personal.options.MyListingsFragment"
+        android:label="fragment_my_listings"
+        tools:layout="@layout/fragment_my_listings" >
+        <action
+            android:id="@+id/action_myListingsFragment_to_editApartmentFragment"
+            app:destination="@id/editApartmentFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editApartmentFragment"
+        android:name="com.example.homeswap_android.ui.apartment.EditApartmentFragment"
+        android:label="fragment_edit_apartment"
+        tools:layout="@layout/fragment_edit_apartment" >
+        <argument
+            android:name="apartmentID"
+            app:argType="string" />
     </fragment>
 
 </navigation>

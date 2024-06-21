@@ -32,11 +32,7 @@ class HomeFragment : Fragment() {
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-// check if user is logged in before loading homepage
-        if (userViewModel.currentUser.value == null) {
-            findNavController().navigate(R.id.loginFragment)
-        }
-
+        // check if user is logged in before going to homepage
         userViewModel.currentUser.observe(viewLifecycleOwner) { user ->
             if (user == null) {
                 findNavController().navigate(R.id.loginFragment)
