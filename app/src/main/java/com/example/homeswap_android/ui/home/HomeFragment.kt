@@ -6,18 +6,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
+import com.example.homeswap_android.R
 import com.example.homeswap_android.adapter.ViewPagerAdapter
 import com.example.homeswap_android.databinding.FragmentHomeBinding
 import com.example.homeswap_android.ui.apartment.AddApartmentFragmentDirections
 import com.example.homeswap_android.ui.apartment.ApartmentDetailsFragmentArgs
+import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 import com.google.android.material.tabs.TabLayout
 
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
     private val args: HomeFragmentArgs by navArgs()
+    private val userViewModel: FirebaseUsersViewModel by activityViewModels()
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -25,11 +31,25 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
+
+// check if user is logged in before loading homepage
+        if (userViewModel.currentUser.value == null) {
+            findNavController().navigate(R.id.loginFragment)
+        }
+
+        userViewModel.currentUser.observe(viewLifecycleOwner) { user ->
+            if (user == null) {
+                findNavController().navigate(R.id.loginFragment)
+            }
+        }
+
         return binding.root
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
 
         val fragments = listOf(UsersListHomeFragment(), ApartmentsListHomeFragment())
         val adapter =

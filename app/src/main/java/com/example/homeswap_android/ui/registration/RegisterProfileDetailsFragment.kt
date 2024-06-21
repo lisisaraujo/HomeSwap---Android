@@ -61,5 +61,6 @@ class RegisterProfileDetailsFragment : Fragment() {
         binding.continueBTN.setOnClickListener {
             findNavController().navigate(R.id.homeFragment)
         }
+
     }
 }

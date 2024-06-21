@@ -1,9 +1,11 @@
 package com.example.homeswap_android.viewModels
+
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.data.models.UserData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -34,6 +36,14 @@ class FirebaseUsersViewModel : ViewModel() {
     val users: LiveData<List<UserData>>
         get() = _users
 
+    val _loginResult = MutableLiveData<Boolean>()
+    val loginResult: LiveData<Boolean>
+        get() = _loginResult
+
+    private val _registerResult = MutableLiveData<Boolean>()
+    val registerResult: LiveData<Boolean>
+        get() = _registerResult
+
 
     init {
         setupUserEnv()
@@ -62,10 +72,17 @@ class FirebaseUsersViewModel : ViewModel() {
 
 
     fun login(email: String, password: String) {
-        auth.signInWithEmailAndPassword(email, password).addOnSuccessListener {
-            setupUserEnv()
-        }
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnSuccessListener {
+                setupUserEnv()
+                _loginResult.value = true
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Login failed: ${exception.message}")
+                _loginResult.value = false
+            }
     }
+
 
     fun register(email: String, password: String, userData: UserData) {
         auth.createUserWithEmailAndPassword(email, password)
@@ -78,13 +95,16 @@ class FirebaseUsersViewModel : ViewModel() {
                 usersCollectionReference.document(user.uid).set(userData)
                     .addOnSuccessListener {
                         Log.d("FirebaseViewModel", "New user profile created successfully")
+                        _registerResult.value = true
                     }
                     .addOnFailureListener { exception ->
                         Log.e("FirebaseViewModel", "Error creating new user profile: $exception")
+                        _registerResult.value = false
                     }
             }
             .addOnFailureListener { exception ->
                 Log.e(TAG, "Error creating user: $exception")
+                _registerResult.value = false
             }
     }
 
@@ -156,5 +176,78 @@ class FirebaseUsersViewModel : ViewModel() {
         }
     }
 
+    fun deleteUser() {
+        val currentUser = auth.currentUser ?: return
+        val userId = currentUser.uid
+
+        // delete user's apartments and their pictures
+        firestore.collection("apartments").whereEqualTo("userID", userId).get()
+            .addOnSuccessListener { querySnapshot ->
+                for (document in querySnapshot.documents) {
+                    val apartment = document.toObject(Apartment::class.java)
+                    apartment?.let { deleteApartmentAndPictures(it) }
+                }
+
+                // delete user's profile picture
+                val profilePicRef = storage.reference.child("images/$userId/profilePic")
+                profilePicRef.delete().addOnFailureListener { exception ->
+                    Log.e(TAG, "Error deleting profile picture: $exception")
+                }
+
+                // delete user document from firestore
+                usersCollectionReference.document(userId).delete()
+                    .addOnSuccessListener {
+                        Log.d(TAG, "User document deleted successfully")
+
+                        // Step 4: Delete user authentication
+                        currentUser.delete()
+                            .addOnSuccessListener {
+                                Log.d(TAG, "User deleted successfully")
+                                // Perform any additional cleanup or UI updates
+                                signOut()
+                            }
+                            .addOnFailureListener { exception ->
+                                Log.e(TAG, "Error deleting user: $exception")
+                            }
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.e(TAG, "Error deleting user document: $exception")
+                    }
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Error fetching user's apartments: $exception")
+            }
+    }
+
+    private fun deleteApartmentAndPictures(apartment: Apartment) {
+        // delete apartment pictures from storage
+        apartment.pictures.forEach { pictureUrl ->
+            val pictureRef = storage.getReferenceFromUrl(pictureUrl)
+            pictureRef.delete().addOnFailureListener { exception ->
+                Log.e(TAG, "Error deleting apartment picture: $exception")
+            }
+        }
+
+        // delete apartment document from Firestore
+        firestore.collection("apartments").document(apartment.apartmentID).delete()
+            .addOnSuccessListener {
+                Log.d(TAG, "Apartment deleted successfully: ${apartment.apartmentID}")
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Error deleting apartment: $exception")
+            }
+    }
+
+    fun checkEmailVerificationStatus(onComplete: (Boolean) -> Unit) {
+        val user = auth.currentUser
+        user?.reload()?.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                onComplete(user.isEmailVerified)
+            } else {
+                Log.e("FirebaseUsersViewModel", "Failed to reload user", task.exception)
+                onComplete(false)
+            }
+        }
+    }
 
 }

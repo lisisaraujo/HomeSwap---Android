@@ -31,7 +31,7 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        viewModel.signOut()
+        viewModel.signOut()
 
         binding.loginBTN.setOnClickListener {
             val email = binding.emailET.text.toString()
@@ -43,28 +43,29 @@ class LoginFragment : Fragment() {
             } else {
                 binding.errorTextView.visibility = View.GONE
                 viewModel.login(email, password)
-            }
-            viewModel.currentUser.observe(viewLifecycleOwner) { user ->
-                if (user == null) {
-                    showToastInCenter("Invalid email or password. Please try again.")
-                } else {
-                    if (!user.isEmailVerified) {
-                        showResendEmailBTN()
-                        binding.resendVerificationEmailBTN.setOnClickListener {
-                            viewModel.sendEmailVerification(user)
-                            Toast.makeText(
-                                requireContext(),
-                                "Verification email sent",
-                                Toast.LENGTH_SHORT
-                            )
-                        }
+
+                viewModel.currentUser.observe(viewLifecycleOwner) { user ->
+                    if (user == null) {
+                        showToastInCenter("Invalid email or password. Please try again.")
                     } else {
-                        findNavController().navigate(R.id.homeFragment)
+                        if (!user.isEmailVerified) {
+                            showResendEmailBTN()
+                            binding.resendVerificationEmailBTN.setOnClickListener {
+                                viewModel.sendEmailVerification(user)
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Verification email sent",
+                                    Toast.LENGTH_SHORT
+                                )
+                            }
+                        } else {
+                            findNavController().navigate(R.id.homeFragment)
+                        }
                     }
                 }
             }
-        }
 
+        }
 
         binding.joinTextView.setOnClickListener {
             findNavController().navigate(R.id.registerFragment)

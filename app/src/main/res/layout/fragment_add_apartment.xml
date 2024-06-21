@@ -9,7 +9,7 @@
     tools:context=".ui.apartment.AddApartmentFragment">
 
     <ImageButton
-        android:id="@+id/imageButton"
+        android:id="@+id/addApartmentBackBTN"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="?colorContainer"

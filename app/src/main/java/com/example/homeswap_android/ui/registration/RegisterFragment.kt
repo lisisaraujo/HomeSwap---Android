@@ -27,21 +27,33 @@ class RegisterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.registerResult.observe(viewLifecycleOwner) { success ->
+            if (success) {
+                findNavController().navigate(R.id.registerProfileDetailsFragment)
+            } else {
+                Toast.makeText(requireContext(), "Registration failed. Email may already be in use.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
         binding.continueBTN.setOnClickListener {
             val name = binding.nameET.text.toString().trim()
             val email = binding.emailET.text.toString().trim()
             val password = binding.passwordET.text.toString().trim()
 
-            val newUserData = UserData(
-                name = name,
-                email = email,
-            )
-            viewModel.register(email, password, newUserData)
-            viewModel.login(email, password)
-            viewModel.currentUser.observe(viewLifecycleOwner){user ->
-                if(user != null) Toast.makeText(requireContext(), "Invalid or already existing email.", Toast.LENGTH_SHORT).show()
-                 else findNavController().navigate(R.id.registerProfileDetailsFragment)
-                }
+            if (name.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()) {
+                val newUserData = UserData(
+                    name = name,
+                    email = email,
+                )
+                viewModel.register(email, password, newUserData)
+                viewModel.login(email, password)
+            } else {
+                Toast.makeText(requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show()
             }
         }
+
+        binding.registerBackBTN.setOnClickListener {
+            findNavController().navigateUp()
+        }
     }
+}

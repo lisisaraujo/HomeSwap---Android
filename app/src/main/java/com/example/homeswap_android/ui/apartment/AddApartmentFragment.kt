@@ -94,5 +94,9 @@ class AddApartmentFragment : Fragment() {
                 }
             }
         }
+
+        binding.addApartmentBackBTN.setOnClickListener {
+            findNavController().navigateUp()
+        }
     }
 }
