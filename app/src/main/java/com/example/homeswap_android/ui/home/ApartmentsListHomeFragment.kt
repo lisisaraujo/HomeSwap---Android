@@ -49,7 +49,6 @@ class ApartmentsListHomeFragment : Fragment() {
         binding.apartmentListRV.adapter = apartmentAdapter
 
         apartmentsViewModel.apartments.observe(viewLifecycleOwner) { apartments ->
-            Log.d("Apartments", apartments.toString())
             apartmentAdapter.updateApartments(apartments)
         }
 

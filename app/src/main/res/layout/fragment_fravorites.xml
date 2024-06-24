@@ -15,6 +15,6 @@
         android:background="@color/cardview_light_background"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         tools:context=".ui.favorites.FavoritesFragment"
-        tools:listitem="@layout/favorite_apartment_list_item" />
+        tools:listitem="@layout/apartment_list_item" />
 
 </FrameLayout>

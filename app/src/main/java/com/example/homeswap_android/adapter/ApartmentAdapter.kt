@@ -42,7 +42,6 @@ class ApartmentAdapter(
         updateLikeButton(holder.binding.favoriteBTN, apartment.liked)
 
         holder.binding.favoriteBTN.setOnClickListener {
-            Log.d("LikeClicked", "Like button clicked for apartment ${apartment.apartmentID}")
             onLikeClickListener(apartment)
         }
     }
@@ -52,13 +51,12 @@ class ApartmentAdapter(
     }
 
     fun updateApartments(newApartments: List<Apartment>) {
-        Log.d("ApartmentAdapter", "Updating apartments, new size: ${newApartments.size}")
         apartments = newApartments
         notifyDataSetChanged()
     }
 
-    private fun updateLikeButton(button: ImageButton, isLiked: Boolean) {
-        if (isLiked) {
+    private fun updateLikeButton(button: ImageButton, liked: Boolean) {
+        if (liked) {
             button.setImageResource(R.drawable.baseline_favorite_24)
         } else {
             button.setImageResource(R.drawable.favorite_48px)

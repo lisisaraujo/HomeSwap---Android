@@ -75,6 +75,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/userProfileReviewsTV"
-        tools:listitem="@layout/my_apartments_list_item" />
+        tools:listitem="@layout/apartment_list_item" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

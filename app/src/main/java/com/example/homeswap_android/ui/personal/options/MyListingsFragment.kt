@@ -1,6 +1,7 @@
 package com.example.homeswap_android.ui.personal.options
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,7 @@ import androidx.navigation.fragment.navArgs
 import coil.load
 import com.example.homeswap_android.R
 import com.example.homeswap_android.adapter.EditApartmentAdapter
+import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.databinding.FragmentMyListingsBinding
 import com.example.homeswap_android.databinding.FragmentUserDetailsBinding
 import com.example.homeswap_android.ui.user.UserDetailsFragmentArgs
@@ -38,21 +40,28 @@ class MyListingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
+        val userID = userViewModel.currentUser.value?.uid
 
         editApartmentAdapter = EditApartmentAdapter(emptyList()) { apartment ->
             findNavController().navigate(
-                MyListingsFragmentDirections.actionMyListingsFragmentToEditApartmentFragment(apartment.apartmentID)
+                MyListingsFragmentDirections.actionMyListingsFragmentToEditApartmentFragment(
+                    apartment.apartmentID
+                )
             )
         }
         binding.myListingsRV.adapter = editApartmentAdapter
 
-        userViewModel.currentUser.observe(viewLifecycleOwner){user ->
+        userViewModel.currentUser.observe(viewLifecycleOwner) { user ->
             apartmentViewModel.fetchUserApartments(user!!.uid)
         }
 
         apartmentViewModel.userApartments.observe(viewLifecycleOwner) { apartments ->
-            editApartmentAdapter.updateApartments(apartments)
+
+        }
+
+        apartmentViewModel.fetchUserApartments(userID!!).addSnapshotListener { userApartments, _ ->
+            Log.d(TAG, userApartments.toString())
+            editApartmentAdapter.updateApartments(userApartments!!.toObjects(Apartment::class.java))
         }
 
         binding.myListingsBackBTN.setOnClickListener {

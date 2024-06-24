@@ -38,6 +38,7 @@ class FavoritesFragment : Fragment() {
 
         val onLikeClickListener: (Apartment) -> Unit = { apartment ->
             apartmentsViewModel.toggleLike(apartment)
+            apartmentsViewModel.loadLikedApartments()
         }
 
         apartmentAdapter = ApartmentAdapter(emptyList(), itemClickedCallback, onLikeClickListener)

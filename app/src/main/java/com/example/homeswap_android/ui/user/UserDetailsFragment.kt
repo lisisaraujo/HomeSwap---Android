@@ -63,9 +63,9 @@ class UserDetailsFragment : Fragment() {
         apartmentAdapter = ApartmentAdapter(emptyList(), itemClickedCallback, onLikeClickListener)
         binding.userApartmentsRV.adapter = apartmentAdapter
 
-        apartmentViewModel.userApartments.observe(viewLifecycleOwner) { userApartments ->
+        apartmentViewModel.fetchUserApartments(userID).addSnapshotListener{ userApartments, _ ->
             Log.d(TAG, userApartments.toString())
-            apartmentAdapter.updateApartments(userApartments)
+            apartmentAdapter.updateApartments(userApartments!!.toObjects(Apartment::class.java))
         }
 
         binding.backBTN.setOnClickListener {

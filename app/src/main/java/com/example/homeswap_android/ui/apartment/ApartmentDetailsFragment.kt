@@ -72,5 +72,13 @@ class ApartmentDetailsFragment : Fragment() {
         apartmentViewModel.currentApartment.observe(viewLifecycleOwner) {
             if (it == null) findNavController().navigate(R.id.loginFragment)
         }
+
+        binding.apartmentDetailsLikeBTN.setOnClickListener {
+           apartmentViewModel.currentApartment.observe(viewLifecycleOwner){currentApartment ->
+              apartmentViewModel.toggleLike(currentApartment)
+               if (currentApartment.liked) binding.apartmentDetailsLikeBTN.setImageResource(R.drawable.baseline_favorite_24)
+                   else binding.apartmentDetailsLikeBTN.setImageResource(R.drawable.favorite_48px)
+               }
+           }
+        }
     }
-}

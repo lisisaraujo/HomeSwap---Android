@@ -8,9 +8,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.homeswap_android.data.models.Apartment
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.launch
 
@@ -76,16 +78,8 @@ class FirebaseApartmentViewModel : ViewModel() {
             }
     }
 
-    fun fetchUserApartments(userID: String) {
-        apartmentsCollectionReference.whereEqualTo("userID", userID).get()
-            .addOnSuccessListener { querySnapshot ->
-                val apartmentsList = querySnapshot.toObjects(Apartment::class.java)
-                _userApartments.postValue(apartmentsList)
-            }
-            .addOnFailureListener { exception ->
-                Log.e(TAG, "Error fetching apartments: $exception")
-                _userApartments.postValue(emptyList())
-            }
+    fun fetchUserApartments(userID: String): Query {
+        return apartmentsCollectionReference.whereEqualTo("userID", userID)
     }
 
     fun addApartment(apartment: Apartment) {
@@ -153,7 +147,6 @@ class FirebaseApartmentViewModel : ViewModel() {
     fun toggleLike(apartment: Apartment) {
         apartment.liked = !apartment.liked
         updateApartment(apartment)
-        loadLikedApartments()
     }
 
     fun updateApartment(apartment: Apartment) {
@@ -161,7 +154,7 @@ class FirebaseApartmentViewModel : ViewModel() {
             apartmentsCollectionReference.document(apartment.apartmentID).set(apartment)
                 .addOnSuccessListener {
                     fetchApartments()
-                    auth.currentUser?.uid?.let { userId -> fetchUserApartments(userId) }
+//                    auth.currentUser?.uid?.let { userId -> fetchUserApartments(userId) }
                 }
                 .addOnFailureListener { e ->
                     Log.e(TAG, "Error updating apartment ${apartment.apartmentID}: $e")
@@ -172,8 +165,6 @@ class FirebaseApartmentViewModel : ViewModel() {
     fun loadLikedApartments() {
         apartmentsCollectionReference.whereEqualTo("liked", true).get()
             .addOnSuccessListener { querySnapshot ->
-                querySnapshot.documents.forEach { doc ->
-                }
                 val likedApartmentsList = querySnapshot.toObjects(Apartment::class.java)
                 _likedApartments.postValue(likedApartmentsList)
             }
