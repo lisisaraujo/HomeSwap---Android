@@ -10,7 +10,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import coil.load
 import com.example.homeswap_android.R
-import com.example.homeswap_android.adapter.ApartmentAdapter
+import com.example.homeswap_android.adapter.EditApartmentAdapter
 import com.example.homeswap_android.databinding.FragmentMyListingsBinding
 import com.example.homeswap_android.databinding.FragmentUserDetailsBinding
 import com.example.homeswap_android.ui.user.UserDetailsFragmentArgs
@@ -24,7 +24,7 @@ class MyListingsFragment : Fragment() {
     private val userViewModel: FirebaseUsersViewModel by activityViewModels()
     private val args: UserDetailsFragmentArgs by navArgs()
 
-    private lateinit var apartmentAdapter: ApartmentAdapter
+    private lateinit var editApartmentAdapter: EditApartmentAdapter
 
     val TAG = "MyListingsFragment"
     override fun onCreateView(
@@ -40,19 +40,19 @@ class MyListingsFragment : Fragment() {
 
 
 
-        apartmentAdapter = ApartmentAdapter(emptyList()) { apartment ->
+        editApartmentAdapter = EditApartmentAdapter(emptyList()) { apartment ->
             findNavController().navigate(
                 MyListingsFragmentDirections.actionMyListingsFragmentToEditApartmentFragment(apartment.apartmentID)
             )
         }
-        binding.apartmentsRecyclerView.adapter = apartmentAdapter
+        binding.myListingsRV.adapter = editApartmentAdapter
 
         userViewModel.currentUser.observe(viewLifecycleOwner){user ->
             apartmentViewModel.fetchUserApartments(user!!.uid)
         }
 
         apartmentViewModel.userApartments.observe(viewLifecycleOwner) { apartments ->
-            apartmentAdapter.updateApartments(apartments)
+            editApartmentAdapter.updateApartments(apartments)
         }
 
         binding.myListingsBackBTN.setOnClickListener {

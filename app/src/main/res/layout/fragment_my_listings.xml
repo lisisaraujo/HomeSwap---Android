@@ -16,7 +16,7 @@
         app:srcCompat="@drawable/baseline_arrow_back_ios_new_24" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/apartmentsRecyclerView"
+        android:id="@+id/myListingsRV"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_weight="1"

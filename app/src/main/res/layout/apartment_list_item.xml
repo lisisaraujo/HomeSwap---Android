@@ -44,7 +44,7 @@
             android:padding="10dp"/>
 
         <ImageButton
-            android:id="@+id/apartmentDetailsBackBTN"
+            android:id="@+id/favoriteBTN"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"

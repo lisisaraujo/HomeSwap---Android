@@ -6,9 +6,9 @@
         android:icon="@drawable/search_48px"
         android:title="explore" />
     <item
-        android:id="@+id/navigation_liked"
+        android:id="@+id/favoritesFragment"
         android:icon="@drawable/favorite_48px"
-        android:title="liked" />
+        android:title="favorites" />
     <item
         android:id="@+id/checkFlightsFragment"
         android:icon="@drawable/connecting_airports_48px"

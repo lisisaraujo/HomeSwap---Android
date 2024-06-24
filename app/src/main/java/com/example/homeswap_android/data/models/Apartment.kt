@@ -8,8 +8,9 @@ data class Apartment (
     val country: String = "",
     val city: String = "",
     val address: String = "",
-    val availableDates: String = "",
+    val startDate: String = "",
+    val endDate: String = "",
     val reviews: MutableList<ApartmentReview> = mutableListOf(),
     val pictures: MutableList<String> = mutableListOf(),
-    val isLiked: Boolean = false
+    var liked: Boolean = false
 )

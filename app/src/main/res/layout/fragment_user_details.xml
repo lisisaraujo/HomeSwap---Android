@@ -65,7 +65,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/apartmentsRecyclerView"
+        android:id="@+id/userApartmentsRV"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="32dp"
@@ -75,6 +75,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/userProfileReviewsTV"
-        tools:listitem="@layout/apartment_list_item" />
+        tools:listitem="@layout/my_apartments_list_item" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

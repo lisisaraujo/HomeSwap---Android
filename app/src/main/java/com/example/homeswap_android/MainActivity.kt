@@ -50,6 +50,11 @@ class MainActivity : AppCompatActivity() {
                     binding.bottomNavView.visibility = View.VISIBLE
                 }
 
+                R.id.favoritesFragment -> {
+                    binding.bottomNavView.selectedItemId = R.id.favoritesFragment
+                    binding.bottomNavView.visibility = View.VISIBLE
+                }
+
                 else -> binding.bottomNavView.visibility = View.GONE
             }
 

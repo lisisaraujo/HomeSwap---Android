@@ -136,5 +136,14 @@
             android:name="apartmentID"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/favoritesFragment"
+        android:name="com.example.homeswap_android.ui.favorites.FavoritesFragment"
+        android:label="fragment_fravorites"
+        tools:layout="@layout/fragment_fravorites" >
+        <action
+            android:id="@+id/action_favoritesFragment_to_apartmentDetailsFragment"
+            app:destination="@id/apartmentDetailsFragment" />
+    </fragment>
 
 </navigation>
