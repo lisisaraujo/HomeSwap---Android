@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -64,7 +65,11 @@ class EditApartmentFragment : Fragment() {
         }
 
         binding.changeImageFAB.setOnClickListener {
-            // Launch image picker intent
+            // launch image picker intent
+        }
+
+        binding.deleteApartmentBTN.setOnClickListener {
+           showDeleteApartmentConfirmationDialog(apartmentID)
         }
     }
 
@@ -104,5 +109,18 @@ class EditApartmentFragment : Fragment() {
             )
             apartmentViewModel.updateApartment(updatedApartment)
         }
+    }
+
+    private fun showDeleteApartmentConfirmationDialog(apartmentID: String) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Delete Apartment")
+            .setMessage("Are you sure you want to delete this apartment listing? This is a permanent action and all data related to this listing will be permanently deleted.")
+            .setPositiveButton("Delete") { _, _ ->
+                apartmentViewModel.deleteApartment(apartmentID)
+                findNavController().navigate(R.id.myListingsFragment)
+            }
+            .setNegativeButton("Cancel", null)
+            .setIcon(android.R.drawable.ic_dialog_alert)
+            .show()
     }
 }

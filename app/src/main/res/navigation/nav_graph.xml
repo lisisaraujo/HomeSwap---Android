@@ -126,6 +126,9 @@
         <action
             android:id="@+id/action_myListingsFragment_to_editApartmentFragment"
             app:destination="@id/editApartmentFragment" />
+        <action
+            android:id="@+id/action_myListingsFragment_to_apartmentDetailsFragment"
+            app:destination="@id/apartmentDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/editApartmentFragment"

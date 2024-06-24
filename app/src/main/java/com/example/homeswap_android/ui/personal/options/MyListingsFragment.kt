@@ -44,20 +44,12 @@ class MyListingsFragment : Fragment() {
 
         editApartmentAdapter = EditApartmentAdapter(emptyList()) { apartment ->
             findNavController().navigate(
-                MyListingsFragmentDirections.actionMyListingsFragmentToEditApartmentFragment(
+                MyListingsFragmentDirections.actionMyListingsFragmentToApartmentDetailsFragment(
                     apartment.apartmentID
                 )
             )
         }
         binding.myListingsRV.adapter = editApartmentAdapter
-
-        userViewModel.currentUser.observe(viewLifecycleOwner) { user ->
-            apartmentViewModel.fetchUserApartments(user!!.uid)
-        }
-
-        apartmentViewModel.userApartments.observe(viewLifecycleOwner) { apartments ->
-
-        }
 
         apartmentViewModel.fetchUserApartments(userID!!).addSnapshotListener { userApartments, _ ->
             Log.d(TAG, userApartments.toString())

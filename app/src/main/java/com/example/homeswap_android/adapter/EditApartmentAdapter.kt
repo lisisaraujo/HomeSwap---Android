@@ -3,11 +3,14 @@ package com.example.homeswap_android.adapter
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.homeswap_android.R
 import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.databinding.MyApartmentsListItemBinding
+import com.example.homeswap_android.ui.personal.options.MyListingsFragmentDirections
 
 class EditApartmentAdapter(
     private var apartments: List<Apartment>,
@@ -42,6 +45,14 @@ class EditApartmentAdapter(
         holder.binding.myApartmentsCV.setOnClickListener {
             Log.d("ClickedApartment", apartment.title)
             itemClickedCallback(apartment)
+        }
+
+        holder.binding.editButton.setOnClickListener {
+            it.findNavController().navigate(
+                MyListingsFragmentDirections.actionMyListingsFragmentToEditApartmentFragment(
+                    apartment.apartmentID
+                )
+            )
         }
     }
 
