@@ -78,7 +78,7 @@ class HomeFragment : Fragment() {
             binding.viewPager.setCurrentItem(0, false)
         }
 
-        binding.searchCV.setOnClickListener {
+        binding.homeFilterBTN.setOnClickListener {
             findNavController().navigate(R.id.searchFragment)
         }
     }
