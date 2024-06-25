@@ -41,6 +41,10 @@ class FirebaseApartmentViewModel : ViewModel() {
     val likedApartments: LiveData<List<Apartment>>
         get() = _likedApartments
 
+    private val _apartmentsByCity = MutableLiveData<List<Apartment>>()
+    val apartmentsByLocation: LiveData<List<Apartment>>
+        get() = _apartmentsByCity
+
 
     init {
         fetchApartments()
@@ -171,6 +175,18 @@ class FirebaseApartmentViewModel : ViewModel() {
             .addOnFailureListener { exception ->
                 Log.e(TAG, "Error fetching liked apartments: $exception")
                 _likedApartments.postValue(emptyList())
+            }
+    }
+
+    fun searchByCity(city: String){
+        apartmentsCollectionReference.whereEqualTo ("city", city).get()
+            .addOnSuccessListener { querySnapshot ->
+                val apartmentsByCityList = querySnapshot.toObjects(Apartment::class.java)
+                _apartmentsByCity.postValue(apartmentsByCityList)
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Error fetching liked apartments by city: $exception")
+                _apartmentsByCity.postValue(emptyList())
             }
     }
 }

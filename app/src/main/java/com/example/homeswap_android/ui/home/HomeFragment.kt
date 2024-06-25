@@ -77,6 +77,10 @@ class HomeFragment : Fragment() {
             binding.tabLayout.selectTab(binding.tabLayout.getTabAt(0))
             binding.viewPager.setCurrentItem(0, false)
         }
+
+        binding.searchCV.setOnClickListener {
+            findNavController().navigate(R.id.searchFragment)
+        }
     }
 
 

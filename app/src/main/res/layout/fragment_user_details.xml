@@ -67,14 +67,18 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/userApartmentsRV"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:layout_weight="1"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:scrollbars="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/userProfileReviewsTV"
-        tools:listitem="@layout/apartment_list_item" />
+        tools:listitem="@layout/apartment_list_item"
+        tools:itemCount="4" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

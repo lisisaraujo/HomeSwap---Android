@@ -148,5 +148,35 @@
             android:id="@+id/action_favoritesFragment_to_apartmentDetailsFragment"
             app:destination="@id/apartmentDetailsFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.example.homeswap_android.ui.search.SearchFragment"
+        android:label="fragment_search"
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_searchFragment_to_searchResultsFragment"
+            app:destination="@id/searchResultsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchResultsFragment"
+        android:name="com.example.homeswap_android.ui.search.SearchResultsFragment"
+        android:label="fragment_search_results"
+        tools:layout="@layout/fragment_search_results" >
+        <argument
+            android:name="location"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="startDate"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="endDate"
+            app:argType="string"
+            app:nullable="true" />
+        <action
+            android:id="@+id/action_searchResultsFragment_to_apartmentDetailsFragment"
+            app:destination="@id/apartmentDetailsFragment" />
+    </fragment>
 
 </navigation>

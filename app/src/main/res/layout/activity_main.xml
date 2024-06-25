@@ -11,13 +11,18 @@
         android:id="@+id/bottomNavView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:background="@drawable/bottom_nav_rounded"
+        android:elevation="8dp"
+        android:padding="8dp"
+        app:itemIconTint="@drawable/menu_item_tint_selector"
+        app:itemTextColor="@drawable/menu_item_tint_selector"
         app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/botton_navigation_menu"
-        app:itemTextColor="@drawable/menu_item_tint_selector"
-        app:itemIconTint="@drawable/menu_item_tint_selector"/>
+        app:menu="@menu/botton_navigation_menu" />
+
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/navHostFragment"
