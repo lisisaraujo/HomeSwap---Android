@@ -163,7 +163,6 @@ class FirebaseApartmentViewModel : ViewModel() {
             apartmentsCollectionReference.document(apartment.apartmentID).set(apartment)
                 .addOnSuccessListener {
                     fetchApartments()
-//                    auth.currentUser?.uid?.let { userId -> fetchUserApartments(userId) }
                 }
                 .addOnFailureListener { e ->
                     Log.e(TAG, "Error updating apartment ${apartment.apartmentID}: $e")
