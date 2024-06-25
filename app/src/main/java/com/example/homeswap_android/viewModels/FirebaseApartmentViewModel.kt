@@ -183,6 +183,9 @@ class FirebaseApartmentViewModel : ViewModel() {
             }
     }
 
+    fun clearSearch(){
+        _apartmentsBySearch.postValue(listOf())
+    }
 
     fun searchApartments(
         city: String? = null,
@@ -232,20 +235,26 @@ class FirebaseApartmentViewModel : ViewModel() {
             return apartments
         }
         return apartments.filter { apartment ->
-            selectedDateRange(apartment.startDate, apartment.endDate, startDate, endDate)
+            areDatesMatching(apartment.startDate, apartment.endDate, startDate, endDate)
         }
     }
 
-    private fun selectedDateRange(
+    private fun areDatesMatching(
         apartmentStart: String,
         apartmentEnd: String,
         searchStart: String,
         searchEnd: String
     ): Boolean {
         val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+
+        // check if any of the date strings are empty
+        if (apartmentStart.isBlank() || apartmentEnd.isBlank() || searchStart.isBlank() || searchEnd.isBlank()) {
+            return false
+        }
         return try {
             val dates = listOf(apartmentStart, apartmentEnd, searchStart, searchEnd)
-                .map { dateFormat.parse(it) ?: return false }
+                .map { dateFormat.parse(it) ?: throw ParseException("Invalid date format", 0) }
+
             !(dates[3].before(dates[0]) || dates[2].after(dates[1]))
         } catch (e: ParseException) {
             Log.e(TAG, "Error parsing date: ${e.message}")

@@ -50,8 +50,14 @@ class SearchResultsFragment : Fragment() {
 
         apartmentsViewModel.apartmentsBySearch.observe(viewLifecycleOwner) { apartmentsBySearch ->
             Log.d("apartmentsBySearch", apartmentsBySearch.toString())
-            apartmentAdapter.updateApartments(apartmentsBySearch)
+            if(!apartmentsBySearch.isNullOrEmpty()) {
+                apartmentAdapter.updateApartments(apartmentsBySearch)
+                apartmentsViewModel.clearSearch()
+            }
         }
 
+        binding.searchResultsBackBTN.setOnClickListener {
+            findNavController().navigateUp()
+        }
     }
 }

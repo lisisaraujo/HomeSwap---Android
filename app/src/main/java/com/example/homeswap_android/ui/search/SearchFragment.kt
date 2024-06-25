@@ -3,6 +3,7 @@ package com.example.homeswap_android.ui.search
 import android.icu.util.Calendar
 import android.icu.util.TimeZone
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,12 +32,24 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         binding.showDatePickerButton.setOnClickListener {
             showDateRangePicker()
         }
 
+        apartmentViewModel.apartmentsBySearch.observe(viewLifecycleOwner) { apartmentsBySearchList ->
+            Log.d("ApartmentsBySearch", apartmentsBySearchList.toString())
+            if (apartmentsBySearchList.isNotEmpty()) {
+                findNavController().navigate(R.id.searchResultsFragment)
+            }
+        }
+
         binding.searchButton.setOnClickListener {
             performSearch()
+        }
+
+        binding.searchApartmentBackBTN.setOnClickListener {
+            findNavController().navigateUp()
         }
     }
 
@@ -84,6 +97,6 @@ class SearchFragment : Fragment() {
             startDate = startDate,
             endDate = endDate
         )
-        findNavController().navigate(R.id.searchResultsFragment)
     }
+
 }

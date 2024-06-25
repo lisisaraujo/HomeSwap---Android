@@ -6,11 +6,6 @@
     app:startDestination="@id/homeFragment">
 
     <fragment
-        android:id="@+id/calendarFragment"
-        android:name="com.example.homeswap_android.ui.CalendarFragment"
-        android:label="fragment_calendar"
-        tools:layout="@layout/fragment_calendar" />
-    <fragment
         android:id="@+id/loginFragment"
         android:name="com.example.homeswap_android.ui.login.LoginFragment"
         android:label="fragment_login"
