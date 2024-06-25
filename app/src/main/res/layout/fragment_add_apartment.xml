@@ -134,42 +134,27 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/availableDatesInputLayout"
+
+    <TextView
+        android:id="@+id/selectedDateRange"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        app:boxBackgroundColor="?colorContainer"
-        app:boxCornerRadiusBottomEnd="50dp"
-        app:boxCornerRadiusBottomStart="50dp"
-        app:boxCornerRadiusTopEnd="50dp"
-        app:boxCornerRadiusTopStart="50dp"
-        app:boxStrokeColor="@color/accent"
-        app:boxStrokeWidth="2dp"
-        app:layout_constraintEnd_toEndOf="@+id/addressInputLayout"
-        app:layout_constraintStart_toStartOf="@+id/addressInputLayout"
-        app:layout_constraintTop_toBottomOf="@+id/addressInputLayout">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/availableDatesET"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Available Dates"
-            android:textColor="@color/text"
-            android:textColorHint="@color/btn_disabled" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <Button
-        android:id="@+id/uploadPicBTN"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="Upload Pictures"
+        android:text="Selected date range"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/availableDatesInputLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/addressInputLayout" />
 
+    <Button
+        android:id="@+id/selectDatesBTN"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Select Dates"
+        app:layout_constraintEnd_toEndOf="@+id/selectedDateRange"
+        app:layout_constraintStart_toStartOf="@+id/selectedDateRange"
+        app:layout_constraintTop_toBottomOf="@+id/selectedDateRange" />
 
 
     <Button
@@ -193,7 +178,7 @@
         app:layout_constraintBottom_toTopOf="@+id/submitApartmentBTN"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/uploadPicBTN"
+        app:layout_constraintTop_toBottomOf="@+id/selectDatesBTN"
         tools:src="@tools:sample/backgrounds/scenic" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

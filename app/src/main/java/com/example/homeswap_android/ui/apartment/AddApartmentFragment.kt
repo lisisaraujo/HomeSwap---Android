@@ -1,5 +1,7 @@
 package com.example.homeswap_android.ui.apartment
 
+import android.icu.util.Calendar
+import android.icu.util.TimeZone
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -15,6 +17,9 @@ import com.example.homeswap_android.R
 import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.databinding.FragmentAddApartmentBinding
 import com.example.homeswap_android.viewModels.FirebaseApartmentViewModel
+import com.google.android.material.datepicker.MaterialDatePicker
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 val TAG = "AddApartmentFragment"
 
@@ -22,8 +27,9 @@ class AddApartmentFragment : Fragment() {
 
     private lateinit var binding: FragmentAddApartmentBinding
     private val viewModel: FirebaseApartmentViewModel by activityViewModels()
-
     private var selectedImageUri: Uri? = null
+    private var selectedStartDate: String = ""
+    private var selectedEndDate: String = ""
 
     private val getContent =
         registerForActivityResult(
@@ -51,12 +57,19 @@ class AddApartmentFragment : Fragment() {
             val country = binding.countryET.text.toString()
             val city = binding.cityET.text.toString()
             val address = binding.addressET.text.toString()
+            val startDate = selectedStartDate
+            val endDate = selectedEndDate
 
             val newApartment = Apartment(
                 title = title,
                 country = country,
+                countryLower = country.lowercase(),
                 city = city,
+                cityLower = city.lowercase(),
                 address = address,
+                startDate = startDate,
+                endDate = endDate
+
             )
 
             viewModel.addApartment(newApartment)
@@ -73,6 +86,10 @@ class AddApartmentFragment : Fragment() {
 
         binding.apartmentImageIV.setOnClickListener {
             getContent.launch("image/*")
+        }
+
+        binding.selectDatesBTN.setOnClickListener {
+                showDateRangePicker()
         }
 
         viewModel.currentApartment.observe(viewLifecycleOwner) { apartment ->
@@ -99,4 +116,26 @@ class AddApartmentFragment : Fragment() {
             findNavController().navigateUp()
         }
     }
+
+    private fun showDateRangePicker() {
+        val picker = MaterialDatePicker.Builder.dateRangePicker()
+            .setTheme(R.style.ThemeMaterialCalendar)
+            .setTitleText("Select Dates")
+            .build()
+
+        picker.show(parentFragmentManager, "dateRangePicker")
+        picker.addOnPositiveButtonClickListener { selection ->
+            selectedStartDate = convertTimeToDate(selection.first)
+            selectedEndDate = convertTimeToDate(selection.second)
+            binding.selectedDateRange.text = "$selectedStartDate - $selectedEndDate"
+        }
+    }
+
+    private fun convertTimeToDate(time: Long): String {
+        val utc = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+        utc.timeInMillis = time
+        val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        return format.format(utc.time)
+    }
 }
+

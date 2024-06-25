@@ -48,8 +48,9 @@ class SearchResultsFragment : Fragment() {
         )
         binding.searchResultRV.adapter = apartmentAdapter
 
-        apartmentsViewModel.apartmentsByLocation.observe(viewLifecycleOwner) { apartmentsByLocation ->
-            apartmentAdapter.updateApartments(apartmentsByLocation)
+        apartmentsViewModel.apartmentsBySearch.observe(viewLifecycleOwner) { apartmentsBySearch ->
+            Log.d("apartmentsBySearch", apartmentsBySearch.toString())
+            apartmentAdapter.updateApartments(apartmentsBySearch)
         }
 
     }

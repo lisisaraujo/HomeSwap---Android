@@ -8,13 +8,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.homeswap_android.data.models.Apartment
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class FirebaseApartmentViewModel : ViewModel() {
     val TAG = "FirebaseApartmentViewModel"
@@ -41,9 +46,9 @@ class FirebaseApartmentViewModel : ViewModel() {
     val likedApartments: LiveData<List<Apartment>>
         get() = _likedApartments
 
-    private val _apartmentsByCity = MutableLiveData<List<Apartment>>()
-    val apartmentsByLocation: LiveData<List<Apartment>>
-        get() = _apartmentsByCity
+    private val _apartmentsBySearch = MutableLiveData<List<Apartment>>()
+    val apartmentsBySearch: LiveData<List<Apartment>>
+        get() = _apartmentsBySearch
 
 
     init {
@@ -178,15 +183,73 @@ class FirebaseApartmentViewModel : ViewModel() {
             }
     }
 
-    fun searchByCity(city: String){
-        apartmentsCollectionReference.whereEqualTo ("city", city).get()
-            .addOnSuccessListener { querySnapshot ->
-                val apartmentsByCityList = querySnapshot.toObjects(Apartment::class.java)
-                _apartmentsByCity.postValue(apartmentsByCityList)
+
+    fun searchApartments(
+        city: String? = null,
+        country: String? = null,
+        startDate: String? = null,
+        endDate: String? = null
+    ) {
+        viewModelScope.launch {
+            val locationFilteredApartments = filterByLocation(city, country)
+            val dateFilteredApartments =
+                filterByDate(locationFilteredApartments, startDate, endDate)
+            _apartmentsBySearch.postValue(dateFilteredApartments)
+        }
+    }
+
+    private suspend fun filterByLocation(city: String?, country: String?): List<Apartment> =
+        withContext(Dispatchers.IO) {
+            if (city.isNullOrBlank() && country.isNullOrBlank()) {
+                return@withContext apartments.value ?: emptyList()
             }
-            .addOnFailureListener { exception ->
-                Log.e(TAG, "Error fetching liked apartments by city: $exception")
-                _apartmentsByCity.postValue(emptyList())
+
+            var query: Query = apartmentsCollectionReference
+
+            if (!city.isNullOrBlank()) {
+                query = query.whereEqualTo("cityLower", city.lowercase())
             }
+
+            if (!country.isNullOrBlank()) {
+                query = query.whereEqualTo("countryLower", country.lowercase())
+            }
+
+            try {
+                val querySnapshot = query.get().await()
+                return@withContext querySnapshot.toObjects(Apartment::class.java)
+            } catch (e: Exception) {
+                Log.e(TAG, "Error fetching apartments by location: ${e.message}")
+                return@withContext emptyList()
+            }
+        }
+
+    private fun filterByDate(
+        apartments: List<Apartment>,
+        startDate: String?,
+        endDate: String?
+    ): List<Apartment> {
+        if (startDate.isNullOrEmpty() || endDate.isNullOrEmpty()) {
+            return apartments
+        }
+        return apartments.filter { apartment ->
+            selectedDateRange(apartment.startDate, apartment.endDate, startDate, endDate)
+        }
+    }
+
+    private fun selectedDateRange(
+        apartmentStart: String,
+        apartmentEnd: String,
+        searchStart: String,
+        searchEnd: String
+    ): Boolean {
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        return try {
+            val dates = listOf(apartmentStart, apartmentEnd, searchStart, searchEnd)
+                .map { dateFormat.parse(it) ?: return false }
+            !(dates[3].before(dates[0]) || dates[2].after(dates[1]))
+        } catch (e: ParseException) {
+            Log.e(TAG, "Error parsing date: ${e.message}")
+            false
+        }
     }
 }
