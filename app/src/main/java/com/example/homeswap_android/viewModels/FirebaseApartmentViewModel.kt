@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.homeswap_android.data.models.Apartment
+import com.example.homeswap_android.data.models.UserData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
@@ -27,7 +28,6 @@ class FirebaseApartmentViewModel : ViewModel() {
     private val auth = FirebaseAuth.getInstance()
     private val firestore = FirebaseFirestore.getInstance()
     private val storage = FirebaseStorage.getInstance()
-
     val apartmentsCollectionReference = firestore.collection("apartments")
     var apartmentDataDocumentReference: DocumentReference? = null
 
@@ -38,9 +38,6 @@ class FirebaseApartmentViewModel : ViewModel() {
     private val _currentApartment = MutableLiveData<Apartment>()
     val currentApartment: LiveData<Apartment>
         get() = _currentApartment
-    private val _userApartments = MutableLiveData<List<Apartment>>()
-    val userApartments: LiveData<List<Apartment>>
-        get() = _userApartments
 
     private val _likedApartments = MutableLiveData<List<Apartment>>()
     val likedApartments: LiveData<List<Apartment>>
@@ -52,12 +49,11 @@ class FirebaseApartmentViewModel : ViewModel() {
 
 
     init {
-        fetchApartments()
+        getApartments()
         loadLikedApartments()
     }
 
-
-    fun fetchApartments() {
+    fun getApartments() {
         apartmentsCollectionReference.get()
             .addOnSuccessListener { querySnapshot ->
                 val apartmentsList = querySnapshot.toObjects(Apartment::class.java)
@@ -72,7 +68,7 @@ class FirebaseApartmentViewModel : ViewModel() {
             }
     }
 
-    fun fetchApartment(apartmentID: String) {
+    fun getApartment(apartmentID: String) {
         apartmentsCollectionReference.document(apartmentID).get()
             .addOnSuccessListener { documentSnapshot ->
                 if (documentSnapshot.exists()) {
@@ -87,26 +83,26 @@ class FirebaseApartmentViewModel : ViewModel() {
             }
     }
 
-    fun fetchUserApartments(userID: String): Query {
+    fun getUserApartments(userID: String): Query {
         return apartmentsCollectionReference.whereEqualTo("userID", userID)
     }
 
     fun addApartment(apartment: Apartment) {
         val currentUser = auth.currentUser ?: return
-
         val newApartment = apartment.copy(userID = currentUser.uid)
 
         apartmentsCollectionReference.add(newApartment)
             .addOnSuccessListener { documentReference ->
                 Log.d(TAG, "Apartment added with ID: ${documentReference.id}")
-                _currentApartment.postValue(newApartment.copy(apartmentID = documentReference.id))
+                val updatedApartment = newApartment.copy(apartmentID = documentReference.id)
                 documentReference.update("apartmentID", documentReference.id)
+                _currentApartment.postValue(updatedApartment)
             }
             .addOnFailureListener { exception ->
                 Log.e(TAG, "Error adding apartment: $exception")
             }
-        fetchApartments()
     }
+
 
     fun uploadApartmentImage(uri: Uri, apartmentId: String) {
         val user = auth.currentUser
@@ -132,7 +128,7 @@ class FirebaseApartmentViewModel : ViewModel() {
         }
     }
 
-    fun updateApartmentPicture(apartmentId: String, imageUrl: String) {
+    private fun updateApartmentPicture(apartmentId: String, imageUrl: String) {
         apartmentsCollectionReference.document(apartmentId)
             .update("pictures", FieldValue.arrayUnion(imageUrl))
             .addOnSuccessListener {
@@ -148,7 +144,7 @@ class FirebaseApartmentViewModel : ViewModel() {
             apartmentsCollectionReference.document(apartmentId).delete()
                 .addOnSuccessListener {
                     // refresh the user's apartments list
-                    fetchUserApartments(auth.currentUser?.uid ?: return@addOnSuccessListener)
+                    getUserApartments(auth.currentUser?.uid ?: return@addOnSuccessListener)
                 }
         }
     }
@@ -162,11 +158,49 @@ class FirebaseApartmentViewModel : ViewModel() {
         viewModelScope.launch {
             apartmentsCollectionReference.document(apartment.apartmentID).set(apartment)
                 .addOnSuccessListener {
-                    fetchApartments()
+                    getApartments()
                 }
                 .addOnFailureListener { e ->
                     Log.e(TAG, "Error updating apartment ${apartment.apartmentID}: $e")
                 }
+        }
+    }
+
+
+    fun saveAdditionalDetails(
+        rooms: Int,
+        maxGuests: Int,
+        typeOfHome: String,
+        petsAllowed: Boolean,
+        homeOffice: Boolean,
+        hasWifi: Boolean
+    ) {
+        val currentApt = currentApartment.value
+        Log.d("ApartmentViewModel", "Current Apartment before update: $currentApt")
+
+        val updatedApartment = currentApt?.copy(
+            rooms = rooms,
+            maxGuests = maxGuests,
+            typeOfHome = typeOfHome,
+            petsAllowed = petsAllowed,
+            homeOffice = homeOffice,
+            hasWifi = hasWifi
+        )
+
+        Log.d("ApartmentViewModel", "Updated Apartment: $updatedApartment")
+
+        if (updatedApartment != null) {
+            viewModelScope.launch {
+                try {
+                    updateApartment(updatedApartment)
+                    _currentApartment.postValue(updatedApartment!!)
+                    Log.d(TAG, "Apartment updated successfully")
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error updating apartment: ${e.message}")
+                }
+            }
+        } else {
+            Log.e(TAG, "Current apartment is null, can't update")
         }
     }
 

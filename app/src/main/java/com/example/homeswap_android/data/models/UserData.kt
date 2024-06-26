@@ -7,6 +7,6 @@ data class UserData (
    val name: String = "",
    val email: String = "",
    val profilePic: String = "",
-   val reviews: List<UserReviewData> = listOf(),
-   val apartment: Apartment = Apartment()
+   val reviews: MutableList<UserReviewData> = mutableListOf(),
+   var swaps: Int = 0
 )

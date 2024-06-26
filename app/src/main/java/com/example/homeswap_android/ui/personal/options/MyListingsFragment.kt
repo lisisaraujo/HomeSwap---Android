@@ -9,14 +9,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import coil.load
 import com.example.homeswap_android.R
 import com.example.homeswap_android.adapter.EditApartmentAdapter
 import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.databinding.FragmentMyListingsBinding
-import com.example.homeswap_android.databinding.FragmentUserDetailsBinding
 import com.example.homeswap_android.ui.user.UserDetailsFragmentArgs
-import com.example.homeswap_android.ui.user.UserDetailsFragmentDirections
 import com.example.homeswap_android.viewModels.FirebaseApartmentViewModel
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 
@@ -51,7 +48,7 @@ class MyListingsFragment : Fragment() {
         }
         binding.myListingsRV.adapter = editApartmentAdapter
 
-        apartmentViewModel.fetchUserApartments(userID!!).addSnapshotListener { userApartments, _ ->
+        apartmentViewModel.getUserApartments(userID!!).addSnapshotListener { userApartments, _ ->
             Log.d(TAG, userApartments.toString())
             editApartmentAdapter.updateApartments(userApartments!!.toObjects(Apartment::class.java))
         }

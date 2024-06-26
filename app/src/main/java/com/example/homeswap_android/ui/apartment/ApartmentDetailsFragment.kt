@@ -1,7 +1,6 @@
 package com.example.homeswap_android.ui.apartment
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,13 +10,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import coil.load
 import com.example.homeswap_android.R
-import com.example.homeswap_android.data.models.Apartment
-import com.example.homeswap_android.data.models.UserData
 import com.example.homeswap_android.databinding.FragmentApartmentDetailsBinding
-import com.example.homeswap_android.ui.home.HomeFragmentDirections
 import com.example.homeswap_android.viewModels.FirebaseApartmentViewModel
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
-import com.google.firebase.firestore.toObject
 
 
 class ApartmentDetailsFragment : Fragment() {
@@ -42,9 +37,21 @@ class ApartmentDetailsFragment : Fragment() {
 
         val apartmentID = args.apartmentID
 
-        apartmentViewModel.fetchApartment(apartmentID)
+        apartmentViewModel.getApartment(apartmentID)
 
         apartmentViewModel.currentApartment.observe(viewLifecycleOwner) { apartment ->
+
+            with(binding) {
+                typeOfHomeTV.text = "Type of Home: ${apartment.typeOfHome}"
+                roomsTV.text = "Number of Rooms: ${apartment.rooms}"
+                maxGuestsTV.text = "Max Guests: ${apartment.maxGuests}"
+                petsAllowedTV.text = "Pets Allowed: ${if (apartment.petsAllowed) "Yes" else "No"}"
+                homeOfficeTV.text = "Home Office: ${if (apartment.homeOffice) "Yes" else "No"}"
+                hasWifiTV.text = "Has Wifi: ${if (apartment.hasWifi) "Yes" else "No"}"
+                ratingTV.text = "Rating: ${apartment.rating}"
+                availabilityTV.text = "Available: ${apartment.startDate} to ${apartment.endDate}"
+            }
+
             if (apartment != null) {
                 binding.apartmentTitleTV.text = apartment.title
                 binding.apartmentImageIV.load(apartment.pictures.firstOrNull())

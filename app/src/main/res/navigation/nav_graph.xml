@@ -46,13 +46,9 @@
         tools:layout="@layout/fragment_settings" />
     <fragment
         android:id="@+id/addApartmentFragment"
-        android:name="com.example.homeswap_android.ui.apartment.AddApartmentFragment"
+        android:name="com.example.homeswap_android.ui.apartment.AddApartmentBasicDetailsFragment"
         android:label="fragment_add_apartment"
-        tools:layout="@layout/fragment_add_apartment" >
-        <action
-            android:id="@+id/action_addApartmentFragment_to_homeFragment"
-            app:destination="@id/homeFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_add_apartment" />
     <fragment
         android:id="@+id/apartmentDetailsFragment"
         android:name="com.example.homeswap_android.ui.apartment.ApartmentDetailsFragment"
@@ -172,6 +168,15 @@
         <action
             android:id="@+id/action_searchResultsFragment_to_apartmentDetailsFragment"
             app:destination="@id/apartmentDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addApartmentAdditionalDetailsFragment"
+        android:name="com.example.homeswap_android.ui.apartment.AddApartmentAdditionalDetailsFragment"
+        android:label="AddApartmentAdditionalDetailsFragment"
+        tools:layout="@layout/fragment_add_apartment_additional_details">
+        <action
+            android:id="@+id/action_addApartmentAdditionalDetailsFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
     </fragment>
 
 </navigation>

@@ -10,9 +10,16 @@ data class Apartment (
     val city: String = "",
     val cityLower: String = "",
     val address: String = "",
-    val startDate: String = "",
-    val endDate: String = "",
-    val reviews: MutableList<ApartmentReview> = mutableListOf(),
-    val pictures: MutableList<String> = mutableListOf(),
-    var liked: Boolean = false
+    var startDate: String = "",
+    var endDate: String = "",
+    var reviews: MutableList<ApartmentReview> = mutableListOf(),
+    var pictures: MutableList<String> = mutableListOf(),
+    var liked: Boolean = false,
+    var petsAllowed: Boolean = false,
+    var rooms: Int = 0,
+    var maxGuests: Int = 0,
+    var typeOfHome: String = "",
+    var homeOffice: Boolean = false,
+    var rating: Double = 0.0,
+    var hasWifi: Boolean = false
 )

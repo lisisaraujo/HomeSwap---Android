@@ -23,7 +23,7 @@ import java.util.Locale
 
 val TAG = "AddApartmentFragment"
 
-class AddApartmentFragment : Fragment() {
+class AddApartmentBasicDetailsFragment : Fragment() {
 
     private lateinit var binding: FragmentAddApartmentBinding
     private val viewModel: FirebaseApartmentViewModel by activityViewModels()
@@ -73,15 +73,6 @@ class AddApartmentFragment : Fragment() {
             )
 
             viewModel.addApartment(newApartment)
-            viewModel.currentApartment.observe(viewLifecycleOwner) { apartment ->
-                if (apartment != null) {
-                    selectedImageUri?.let { uri ->
-                        viewModel.uploadApartmentImage(uri, apartment.apartmentID)
-                    }
-
-                    findNavController().navigate(AddApartmentFragmentDirections.actionAddApartmentFragmentToHomeFragment(true))
-                }
-            }
         }
 
         binding.apartmentImageIV.setOnClickListener {
@@ -90,10 +81,6 @@ class AddApartmentFragment : Fragment() {
 
         binding.selectDatesBTN.setOnClickListener {
                 showDateRangePicker()
-        }
-
-        viewModel.currentApartment.observe(viewLifecycleOwner) { apartment ->
-            Log.d(TAG, apartment.title)
         }
 
         viewModel.apartmentDataDocumentReference?.addSnapshotListener { value, error ->
@@ -109,6 +96,17 @@ class AddApartmentFragment : Fragment() {
                         binding.apartmentImageIV.setImageResource(R.drawable.ic_launcher_foreground)
                     }
                 }
+            }
+        }
+
+        viewModel.currentApartment.observe(viewLifecycleOwner) { apartment ->
+            if (apartment != null) {
+                Log.d("Apartment", apartment.title)
+                selectedImageUri?.let { uri ->
+                    viewModel.uploadApartmentImage(uri, apartment.apartmentID)
+                }
+
+                findNavController().navigate(R.id.addApartmentAdditionalDetailsFragment)
             }
         }
 

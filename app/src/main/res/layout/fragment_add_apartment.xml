@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/cardview_light_background"
     android:padding="16dp"
-    tools:context=".ui.apartment.AddApartmentFragment">
+    tools:context=".ui.apartment.AddApartmentBasicDetailsFragment">
 
     <ImageButton
         android:id="@+id/addApartmentBackBTN"
@@ -133,7 +133,6 @@
             android:textColorHint="@color/btn_disabled" />
 
     </com.google.android.material.textfield.TextInputLayout>
-
 
     <TextView
         android:id="@+id/selectedDateRange"

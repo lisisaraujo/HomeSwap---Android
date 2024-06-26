@@ -40,7 +40,7 @@ class UserDetailsFragment : Fragment() {
         val userID = args.userID!!
 
         userViewModel.fetchUserData(userID)
-        apartmentViewModel.fetchUserApartments(userID)
+        apartmentViewModel.getUserApartments(userID)
 
         userViewModel.currentUserData.observe(viewLifecycleOwner) { user ->
             if (user != null) {
@@ -63,7 +63,7 @@ class UserDetailsFragment : Fragment() {
         apartmentAdapter = ApartmentAdapter(emptyList(), itemClickedCallback, onLikeClickListener)
         binding.userApartmentsRV.adapter = apartmentAdapter
 
-        apartmentViewModel.fetchUserApartments(userID).addSnapshotListener{ userApartments, _ ->
+        apartmentViewModel.getUserApartments(userID).addSnapshotListener{ userApartments, _ ->
             Log.d(TAG, userApartments.toString())
             apartmentAdapter.updateApartments(userApartments!!.toObjects(Apartment::class.java))
         }

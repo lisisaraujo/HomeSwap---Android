@@ -1,7 +1,6 @@
 package com.example.homeswap_android.ui.apartment
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,13 +12,9 @@ import androidx.navigation.fragment.navArgs
 import coil.load
 import com.example.homeswap_android.R
 import com.example.homeswap_android.data.models.Apartment
-import com.example.homeswap_android.data.models.UserData
-import com.example.homeswap_android.databinding.FragmentApartmentDetailsBinding
 import com.example.homeswap_android.databinding.FragmentEditApartmentBinding
-import com.example.homeswap_android.ui.home.HomeFragmentDirections
 import com.example.homeswap_android.viewModels.FirebaseApartmentViewModel
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
-import com.google.firebase.firestore.toObject
 
 
 class EditApartmentFragment : Fragment() {
@@ -43,7 +38,7 @@ class EditApartmentFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val apartmentID = args.apartmentID
-        apartmentViewModel.fetchApartment(apartmentID)
+        apartmentViewModel.getApartment(apartmentID)
 
         apartmentViewModel.currentApartment.observe(viewLifecycleOwner) { apartment ->
             if (apartment != null) {

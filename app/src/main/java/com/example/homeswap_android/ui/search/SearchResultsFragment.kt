@@ -29,7 +29,7 @@ class SearchResultsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        apartmentsViewModel.fetchApartments()
+        apartmentsViewModel.getApartments()
 
         val itemClickedCallback: (Apartment) -> Unit = { apartment ->
             Log.d("ItemCallbackApartment", apartment.apartmentID)

@@ -35,18 +35,17 @@ class MainActivity : AppCompatActivity() {
             when (navDestination.id) {
                 //Entfernt alle Destinations vom Stack bis zum ersten Destination mit der angegebenen id
                 R.id.homeFragment -> {
-                    binding.bottomNavView.selectedItemId = R.id.homeFragment
-
+                    navController.popBackStack(R.id.homeFragment, false)
                     binding.bottomNavView.visibility = View.VISIBLE
                 }
 
                 R.id.checkFlightsFragment -> {
-                    binding.bottomNavView.selectedItemId = R.id.checkFlightsFragment
+                    navController.popBackStack(R.id.checkFlightsFragment, false)
                     binding.bottomNavView.visibility = View.VISIBLE
                 }
 
                 R.id.userProfileFragment -> {
-                    binding.bottomNavView.selectedItemId = R.id.userProfileFragment
+                    navController.popBackStack(R.id.userProfileFragment, false)
                     binding.bottomNavView.visibility = View.VISIBLE
                 }
 
@@ -106,8 +105,8 @@ class MainActivity : AppCompatActivity() {
         val backStackList = navController.currentBackStack.value
         val backStackString = backStackList.map {
 
-            //it.destination.label
-            //it.destination.displayName.split('/').last()
+            it.destination.label
+            it.destination.displayName.split('/').last()
             it.destination.displayName.substringAfterLast('/')
 
         }
