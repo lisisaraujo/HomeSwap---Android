@@ -1,6 +1,7 @@
 package com.example.homeswap_android.ui.personal
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -37,12 +38,15 @@ class SettingsFragment : Fragment() {
         binding.addApartmentBTN.setOnClickListener {
             userViewModel.checkEmailVerificationStatus { isVerified ->
                 if (isVerified) {
-                    findNavController().navigate(R.id.addApartmentFragment)
+                    Log.d("SettingsFragment", "Navigating to addApartmentBasicDetailsFragment")
+                    findNavController().navigate(R.id.addApartmentBasicDetailsFragment)
                 } else {
+                    Log.d("SettingsFragment", "Showing email verification dialog")
                     showEmailVerificationDialog()
                 }
             }
         }
+
         binding.deleteUserBTN.setOnClickListener {
             showDeleteAccountConfirmationDialog()
         }
@@ -70,7 +74,7 @@ class SettingsFragment : Fragment() {
             .setNeutralButton("I've verified my email") { _, _ ->
                 userViewModel.checkEmailVerificationStatus { isVerified ->
                     if (isVerified) {
-                        findNavController().navigate(R.id.addApartmentFragment)
+                        findNavController().navigate(R.id.addApartmentBasicDetailsFragment)
                     } else {
                         Toast.makeText(requireContext(), "Email not verified yet. Please try again later.", Toast.LENGTH_SHORT).show()
                     }

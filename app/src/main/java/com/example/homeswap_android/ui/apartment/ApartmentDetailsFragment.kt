@@ -1,5 +1,6 @@
 package com.example.homeswap_android.ui.apartment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -32,6 +33,7 @@ class ApartmentDetailsFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -42,12 +44,12 @@ class ApartmentDetailsFragment : Fragment() {
         apartmentViewModel.currentApartment.observe(viewLifecycleOwner) { apartment ->
 
             with(binding) {
-                typeOfHomeTV.text = "Type of Home: ${apartment.typeOfHome}"
-                roomsTV.text = "Number of Rooms: ${apartment.rooms}"
-                maxGuestsTV.text = "Max Guests: ${apartment.maxGuests}"
-                petsAllowedTV.text = "Pets Allowed: ${if (apartment.petsAllowed) "Yes" else "No"}"
-                homeOfficeTV.text = "Home Office: ${if (apartment.homeOffice) "Yes" else "No"}"
-                hasWifiTV.text = "Has Wifi: ${if (apartment.hasWifi) "Yes" else "No"}"
+                typeOfHomeTV.text = (if(apartment.typeOfHome.isNotBlank()) apartment.typeOfHome else "-").toString()
+                roomsTV.text = "Rooms: ${apartment.rooms}"
+                maxGuestsTV.text = "Guests: ${apartment.maxGuests}"
+                petsAllowedTV.text = if (apartment.petsAllowed) "Pets Allowed" else "No Pets Allowed"
+                homeOfficeTV.text = if (apartment.homeOffice) "Home Office" else "No Home Office"
+                hasWifiTV.text = if (apartment.hasWifi) "Wifi" else "No Wifi"
                 ratingTV.text = "Rating: ${apartment.rating}"
                 availabilityTV.text = "Available: ${apartment.startDate} to ${apartment.endDate}"
             }
@@ -87,5 +89,9 @@ class ApartmentDetailsFragment : Fragment() {
                    else binding.apartmentDetailsLikeBTN.setImageResource(R.drawable.favorite_48px)
                }
            }
+
+        binding.apartmentImageIV.setOnClickListener {
+            findNavController().navigate(ApartmentDetailsFragmentDirections.actionApartmentDetailsFragmentToApartmentPicturesFragment(apartmentID))
+        }
         }
     }

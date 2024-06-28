@@ -86,5 +86,8 @@ dependencies {
 
     implementation ("com.squareup.okhttp3:logging-interceptor:4.9.0")
 
+    implementation ("com.google.firebase:firebase-appcheck-playintegrity:17.0.1")
+
+
 
 }

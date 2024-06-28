@@ -45,10 +45,10 @@
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" />
     <fragment
-        android:id="@+id/addApartmentFragment"
+        android:id="@+id/addApartmentBasicDetailsFragment"
         android:name="com.example.homeswap_android.ui.apartment.AddApartmentBasicDetailsFragment"
-        android:label="fragment_add_apartment"
-        tools:layout="@layout/fragment_add_apartment" />
+        android:label="fragment_add_apartment_basic_details"
+        tools:layout="@layout/fragment_add_apartment_basic_details" />
     <fragment
         android:id="@+id/apartmentDetailsFragment"
         android:name="com.example.homeswap_android.ui.apartment.ApartmentDetailsFragment"
@@ -63,6 +63,9 @@
         <action
             android:id="@+id/action_apartmentDetailsFragment_to_userDetailsFragment"
             app:destination="@id/userDetailsFragment" />
+        <action
+            android:id="@+id/action_apartmentDetailsFragment_to_apartmentPicturesFragment"
+            app:destination="@id/apartmentPicturesFragment" />
     </fragment>
     <fragment
         android:id="@+id/apartmentsListHomeFragment"
@@ -177,6 +180,16 @@
         <action
             android:id="@+id/action_addApartmentAdditionalDetailsFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/apartmentPicturesFragment"
+        android:name="com.example.homeswap_android.ui.apartment.ApartmentPicturesFragment"
+        android:label="fragment_apartment_pictures"
+        tools:layout="@layout/fragment_apartment_pictures" >
+        <argument
+            android:name="apartmentID"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
 
 </navigation>

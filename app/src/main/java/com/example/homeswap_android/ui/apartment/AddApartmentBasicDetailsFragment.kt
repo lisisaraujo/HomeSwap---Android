@@ -15,7 +15,7 @@ import androidx.navigation.fragment.findNavController
 import coil.load
 import com.example.homeswap_android.R
 import com.example.homeswap_android.data.models.Apartment
-import com.example.homeswap_android.databinding.FragmentAddApartmentBinding
+import com.example.homeswap_android.databinding.FragmentAddApartmentBasicDetailsBinding
 import com.example.homeswap_android.viewModels.FirebaseApartmentViewModel
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.text.SimpleDateFormat
@@ -25,7 +25,7 @@ val TAG = "AddApartmentFragment"
 
 class AddApartmentBasicDetailsFragment : Fragment() {
 
-    private lateinit var binding: FragmentAddApartmentBinding
+    private lateinit var binding: FragmentAddApartmentBasicDetailsBinding
     private val viewModel: FirebaseApartmentViewModel by activityViewModels()
     private var selectedImageUri: Uri? = null
     private var selectedStartDate: String = ""
@@ -45,7 +45,7 @@ class AddApartmentBasicDetailsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentAddApartmentBinding.inflate(inflater, container, false)
+        binding = FragmentAddApartmentBasicDetailsBinding.inflate(inflater, container, false)
         return binding.root
     }
 

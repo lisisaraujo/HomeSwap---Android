@@ -8,12 +8,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.data.models.UserData
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -21,6 +23,8 @@ import kotlinx.coroutines.withContext
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Locale
+import com.google.firebase.storage.component1
+import com.google.firebase.storage.component2
 
 class FirebaseApartmentViewModel : ViewModel() {
     val TAG = "FirebaseApartmentViewModel"
@@ -87,6 +91,42 @@ class FirebaseApartmentViewModel : ViewModel() {
         return apartmentsCollectionReference.whereEqualTo("userID", userID)
     }
 
+
+    fun getApartmentPictures(
+        apartmentID: String,
+        userID: String,
+
+        ): LiveData<List<String>> {
+
+        val onComplete = MutableLiveData<List<String>>(mutableListOf())
+
+        val apartmentPicturesRef = storage.reference.child("images/$userID/apartments/$apartmentID")
+
+        apartmentPicturesRef.listAll()
+            .addOnSuccessListener { (items, prefixes) ->
+                Log.d("ListResult", items.size.toString())
+                val imageUrls = mutableListOf<String>()
+                items.forEach { item ->
+                    item.downloadUrl.addOnSuccessListener { uri ->
+                        imageUrls.add(uri.toString())
+                        Log.d("ImageURL", uri.toString())
+                        onComplete.postValue(imageUrls)
+                    }
+                        .addOnFailureListener { exception ->
+                            Log.e(
+                                "FirebaseApartmentViewModel",
+                                "Error getting download URLs: $exception"
+                            )
+
+                        }
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e("FirebaseApartmentViewModel", "Error listing images: $exception")
+            }
+        return onComplete
+    }
+
     fun addApartment(apartment: Apartment) {
         val currentUser = auth.currentUser ?: return
         val newApartment = apartment.copy(userID = currentUser.uid)
@@ -104,10 +144,11 @@ class FirebaseApartmentViewModel : ViewModel() {
     }
 
 
-    fun uploadApartmentImage(uri: Uri, apartmentId: String) {
+    fun uploadApartmentImage(uri: Uri, apartmentID: String) {
         val user = auth.currentUser
         if (user != null) {
-            val imageRef = storage.reference.child("images/${user.uid}/apartments/$apartmentId")
+            val imageRef =
+                storage.reference.child("images/${user.uid}/apartments/$apartmentID/image")
             val uploadTask = imageRef.putFile(uri)
 
             uploadTask.addOnCompleteListener { task ->
@@ -115,7 +156,9 @@ class FirebaseApartmentViewModel : ViewModel() {
                     imageRef.downloadUrl.addOnSuccessListener {
                         val imageUrl = it.toString()
                         Log.d("ApartmentPicUrl", imageUrl)
-                        updateApartmentPicture(apartmentId, imageUrl)
+                        updateApartmentPicture(apartmentID, imageUrl)
+                        _currentApartment.value?.pictures?.add(imageUrl)
+                        Log.d("ApartmentPictures", currentApartment.value?.pictures.toString())
                     }.addOnFailureListener { exception ->
                         Log.e(TAG, "Error getting download URL: $exception")
                     }
@@ -128,8 +171,8 @@ class FirebaseApartmentViewModel : ViewModel() {
         }
     }
 
-    private fun updateApartmentPicture(apartmentId: String, imageUrl: String) {
-        apartmentsCollectionReference.document(apartmentId)
+    private fun updateApartmentPicture(apartmentID: String, imageUrl: String) {
+        apartmentsCollectionReference.document(apartmentID)
             .update("pictures", FieldValue.arrayUnion(imageUrl))
             .addOnSuccessListener {
                 Log.d(TAG, "Apartment picture updated with URL: $imageUrl")
@@ -139,9 +182,10 @@ class FirebaseApartmentViewModel : ViewModel() {
             }
     }
 
-    fun deleteApartment(apartmentId: String) {
+
+    fun deleteApartment(apartmentID: String) {
         viewModelScope.launch {
-            apartmentsCollectionReference.document(apartmentId).delete()
+            apartmentsCollectionReference.document(apartmentID).delete()
                 .addOnSuccessListener {
                     // refresh the user's apartments list
                     getUserApartments(auth.currentUser?.uid ?: return@addOnSuccessListener)
@@ -216,7 +260,7 @@ class FirebaseApartmentViewModel : ViewModel() {
             }
     }
 
-    fun clearSearch(){
+    fun clearSearch() {
         _apartmentsBySearch.postValue(listOf())
     }
 
