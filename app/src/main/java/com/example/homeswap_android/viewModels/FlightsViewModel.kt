@@ -5,8 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.homeswap_android.data.Repository
 import com.example.homeswap_android.data.models.apiData.FlightOffer
+import com.example.homeswap_android.data.repositories.FlightsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -14,7 +14,7 @@ val TAG = "FlightsViewModel"
 
 class FlightsViewModel : ViewModel() {
 
-    private val repository = Repository()
+    private val repository = FlightsRepository()
 
     private val _flights = MutableLiveData<List<FlightOffer>>()
     val flights: LiveData<List<FlightOffer>>

@@ -11,11 +11,11 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.databinding.FragmentSearchResultsBinding
-import com.example.homeswap_android.viewModels.FirebaseApartmentViewModel
+import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
 
 class SearchResultsFragment : Fragment() {
     private lateinit var binding: FragmentSearchResultsBinding
-    private val apartmentsViewModel: FirebaseApartmentViewModel by activityViewModels()
+    private val apartmentsViewModel: FirebaseApartmentsViewModel by activityViewModels()
     private lateinit var apartmentAdapter: ApartmentAdapter
 
     override fun onCreateView(

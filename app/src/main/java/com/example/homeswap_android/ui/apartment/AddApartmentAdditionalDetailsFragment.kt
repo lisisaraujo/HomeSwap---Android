@@ -8,14 +8,15 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.example.homeswap_android.R
 import com.example.homeswap_android.databinding.FragmentAddApartmentAdditionalDetailsBinding
-import com.example.homeswap_android.viewModels.FirebaseApartmentViewModel
+import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 
 class AddApartmentAdditionalDetailsFragment : Fragment() {
 
     private lateinit var binding: FragmentAddApartmentAdditionalDetailsBinding
-    private val viewModel: FirebaseApartmentViewModel by activityViewModels()
+    private val viewModel: FirebaseApartmentsViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -31,17 +32,17 @@ class AddApartmentAdditionalDetailsFragment : Fragment() {
         setupSliders()
         setupSubmitButton()
 
-        viewModel.currentApartment.observe(viewLifecycleOwner) { apartment ->
-            Log.d("AddApartmentFragment", "Current Apartment updated: $apartment")
-
-            if (apartment != null && apartment.rooms != 0) {
-                findNavController().navigate(
-                    AddApartmentAdditionalDetailsFragmentDirections.actionAddApartmentAdditionalDetailsFragmentToHomeFragment(
-                        true
-                    )
-                )
-            }
-        }
+//        viewModel.currentApartment.observe(viewLifecycleOwner) { apartment ->
+//            Log.d("AddApartmentFragment", "Current Apartment updated: $apartment")
+//
+//            if (apartment != null && apartment.rooms != 0) {
+//                findNavController().navigate(
+//                    AddApartmentAdditionalDetailsFragmentDirections.actionAddApartmentAdditionalDetailsFragmentToHomeFragment(
+//                        true
+//                    )
+//                )
+//            }
+//        }
     }
 
     private fun setupTypeOfHomeDropdown() {
@@ -78,7 +79,9 @@ class AddApartmentAdditionalDetailsFragment : Fragment() {
                 homeOffice,
                 hasWifi
             )
+            findNavController().navigate(R.id.homeFragment)
         }
+
     }
 
 }

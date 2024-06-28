@@ -16,34 +16,30 @@ import coil.load
 import com.example.homeswap_android.R
 import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.databinding.FragmentAddApartmentBasicDetailsBinding
-import com.example.homeswap_android.viewModels.FirebaseApartmentViewModel
+import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-val TAG = "AddApartmentFragment"
-
 class AddApartmentBasicDetailsFragment : Fragment() {
 
     private lateinit var binding: FragmentAddApartmentBasicDetailsBinding
-    private val viewModel: FirebaseApartmentViewModel by activityViewModels()
+    private val viewModel: FirebaseApartmentsViewModel by activityViewModels()
     private var selectedImageUri: Uri? = null
     private var selectedStartDate: String = ""
     private var selectedEndDate: String = ""
 
-    private val getContent =
-        registerForActivityResult(
-            ActivityResultContracts.GetContent()
-        ) { uri: Uri? ->
-            uri?.let {
-                selectedImageUri = it
-                binding.apartmentImageIV.load(it)
-            }
+    private val getContent = registerForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            selectedImageUri = it
+            binding.apartmentImageIV.load(it)
         }
+    }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentAddApartmentBasicDetailsBinding.inflate(inflater, container, false)
         return binding.root
@@ -69,34 +65,9 @@ class AddApartmentBasicDetailsFragment : Fragment() {
                 address = address,
                 startDate = startDate,
                 endDate = endDate
-
             )
 
             viewModel.addApartment(newApartment)
-        }
-
-        binding.apartmentImageIV.setOnClickListener {
-            getContent.launch("image/*")
-        }
-
-        binding.selectDatesBTN.setOnClickListener {
-                showDateRangePicker()
-        }
-
-        viewModel.apartmentDataDocumentReference?.addSnapshotListener { value, error ->
-            if (value != null) {
-                Log.d("Apartment", value.data.toString())
-                value.toObject(Apartment::class.java)?.let { apartment ->
-                    if (apartment.pictures.isNotEmpty()) {
-                        binding.apartmentImageIV.load(apartment.pictures.first()) {
-                            crossfade(true)
-                            placeholder(R.drawable.ic_launcher_foreground)
-                        }
-                    } else {
-                        binding.apartmentImageIV.setImageResource(R.drawable.ic_launcher_foreground)
-                    }
-                }
-            }
         }
 
         viewModel.currentApartment.observe(viewLifecycleOwner) { apartment ->
@@ -105,9 +76,16 @@ class AddApartmentBasicDetailsFragment : Fragment() {
                 selectedImageUri?.let { uri ->
                     viewModel.uploadApartmentImage(uri, apartment.apartmentID)
                 }
-
                 findNavController().navigate(R.id.addApartmentAdditionalDetailsFragment)
             }
+        }
+
+        binding.apartmentImageIV.setOnClickListener {
+            getContent.launch("image/*")
+        }
+
+        binding.selectDatesBTN.setOnClickListener {
+            showDateRangePicker()
         }
 
         binding.addApartmentBackBTN.setOnClickListener {
@@ -116,10 +94,9 @@ class AddApartmentBasicDetailsFragment : Fragment() {
     }
 
     private fun showDateRangePicker() {
-        val picker = MaterialDatePicker.Builder.dateRangePicker()
-            .setTheme(R.style.ThemeMaterialCalendar)
-            .setTitleText("Select Dates")
-            .build()
+        val picker =
+            MaterialDatePicker.Builder.dateRangePicker().setTheme(R.style.ThemeMaterialCalendar)
+                .setTitleText("Select Dates").build()
 
         picker.show(parentFragmentManager, "dateRangePicker")
         picker.addOnPositiveButtonClickListener { selection ->
@@ -136,4 +113,3 @@ class AddApartmentBasicDetailsFragment : Fragment() {
         return format.format(utc.time)
     }
 }
-

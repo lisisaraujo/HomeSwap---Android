@@ -2,7 +2,6 @@ package com.example.homeswap_android.ui.apartment
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.provider.ContactsContract.Contacts.Photo
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,9 +10,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
 import com.example.homeswap_android.adapter.PhotoAdapter
-import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.databinding.FragmentApartmentPicturesBinding
-import com.example.homeswap_android.viewModels.FirebaseApartmentViewModel
+import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 
 
@@ -22,7 +20,7 @@ class ApartmentPicturesFragment : Fragment() {
     val TAG = "ApartmentDetailsFragment"
 
     private lateinit var binding: FragmentApartmentPicturesBinding
-    private val apartmentViewModel: FirebaseApartmentViewModel by activityViewModels()
+    private val apartmentViewModel: FirebaseApartmentsViewModel by activityViewModels()
     private val userViewModel: FirebaseUsersViewModel by activityViewModels()
     private val args: ApartmentDetailsFragmentArgs by navArgs()
     private lateinit var photoAdapter: PhotoAdapter

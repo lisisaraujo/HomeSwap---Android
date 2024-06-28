@@ -1,15 +1,14 @@
-package com.example.homeswap_android.data
+package com.example.homeswap_android.data.repositories
 
+import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.homeswap_android.data.models.apiData.FlightOffer
-import com.example.homeswap_android.data.models.apiData.FlightResponse
 import com.example.homeswap_android.data.remote.FlightsApi
 
-const val TAG = "Repository"
-
-class Repository {
+class FlightsRepository {
+    // FLIGHTS API
 
     private val _flights = MutableLiveData<List<FlightOffer>>()
     val flights: LiveData<List<FlightOffer>>
@@ -33,4 +32,5 @@ class Repository {
             throw e
         }
     }
+
 }

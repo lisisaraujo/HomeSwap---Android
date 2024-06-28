@@ -12,14 +12,14 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.homeswap_android.R
 import com.example.homeswap_android.databinding.FragmentSearchBinding
-import com.example.homeswap_android.viewModels.FirebaseApartmentViewModel
+import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class SearchFragment : Fragment() {
     private lateinit var binding: FragmentSearchBinding
-    private val apartmentViewModel: FirebaseApartmentViewModel by activityViewModels()
+    private val apartmentViewModel: FirebaseApartmentsViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

@@ -12,48 +12,74 @@ import com.example.homeswap_android.adapter.UserAdapter
 import com.example.homeswap_android.data.models.UserData
 import com.example.homeswap_android.databinding.FragmentUsersListHomeBinding
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.toObject
 
 class UsersListHomeFragment : Fragment() {
-    private lateinit var binding: FragmentUsersListHomeBinding
+
+    private val TAG = "UsersListHomeFragment"
+
+    private var _binding: FragmentUsersListHomeBinding? = null
+    private val binding get() = _binding!!
+
     private val userViewModel: FirebaseUsersViewModel by activityViewModels()
     private lateinit var userAdapter: UserAdapter
+    private var userListener: ListenerRegistration? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentUsersListHomeBinding.inflate(inflater, container, false)
+        _binding = FragmentUsersListHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val itemClickedCallback: (UserData) -> Unit = {userData ->
-            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToUserDetailsFragment(userData.userID))
-
+        val itemClickedCallback: (UserData) -> Unit = { userData ->
+            findNavController().navigate(
+                HomeFragmentDirections.actionHomeFragmentToUserDetailsFragment(userData.userID)
+            )
         }
 
         userAdapter = UserAdapter(emptyList(), itemClickedCallback)
         binding.rvUsersList.adapter = userAdapter
 
         userViewModel.fetchUsers()
-        val users = userViewModel.users.value
-        Log.d("Users", users.toString())
 
         userViewModel.users.observe(viewLifecycleOwner) { users ->
             userAdapter.updateUsers(users)
         }
 
-        userViewModel.userDataDocumentReference?.addSnapshotListener { value, error ->
-            val profile = value?.toObject<UserData>()
-            if (profile != null) {
-                userViewModel.setProfile(profile)
+        userViewModel.currentUser.observe(viewLifecycleOwner) { user ->
+            user?.let { currentUser ->
+                val userID = currentUser.uid
+                val userRef = userViewModel.getApartmentDocumentReference(userID)
+
+                userListener = userRef.addSnapshotListener { value, error ->
+                    if (error != null) {
+                        Log.e(TAG, "Listen failed.", error)
+                        return@addSnapshotListener
+                    }
+
+                    if (value != null && value.exists()) {
+                        val profile = value.toObject<UserData>()
+                        profile?.let {
+                            userViewModel.setProfile(it)
+                        }
+                    } else {
+                        Log.d(TAG, "Current data: null")
+                    }
+                }
             }
         }
-
-
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        userListener?.remove()
+        _binding = null
+    }
 }

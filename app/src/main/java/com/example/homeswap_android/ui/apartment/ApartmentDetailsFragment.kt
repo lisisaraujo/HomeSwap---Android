@@ -12,7 +12,7 @@ import androidx.navigation.fragment.navArgs
 import coil.load
 import com.example.homeswap_android.R
 import com.example.homeswap_android.databinding.FragmentApartmentDetailsBinding
-import com.example.homeswap_android.viewModels.FirebaseApartmentViewModel
+import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 
 
@@ -21,7 +21,7 @@ class ApartmentDetailsFragment : Fragment() {
     val TAG = "ApartmentDetailsFragment"
 
     private lateinit var binding: FragmentApartmentDetailsBinding
-    private val apartmentViewModel: FirebaseApartmentViewModel by activityViewModels()
+    private val apartmentViewModel: FirebaseApartmentsViewModel by activityViewModels()
     private val userViewModel: FirebaseUsersViewModel by activityViewModels()
     private val args: ApartmentDetailsFragmentArgs by navArgs()
 

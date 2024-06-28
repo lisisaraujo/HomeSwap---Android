@@ -15,17 +15,21 @@ import com.example.homeswap_android.R
 import com.example.homeswap_android.data.models.UserData
 import com.example.homeswap_android.databinding.FragmentRegisterProfileDetailsBinding
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
+import com.google.firebase.firestore.ListenerRegistration
 
 class RegisterProfileDetailsFragment : Fragment() {
     private lateinit var binding: FragmentRegisterProfileDetailsBinding
-    private val viewModel: FirebaseUsersViewModel by activityViewModels()
+    private val usersViewModel: FirebaseUsersViewModel by activityViewModels()
+    private var userListener: ListenerRegistration? = null
+    val userID = usersViewModel.currentUser.value!!.uid
+    val userRef = usersViewModel.getApartmentDocumentReference(userID)
 
     private val getContent =
         registerForActivityResult(
             ActivityResultContracts.GetContent()
         ) { uri: Uri? ->
             uri?.let {
-                viewModel.uploadImage(it)
+                usersViewModel.uploadImage(it)
             }
         }
 
@@ -44,7 +48,7 @@ class RegisterProfileDetailsFragment : Fragment() {
             getContent.launch("image/*")
         }
 
-        viewModel.userDataDocumentReference?.addSnapshotListener { value, error ->
+        userListener = userRef.addSnapshotListener { value, error ->
             if (value != null) {
                 Log.d("UserProfile", value.data.toString())
                 value.toObject(UserData::class.java)?.let { profile ->

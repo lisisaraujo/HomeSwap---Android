@@ -13,7 +13,7 @@ import coil.load
 import com.example.homeswap_android.R
 import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.databinding.FragmentEditApartmentBinding
-import com.example.homeswap_android.viewModels.FirebaseApartmentViewModel
+import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 
 
@@ -22,7 +22,7 @@ class EditApartmentFragment : Fragment() {
     val TAG = "ApartmentDetailsFragment"
 
     private lateinit var binding: FragmentEditApartmentBinding
-    private val apartmentViewModel: FirebaseApartmentViewModel by activityViewModels()
+    private val apartmentViewModel: FirebaseApartmentsViewModel by activityViewModels()
     private val userViewModel: FirebaseUsersViewModel by activityViewModels()
     private val args: ApartmentDetailsFragmentArgs by navArgs()
 
