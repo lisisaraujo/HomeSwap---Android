@@ -30,7 +30,7 @@ class FirebaseUsersViewModel : ViewModel() {
     }
 
 
-    fun getApartmentDocumentReference(userID: String): DocumentReference {
+    fun getUserDocumentReference(userID: String): DocumentReference {
         return userRepository.getUserDocumentReference(userID)
     }
 

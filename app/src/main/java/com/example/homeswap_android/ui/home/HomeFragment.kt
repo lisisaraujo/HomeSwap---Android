@@ -12,6 +12,7 @@ import androidx.navigation.fragment.navArgs
 import com.example.homeswap_android.R
 import com.example.homeswap_android.adapter.ViewPagerAdapter
 import com.example.homeswap_android.databinding.FragmentHomeBinding
+import com.example.homeswap_android.viewModels.AddApartmentViewModel
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 import com.google.android.material.tabs.TabLayout
 
@@ -20,7 +21,6 @@ class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private val args: HomeFragmentArgs by navArgs()
     private val userViewModel: FirebaseUsersViewModel by activityViewModels()
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,7 +42,6 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
 
         val fragments = listOf(ApartmentsListHomeFragment(), UsersListHomeFragment())
         val adapter =

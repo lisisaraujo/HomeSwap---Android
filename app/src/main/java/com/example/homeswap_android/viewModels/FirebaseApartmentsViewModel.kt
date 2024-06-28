@@ -25,7 +25,8 @@ class FirebaseApartmentsViewModel : ViewModel() {
     private val firestore = FirebaseFirestore.getInstance()
     private val storage = FirebaseStorage.getInstance()
     private val apartmentsCollectionReference = firestore.collection("apartments")
-    private val apartmentRepository = ApartmentRepository(auth, storage, apartmentsCollectionReference)
+    private val apartmentRepository =
+        ApartmentRepository(auth, storage, apartmentsCollectionReference)
 
     val apartments = apartmentRepository.apartments
     val currentApartment = apartmentRepository.currentApartment
@@ -58,15 +59,15 @@ class FirebaseApartmentsViewModel : ViewModel() {
         return apartmentRepository.getApartmentPictures(apartmentID, userID)
     }
 
-    fun addApartment(apartment: Apartment) {
-        apartmentRepository.addApartment(apartment) { updatedApartment ->
-            if (updatedApartment != null) {
-                getApartments()
-            } else {
-                Log.e(TAG, "Error adding apartment")
-            }
-        }
-    }
+//    fun addApartment(apartment: Apartment) {
+//        apartmentRepository.addApartment(apartment) { updatedApartment ->
+//            if (updatedApartment != null) {
+//                getApartments()
+//            } else {
+//                Log.e(TAG, "Error adding apartment")
+//            }
+//        }
+//    }
 
     fun uploadApartmentImage(uri: Uri, apartmentID: String) {
         apartmentRepository.uploadApartmentImage(uri, apartmentID) { imageUrl ->
@@ -78,7 +79,7 @@ class FirebaseApartmentsViewModel : ViewModel() {
         }
     }
 
-    fun updateApartmentPicture(apartmentID: String, imageUrl: String) {
+    private fun updateApartmentPicture(apartmentID: String, imageUrl: String) {
         apartmentRepository.updateApartmentPicture(apartmentID, imageUrl) { success ->
             if (!success) {
                 Log.e(TAG, "Error updating apartment picture")
@@ -106,54 +107,26 @@ class FirebaseApartmentsViewModel : ViewModel() {
     }
 
     fun updateApartment(apartment: Apartment) {
-        apartmentRepository.updateApartment(apartment) { success ->
-            if (success) {
-                getApartments()
-            } else {
-                Log.e(TAG, "Error updating apartment")
-            }
+        apartment.let {
+            apartmentRepository.updateApartment(apartment)
         }
     }
 
-    fun saveAdditionalDetails(
-        rooms: Int,
-        maxGuests: Int,
-        typeOfHome: String,
-        petsAllowed: Boolean,
-        homeOffice: Boolean,
-        hasWifi: Boolean
-    ) {
-        val currentApt = currentApartment.value ?: run {
-            Log.e(TAG, "Current apartment is null, can't update")
-            return
-        }
 
-        val updatedApartment = currentApt.copy(
-            rooms = rooms,
-            maxGuests = maxGuests,
-            typeOfHome = typeOfHome,
-            petsAllowed = petsAllowed,
-            homeOffice = homeOffice,
-            hasWifi = hasWifi
-        )
+fun loadLikedApartments() {
+    apartmentRepository.getLikedApartments()
+}
 
-        updateApartment(updatedApartment)
-    }
+fun clearSearch() {
+    apartmentRepository.clearSearch()
+}
 
-    fun loadLikedApartments() {
-        apartmentRepository.getLikedApartments()
-    }
-
-    fun clearSearch() {
-        apartmentRepository.clearSearch()
-    }
-
-    fun searchApartments(
-        city: String? = null,
-        country: String? = null,
-        startDate: String? = null,
-        endDate: String? = null
-    ) {
-        apartmentRepository.searchApartments(city, country, startDate, endDate)
-    }
+fun searchApartments(
+    city: String? = null,
+    country: String? = null,
+    startDate: String? = null,
+    endDate: String? = null
+) {
+    apartmentRepository.searchApartments(city, country, startDate, endDate)
+}
 }

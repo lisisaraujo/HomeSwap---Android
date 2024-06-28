@@ -44,6 +44,13 @@ class UserRepository(
 
     private var userDataDocumentReference = MutableLiveData<DocumentReference?>()
 
+    init {
+        usersCollectionReference.addSnapshotListener{value, error->
+            _users.postValue(value!!.toObjects(UserData::class.java))
+
+        }
+    }
+
     fun getUserDocumentReference(userID: String): DocumentReference {
         return usersCollectionReference.document(userID)
     }

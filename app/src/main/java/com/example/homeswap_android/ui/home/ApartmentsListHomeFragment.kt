@@ -18,6 +18,8 @@ class ApartmentsListHomeFragment : Fragment() {
     private val apartmentsViewModel: FirebaseApartmentsViewModel by activityViewModels()
     private lateinit var apartmentAdapter: ApartmentAdapter
 
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

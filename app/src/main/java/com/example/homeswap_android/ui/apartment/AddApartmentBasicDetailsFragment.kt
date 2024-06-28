@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.ui.graphics.vector.addPathNodes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -16,6 +17,7 @@ import coil.load
 import com.example.homeswap_android.R
 import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.databinding.FragmentAddApartmentBasicDetailsBinding
+import com.example.homeswap_android.viewModels.AddApartmentViewModel
 import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.text.SimpleDateFormat
@@ -24,7 +26,8 @@ import java.util.Locale
 class AddApartmentBasicDetailsFragment : Fragment() {
 
     private lateinit var binding: FragmentAddApartmentBasicDetailsBinding
-    private val viewModel: FirebaseApartmentsViewModel by activityViewModels()
+    private val addApartmentViewModel: AddApartmentViewModel by activityViewModels()
+    private val apartmentsViewModel: FirebaseApartmentsViewModel by activityViewModels()
     private var selectedImageUri: Uri? = null
     private var selectedStartDate: String = ""
     private var selectedEndDate: String = ""
@@ -67,18 +70,19 @@ class AddApartmentBasicDetailsFragment : Fragment() {
                 endDate = endDate
             )
 
-            viewModel.addApartment(newApartment)
+            addApartmentViewModel.addApartment(newApartment)
         }
 
-        viewModel.currentApartment.observe(viewLifecycleOwner) { apartment ->
-            if (apartment != null) {
-                Log.d("Apartment", apartment.title)
+        addApartmentViewModel.newAddedApartment.observe(viewLifecycleOwner) { apartment ->
+            apartment?.let {
+                Log.d("NewApartment", apartment.apartmentID)
                 selectedImageUri?.let { uri ->
-                    viewModel.uploadApartmentImage(uri, apartment.apartmentID)
+                        apartmentsViewModel.uploadApartmentImage(uri, it.apartmentID)
                 }
                 findNavController().navigate(R.id.addApartmentAdditionalDetailsFragment)
             }
         }
+
 
         binding.apartmentImageIV.setOnClickListener {
             getContent.launch("image/*")

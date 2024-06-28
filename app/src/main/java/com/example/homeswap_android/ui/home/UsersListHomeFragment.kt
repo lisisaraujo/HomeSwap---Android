@@ -25,7 +25,6 @@ class UsersListHomeFragment : Fragment() {
 
     private val userViewModel: FirebaseUsersViewModel by activityViewModels()
     private lateinit var userAdapter: UserAdapter
-    private var userListener: ListenerRegistration? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,9 +55,9 @@ class UsersListHomeFragment : Fragment() {
         userViewModel.currentUser.observe(viewLifecycleOwner) { user ->
             user?.let { currentUser ->
                 val userID = currentUser.uid
-                val userRef = userViewModel.getApartmentDocumentReference(userID)
+                val userRef = userViewModel.getUserDocumentReference(userID)
 
-                userListener = userRef.addSnapshotListener { value, error ->
+                userRef.addSnapshotListener { value, error ->
                     if (error != null) {
                         Log.e(TAG, "Listen failed.", error)
                         return@addSnapshotListener
@@ -75,11 +74,5 @@ class UsersListHomeFragment : Fragment() {
                 }
             }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        userListener?.remove()
-        _binding = null
     }
 }

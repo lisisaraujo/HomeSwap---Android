@@ -9,14 +9,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.homeswap_android.R
+import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.databinding.FragmentAddApartmentAdditionalDetailsBinding
+import com.example.homeswap_android.viewModels.AddApartmentViewModel
 import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 
 class AddApartmentAdditionalDetailsFragment : Fragment() {
 
     private lateinit var binding: FragmentAddApartmentAdditionalDetailsBinding
-    private val viewModel: FirebaseApartmentsViewModel by activityViewModels()
+    private val addApartmentViewModel: AddApartmentViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -30,19 +32,38 @@ class AddApartmentAdditionalDetailsFragment : Fragment() {
 
         setupTypeOfHomeDropdown()
         setupSliders()
-        setupSubmitButton()
 
-//        viewModel.currentApartment.observe(viewLifecycleOwner) { apartment ->
-//            Log.d("AddApartmentFragment", "Current Apartment updated: $apartment")
-//
-//            if (apartment != null && apartment.rooms != 0) {
-//                findNavController().navigate(
-//                    AddApartmentAdditionalDetailsFragmentDirections.actionAddApartmentAdditionalDetailsFragmentToHomeFragment(
-//                        true
-//                    )
-//                )
-//            }
-//        }
+
+        addApartmentViewModel.newAddedApartment.observe(viewLifecycleOwner) { apartment ->
+
+            apartment.let {
+            binding.submitApartmentBTN.setOnClickListener {
+                val rooms = binding.roomsSlider.value.toInt()
+                val maxGuests = binding.maxGuestsSlider.value.toInt()
+                val typeOfHome = binding.typeOfHomeAutoComplete.text.toString()
+                val petsAllowed = binding.petsAllowedSwitch.isChecked
+                val homeOffice = binding.homeOfficeSwitch.isChecked
+                val hasWifi = binding.hasWifiSwitch.isChecked
+
+                Log.d("AddApartmentFragment", "Submitting - Rooms: $rooms, MaxGuests: $maxGuests")
+
+                    addApartmentViewModel.saveAdditionalDetails(
+                        rooms,
+                        maxGuests,
+                        typeOfHome,
+                        petsAllowed,
+                        homeOffice,
+                        hasWifi
+                    )
+                    findNavController().navigate(
+                        AddApartmentAdditionalDetailsFragmentDirections.actionAddApartmentAdditionalDetailsFragmentToHomeFragment(
+                            true
+                        )
+                    )
+                }
+
+            }
+        }
     }
 
     private fun setupTypeOfHomeDropdown() {
@@ -58,30 +79,6 @@ class AddApartmentAdditionalDetailsFragment : Fragment() {
         binding.maxGuestsSlider.addOnChangeListener { _, value, _ ->
             binding.maxGuestsLabel.text = "Max Guests: ${value.toInt()}"
         }
-    }
-
-    private fun setupSubmitButton() {
-        binding.submitApartmentBTN.setOnClickListener {
-            val rooms = binding.roomsSlider.value.toInt()
-            val maxGuests = binding.maxGuestsSlider.value.toInt()
-            val typeOfHome = binding.typeOfHomeAutoComplete.text.toString()
-            val petsAllowed = binding.petsAllowedSwitch.isChecked
-            val homeOffice = binding.homeOfficeSwitch.isChecked
-            val hasWifi = binding.hasWifiSwitch.isChecked
-
-            Log.d("AddApartmentFragment", "Submitting - Rooms: $rooms, MaxGuests: $maxGuests")
-
-            viewModel.saveAdditionalDetails(
-                rooms,
-                maxGuests,
-                typeOfHome,
-                petsAllowed,
-                homeOffice,
-                hasWifi
-            )
-            findNavController().navigate(R.id.homeFragment)
-        }
-
     }
 
 }

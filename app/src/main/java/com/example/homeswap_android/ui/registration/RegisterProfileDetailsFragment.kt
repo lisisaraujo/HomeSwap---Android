@@ -20,9 +20,8 @@ import com.google.firebase.firestore.ListenerRegistration
 class RegisterProfileDetailsFragment : Fragment() {
     private lateinit var binding: FragmentRegisterProfileDetailsBinding
     private val usersViewModel: FirebaseUsersViewModel by activityViewModels()
-    private var userListener: ListenerRegistration? = null
     val userID = usersViewModel.currentUser.value!!.uid
-    val userRef = usersViewModel.getApartmentDocumentReference(userID)
+    val userRef = usersViewModel.getUserDocumentReference(userID)
 
     private val getContent =
         registerForActivityResult(
@@ -48,7 +47,7 @@ class RegisterProfileDetailsFragment : Fragment() {
             getContent.launch("image/*")
         }
 
-        userListener = userRef.addSnapshotListener { value, error ->
+     userRef.addSnapshotListener { value, error ->
             if (value != null) {
                 Log.d("UserProfile", value.data.toString())
                 value.toObject(UserData::class.java)?.let { profile ->
