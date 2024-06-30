@@ -68,7 +68,7 @@ class ApartmentRepository(
         apartmentsCollectionReference.document(apartmentID).get()
             .addOnSuccessListener { documentSnapshot ->
                 val apartment = documentSnapshot.toObject(Apartment::class.java)
-                _currentApartment.postValue(apartment)
+                _currentApartment.postValue(apartment!!)
             }
             .addOnFailureListener { exception ->
                 Log.e(TAG, "Error fetching apartment: ${exception.message}")
