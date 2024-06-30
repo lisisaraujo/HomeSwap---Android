@@ -3,19 +3,16 @@ package com.example.homeswap_android.viewModels
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.data.repositories.ApartmentRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 
 
 class FirebaseApartmentsViewModel : ViewModel() {
@@ -59,33 +56,35 @@ class FirebaseApartmentsViewModel : ViewModel() {
         return apartmentRepository.getApartmentPictures(apartmentID, userID)
     }
 
-//    fun addApartment(apartment: Apartment) {
-//        apartmentRepository.addApartment(apartment) { updatedApartment ->
-//            if (updatedApartment != null) {
-//                getApartments()
-//            } else {
-//                Log.e(TAG, "Error adding apartment")
-//            }
-//        }
-//    }
+    fun getApartmentFirstPicture(apartmentID: String, userID: String): LiveData<String?> {
+        return apartmentRepository.getApartmentFirstPicture(apartmentID, userID)
+    }
 
-    fun uploadApartmentImage(uri: Uri, apartmentID: String) {
-        apartmentRepository.uploadApartmentImage(uri, apartmentID) { imageUrl ->
-            if (imageUrl != null) {
-                updateApartmentPicture(apartmentID, imageUrl)
+    fun uploadApartmentImages(uris: List<Uri>, apartmentID: String) {
+        viewModelScope.launch {
+            apartmentRepository.uploadApartmentImages(uris, apartmentID) { downloadUrls ->
+                if (downloadUrls.isNotEmpty()) {
+                    // all images uploaded successfully
+                    // update the apartment document with these URLs
+                    updateApartmentWithImageUrls(apartmentID, downloadUrls)
+                } else {
+                    Log.e(TAG, "Failed to upload one or more images")
+                }
+            }
+        }
+    }
+
+    private fun updateApartmentWithImageUrls(apartmentID: String, imageUrls: List<String>) {
+        apartmentRepository.updateApartmentImages(apartmentID, imageUrls) { success ->
+            if (success) {
+                Log.d(TAG, "Successfully updated apartment with new image URLs")
             } else {
-                Log.e(TAG, "Error uploading apartment image")
+                Log.e(TAG, "Failed to update apartment with new image URLs")
             }
         }
     }
 
-    private fun updateApartmentPicture(apartmentID: String, imageUrl: String) {
-        apartmentRepository.updateApartmentPicture(apartmentID, imageUrl) { success ->
-            if (!success) {
-                Log.e(TAG, "Error updating apartment picture")
-            }
-        }
-    }
+
 
     fun deleteApartment(apartmentID: String) {
         apartmentRepository.deleteApartment(apartmentID) { success ->

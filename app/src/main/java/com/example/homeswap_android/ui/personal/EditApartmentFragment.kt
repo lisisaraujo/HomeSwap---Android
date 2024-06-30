@@ -72,7 +72,7 @@ class EditApartmentFragment : Fragment() {
         binding.apartmentTitleTV.text = apartment.title
         binding.countryTV.text = apartment.country
         binding.cityTV.text = apartment.city
-        binding.apartmentImageIV.load(apartment.pictures.firstOrNull())
+        binding.apartmentImageIV.load(apartment.coverPicture)
 
         binding.apartmentTitleET.setText(apartment.title)
         binding.countryET.setText(apartment.country)

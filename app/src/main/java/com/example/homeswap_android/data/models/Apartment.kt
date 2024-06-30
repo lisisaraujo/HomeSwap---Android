@@ -13,7 +13,7 @@ data class Apartment (
     var startDate: String = "",
     var endDate: String = "",
     var reviews: MutableList<ApartmentReview> = mutableListOf(),
-    var pictures: MutableList<String> = mutableListOf(),
+    var coverPicture: String = "",
     var liked: Boolean = false,
     var petsAllowed: Boolean = false,
     var rooms: Int = 0,

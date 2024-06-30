@@ -29,11 +29,14 @@ class ApartmentAdapter(
         holder.binding.apartmentTitleTV.text = apartment.title
         holder.binding.apartmentCityTV.text = apartment.city
 
-        if (apartment.pictures.isNotEmpty()) {
-            holder.binding.apartmentImageIV.load(apartment.pictures.first())
-        } else {
-            holder.binding.apartmentImageIV.setImageResource(R.drawable.ic_launcher_foreground)
-        }
+        apartment.coverPicture.let { url ->
+            holder.binding.apartmentImageIV.load(url) {
+                crossfade(true)
+                placeholder(R.drawable.ic_launcher_foreground)
+                error(R.drawable.ic_launcher_foreground)
+            }
+        } ?: holder.binding.apartmentImageIV.setImageResource(R.drawable.ic_launcher_foreground)
+
 
         holder.binding.apartmentListCV.setOnClickListener {
             itemClickedCallback(apartment)

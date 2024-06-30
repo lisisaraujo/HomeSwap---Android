@@ -2,6 +2,7 @@ package com.example.homeswap_android.ui.apartment
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -56,11 +57,24 @@ class ApartmentDetailsFragment : Fragment() {
 
             if (apartment != null) {
                 binding.apartmentTitleTV.text = apartment.title
-                binding.apartmentImageIV.load(apartment.pictures.firstOrNull())
+
+                apartmentViewModel.getApartmentFirstPicture(apartment.apartmentID, apartment.userID).observe(viewLifecycleOwner) { imageUrl ->
+                    Log.d("apartmentFirstPic", imageUrl ?: "No image URL")
+                    if (imageUrl != null) {
+                        binding.apartmentImageIV.load(imageUrl) {
+                            crossfade(true)
+                            placeholder(R.drawable.ic_launcher_foreground)
+                            error(R.drawable.ic_launcher_foreground)
+                        }
+                    } else {
+                        binding.apartmentImageIV.setImageResource(R.drawable.ic_launcher_foreground)
+                    }
+                }
 
                 val userID = apartment.userID
                 userViewModel.fetchUserData(userID)
             }
+
         }
 
         userViewModel.currentUserData.observe(viewLifecycleOwner) { user ->

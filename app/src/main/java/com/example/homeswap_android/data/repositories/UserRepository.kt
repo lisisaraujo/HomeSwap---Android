@@ -45,7 +45,7 @@ class UserRepository(
     private var userDataDocumentReference = MutableLiveData<DocumentReference?>()
 
     init {
-        usersCollectionReference.addSnapshotListener{value, error->
+        usersCollectionReference.addSnapshotListener { value, error ->
             _users.postValue(value!!.toObjects(UserData::class.java))
 
         }
@@ -179,55 +179,122 @@ class UserRepository(
         val currentUser = auth.currentUser ?: return
         val userId = currentUser.uid
 
+        deleteUserApartments(userId)
+    }
+
+    private fun deleteUserApartments(userId: String) {
         firestore.collection("apartments").whereEqualTo("userID", userId).get()
             .addOnSuccessListener { querySnapshot ->
+                var deletedCount = 0
+                val totalApartments = querySnapshot.size()
+
+                if (totalApartments == 0) {
+                    deleteUserProfilePicture(userId)
+                    return@addOnSuccessListener
+                }
+
                 for (document in querySnapshot.documents) {
                     val apartment = document.toObject(Apartment::class.java)
-                    apartment?.let { deleteApartmentAndPictures(it) }
-                }
-
-                val profilePicRef = storage.reference.child("images/$userId/profilePic")
-                profilePicRef.delete().addOnFailureListener { exception ->
-                    Log.e(TAG, "Error deleting profile picture: $exception")
-                }
-
-                usersCollectionReference.document(userId).delete()
-                    .addOnSuccessListener {
-                        Log.d(TAG, "User document deleted successfully")
-                        currentUser.delete()
-                            .addOnSuccessListener {
-                                Log.d(TAG, "User deleted successfully")
-                                signOut()
+                    apartment?.let {
+                        deleteApartmentAndPictures(it.apartmentID, userId) {
+                            deletedCount++
+                            if (deletedCount == totalApartments) {
+                                deleteUserProfilePicture(userId)
                             }
-                            .addOnFailureListener { exception ->
-                                Log.e(TAG, "Error deleting user: $exception")
-                            }
+                        }
                     }
-                    .addOnFailureListener { exception ->
-                        Log.e(TAG, "Error deleting user document: $exception")
-                    }
+                }
             }
             .addOnFailureListener { exception ->
                 Log.e(TAG, "Error fetching user's apartments: $exception")
             }
     }
 
-    private fun deleteApartmentAndPictures(apartment: Apartment) {
-        apartment.pictures.forEach { pictureUrl ->
-            val pictureRef = storage.getReferenceFromUrl(pictureUrl)
-            pictureRef.delete().addOnFailureListener { exception ->
-                Log.e(TAG, "Error deleting apartment picture: $exception")
-            }
-        }
+    private fun deleteApartmentAndPictures(apartmentID: String, userID: String, onAllDeleted: () -> Unit) {
+        val apartmentPicturesRef = storage.reference.child("images/$userID/apartments/$apartmentID")
 
-        firestore.collection("apartments").document(apartment.apartmentID).delete()
+        apartmentPicturesRef.listAll()
+            .addOnSuccessListener { listResult ->
+                var deletedCount = 0
+                val totalItems = listResult.items.size
+
+                if (totalItems == 0) {
+                    deleteApartmentDocument(apartmentID, onAllDeleted)
+                    return@addOnSuccessListener
+                }
+
+                for (item in listResult.items) {
+                    item.delete()
+                        .addOnSuccessListener {
+                            deletedCount++
+                            if (deletedCount == totalItems) {
+                                deleteApartmentDocument(apartmentID, onAllDeleted)
+                            }
+                        }
+                        .addOnFailureListener { exception ->
+                            Log.e(TAG, "Error deleting apartment picture: $exception")
+                            deletedCount++
+                            if (deletedCount == totalItems) {
+                                deleteApartmentDocument(apartmentID, onAllDeleted)
+                            }
+                        }
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Error listing apartment pictures: $exception")
+                deleteApartmentDocument(apartmentID, onAllDeleted)
+            }
+    }
+
+    private fun deleteApartmentDocument(apartmentID: String, onDeleted: () -> Unit) {
+        firestore.collection("apartments").document(apartmentID).delete()
             .addOnSuccessListener {
-                Log.d(TAG, "Apartment deleted successfully: ${apartment.apartmentID}")
+                Log.d(TAG, "Apartment deleted successfully: $apartmentID")
+                onDeleted()
             }
             .addOnFailureListener { exception ->
                 Log.e(TAG, "Error deleting apartment: $exception")
+                onDeleted()
             }
     }
+
+    private fun deleteUserProfilePicture(userId: String) {
+        val profilePicRef = storage.reference.child("images/$userId/profilePic")
+        profilePicRef.delete()
+            .addOnSuccessListener {
+                Log.d(TAG, "Profile picture deleted successfully")
+                deleteUserDocument(userId)
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Error deleting profile picture: $exception")
+                deleteUserDocument(userId)
+            }
+    }
+
+    private fun deleteUserDocument(userId: String) {
+        usersCollectionReference.document(userId).delete()
+            .addOnSuccessListener {
+                Log.d(TAG, "User document deleted successfully")
+                deleteAuthUser(auth.currentUser!!)
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Error deleting user document: $exception")
+                deleteAuthUser(auth.currentUser!!)
+            }
+    }
+
+    private fun deleteAuthUser(currentUser: FirebaseUser) {
+        currentUser.delete()
+            .addOnSuccessListener {
+                Log.d(TAG, "User deleted successfully from Authentication")
+                signOut()
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Error deleting user from Authentication: $exception")
+            }
+    }
+
+
 
     fun checkEmailVerificationStatus(onComplete: (Boolean) -> Unit) {
         val user = auth.currentUser

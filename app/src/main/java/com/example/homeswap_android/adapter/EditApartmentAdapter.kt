@@ -37,11 +37,12 @@ class EditApartmentAdapter(
         holder.binding.apartmentTitleTV.text = apartment.title
         holder.binding.apartmentCityTV.text = apartment.city
 
-        if (apartment.pictures.isNotEmpty()) {
-            holder.binding.apartmentImageIV.load(apartment.pictures.first())
-        } else {
-            holder.binding.apartmentImageIV.setImageResource(R.drawable.ic_launcher_foreground)
-        }
+//        if (apartment.pictures.isNotEmpty()) {
+//            holder.binding.apartmentImageIV.load(apartment.pictures.first())
+//        } else {
+//            holder.binding.apartmentImageIV.setImageResource(R.drawable.ic_launcher_foreground)
+//        }
+
         holder.binding.myApartmentsCV.setOnClickListener {
             Log.d("ClickedApartment", apartment.title)
             itemClickedCallback(apartment)

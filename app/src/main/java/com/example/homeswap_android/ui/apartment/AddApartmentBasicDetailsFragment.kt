@@ -8,6 +8,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.graphics.vector.addPathNodes
 import androidx.fragment.app.Fragment
@@ -20,6 +22,7 @@ import com.example.homeswap_android.databinding.FragmentAddApartmentBasicDetails
 import com.example.homeswap_android.viewModels.AddApartmentViewModel
 import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
 import com.google.android.material.datepicker.MaterialDatePicker
+import java.lang.System.load
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -28,18 +31,21 @@ class AddApartmentBasicDetailsFragment : Fragment() {
     private lateinit var binding: FragmentAddApartmentBasicDetailsBinding
     private val addApartmentViewModel: AddApartmentViewModel by activityViewModels()
     private val apartmentsViewModel: FirebaseApartmentsViewModel by activityViewModels()
-    private var selectedImageUri: Uri? = null
+    private var selectedImageUris: List<Uri> = emptyList()
     private var selectedStartDate: String = ""
     private var selectedEndDate: String = ""
 
-    private val getContent = registerForActivityResult(
-        ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        uri?.let {
-            selectedImageUri = it
-            binding.apartmentImageIV.load(it)
+    // Define the photo picker launcher for multiple images
+    private val pickMultipleMedia =
+        registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(5)) { uris ->
+            if (uris.isNotEmpty()) {
+                Log.d("PhotoPicker", "Number of items selected: ${uris.size}")
+                selectedImageUris = uris
+                displaySelectedImages()
+            } else {
+                Log.d("PhotoPicker", "No media selected")
+            }
         }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -58,6 +64,7 @@ class AddApartmentBasicDetailsFragment : Fragment() {
             val address = binding.addressET.text.toString()
             val startDate = selectedStartDate
             val endDate = selectedEndDate
+            val coverPicture = selectedImageUris.firstOrNull().toString()
 
             val newApartment = Apartment(
                 title = title,
@@ -67,7 +74,8 @@ class AddApartmentBasicDetailsFragment : Fragment() {
                 cityLower = city.lowercase(),
                 address = address,
                 startDate = startDate,
-                endDate = endDate
+                endDate = endDate,
+                coverPicture = coverPicture
             )
 
             addApartmentViewModel.addApartment(newApartment)
@@ -76,16 +84,15 @@ class AddApartmentBasicDetailsFragment : Fragment() {
         addApartmentViewModel.newAddedApartment.observe(viewLifecycleOwner) { apartment ->
             apartment?.let {
                 Log.d("NewApartment", apartment.apartmentID)
-                selectedImageUri?.let { uri ->
-                        apartmentsViewModel.uploadApartmentImage(uri, it.apartmentID)
+                if (selectedImageUris.isNotEmpty()) {
+                    apartmentsViewModel.uploadApartmentImages(selectedImageUris, it.apartmentID)
                 }
                 findNavController().navigate(R.id.addApartmentAdditionalDetailsFragment)
             }
         }
 
-
-        binding.apartmentImageIV.setOnClickListener {
-            getContent.launch("image/*")
+        binding.selectImagesButton.setOnClickListener {
+            pickMultipleMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
 
         binding.selectDatesBTN.setOnClickListener {
@@ -94,6 +101,22 @@ class AddApartmentBasicDetailsFragment : Fragment() {
 
         binding.addApartmentBackBTN.setOnClickListener {
             findNavController().navigateUp()
+        }
+    }
+
+
+    private fun displaySelectedImages() {
+        // Clear existing images
+        binding.selectedImagesContainer.removeAllViews()
+
+        // Add new images
+        selectedImageUris.forEach { uri ->
+            val imageView = ImageView(requireContext()).apply {
+                layoutParams = ViewGroup.LayoutParams(200, 200)  // Set appropriate size
+                scaleType = ImageView.ScaleType.CENTER_CROP
+                load(uri)
+            }
+            binding.selectedImagesContainer.addView(imageView)
         }
     }
 
@@ -116,4 +139,4 @@ class AddApartmentBasicDetailsFragment : Fragment() {
         val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         return format.format(utc.time)
     }
-}
+    }

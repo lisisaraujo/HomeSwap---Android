@@ -20,8 +20,6 @@ import com.google.firebase.firestore.ListenerRegistration
 class RegisterProfileDetailsFragment : Fragment() {
     private lateinit var binding: FragmentRegisterProfileDetailsBinding
     private val usersViewModel: FirebaseUsersViewModel by activityViewModels()
-    val userID = usersViewModel.currentUser.value!!.uid
-    val userRef = usersViewModel.getUserDocumentReference(userID)
 
     private val getContent =
         registerForActivityResult(
@@ -43,27 +41,36 @@ class RegisterProfileDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.uploadProfilePicIV.setOnClickListener {
-            getContent.launch("image/*")
-        }
+        // Safely access currentUser and getUserDocumentReference inside onViewCreated
+        usersViewModel.currentUser.observe(viewLifecycleOwner) { firebaseUser ->
+            firebaseUser?.let { user ->
+                val userID = user.uid
+                val userRef = usersViewModel.getUserDocumentReference(userID)
 
-     userRef.addSnapshotListener { value, error ->
-            if (value != null) {
-                Log.d("UserProfile", value.data.toString())
-                value.toObject(UserData::class.java)?.let { profile ->
-                    if (profile.profilePic.isNotEmpty()) {
-                        binding.uploadProfilePicIV.load(profile.profilePic) {
-                            crossfade(true)
-                            placeholder(R.drawable.ic_launcher_foreground)
+                binding.uploadProfilePicIV.setOnClickListener {
+                    getContent.launch("image/*")
+                }
+
+                userRef.addSnapshotListener { value, error ->
+                    if (value != null) {
+                        Log.d("UserProfile", value.data.toString())
+                        value.toObject(UserData::class.java)?.let { profile ->
+                            if (profile.profilePic.isNotEmpty()) {
+                                binding.uploadProfilePicIV.load(profile.profilePic) {
+                                    crossfade(true)
+                                    placeholder(R.drawable.ic_launcher_foreground)
+                                }
+                            }
                         }
                     }
                 }
+
+                binding.continueBTN.setOnClickListener {
+                    findNavController().navigate(R.id.homeFragment)
+                }
+            } ?: run {
+                Log.e("RegisterProfileDetailsFragment", "Current user is null")
             }
         }
-
-        binding.continueBTN.setOnClickListener {
-            findNavController().navigate(R.id.homeFragment)
-        }
-
     }
 }
