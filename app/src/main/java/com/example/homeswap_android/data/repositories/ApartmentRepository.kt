@@ -6,7 +6,6 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.homeswap_android.data.models.Apartment
-import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
@@ -32,8 +31,8 @@ class ApartmentRepository(
     private val _currentApartment = MutableLiveData<Apartment>()
     val currentApartment: LiveData<Apartment> = _currentApartment
 
-    private val _newAddedApartment = MutableLiveData<Apartment>()
-    val newAddedApartment: LiveData<Apartment> = _newAddedApartment
+    private val _newAddedApartment = MutableLiveData<Apartment?>()
+    val newAddedApartment: MutableLiveData<Apartment?> = _newAddedApartment
 
     private val _likedApartments = MutableLiveData<List<Apartment>>()
     val likedApartments: LiveData<List<Apartment>> = _likedApartments
