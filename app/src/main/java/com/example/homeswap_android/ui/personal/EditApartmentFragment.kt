@@ -23,7 +23,6 @@ class EditApartmentFragment : Fragment() {
 
     private lateinit var binding: FragmentEditApartmentBinding
     private val apartmentViewModel: FirebaseApartmentsViewModel by activityViewModels()
-    private val userViewModel: FirebaseUsersViewModel by activityViewModels()
     private val args: ApartmentDetailsFragmentArgs by navArgs()
 
     override fun onCreateView(
@@ -39,12 +38,20 @@ class EditApartmentFragment : Fragment() {
 
         val apartmentID = args.apartmentID
         apartmentViewModel.getApartment(apartmentID)
-
         apartmentViewModel.currentApartment.observe(viewLifecycleOwner) { apartment ->
             if (apartment != null) {
                 updateUI(apartment)
             }
         }
+
+        apartmentViewModel.getApartmentFirstPicture(apartmentID, apartmentViewModel.currentApartment.value!!.userID).observe(viewLifecycleOwner){url ->
+            binding.apartmentImageIV.load(url){
+                crossfade(true)
+                placeholder(R.drawable.ic_launcher_foreground)
+                error(R.drawable.ic_launcher_foreground)
+            }
+        }
+
 
         binding.editButton.setOnClickListener {
             toggleEditMode(true)
@@ -54,6 +61,8 @@ class EditApartmentFragment : Fragment() {
             saveChanges()
             toggleEditMode(false)
         }
+
+
 
         binding.apartmentDetailsBackBTN.setOnClickListener {
             findNavController().navigateUp()

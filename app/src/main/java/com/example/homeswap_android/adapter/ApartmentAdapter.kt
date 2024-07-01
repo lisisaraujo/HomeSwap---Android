@@ -2,16 +2,20 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageButton
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.homeswap_android.R
 import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.databinding.ApartmentListItemBinding
+import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
 
 class ApartmentAdapter(
     private var apartments: List<Apartment>,
     private val itemClickedCallback: (Apartment) -> Unit,
-    private val onLikeClickListener: (Apartment) -> Unit
+    private val onLikeClickListener: (Apartment) -> Unit,
+    private val apartmentViewModel: FirebaseApartmentsViewModel
 ) : RecyclerView.Adapter<ApartmentAdapter.MyViewHolder>() {
 
     class MyViewHolder(val binding: ApartmentListItemBinding) : RecyclerView.ViewHolder(binding.root)
@@ -29,14 +33,14 @@ class ApartmentAdapter(
         holder.binding.apartmentTitleTV.text = apartment.title
         holder.binding.apartmentCityTV.text = apartment.city
 
-        apartment.coverPicture.let { url ->
+        apartmentViewModel.getApartmentFirstPicture(apartment.apartmentID, apartment.userID).observe(holder.itemView.context as LifecycleOwner) { url ->
+            Log.d("FirstPicture", url ?: "null")
             holder.binding.apartmentImageIV.load(url) {
                 crossfade(true)
                 placeholder(R.drawable.ic_launcher_foreground)
                 error(R.drawable.ic_launcher_foreground)
             }
-        } ?: holder.binding.apartmentImageIV.setImageResource(R.drawable.ic_launcher_foreground)
-
+        }
 
         holder.binding.apartmentListCV.setOnClickListener {
             itemClickedCallback(apartment)

@@ -9,11 +9,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import coil.load
 import com.example.homeswap_android.R
 import com.example.homeswap_android.adapter.EditApartmentAdapter
 import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.databinding.FragmentMyListingsBinding
 import com.example.homeswap_android.ui.user.UserDetailsFragmentArgs
+import com.example.homeswap_android.ui.user.UserDetailsFragmentDirections
 import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 
@@ -39,13 +41,15 @@ class MyListingsFragment : Fragment() {
 
         val userID = userViewModel.currentUser.value?.uid
 
-        editApartmentAdapter = EditApartmentAdapter(emptyList()) { apartment ->
+        val itemClickedCallback: (Apartment) -> Unit = { apartment ->
             findNavController().navigate(
-                MyListingsFragmentDirections.actionMyListingsFragmentToApartmentDetailsFragment(
-                    apartment.apartmentID
-                )
+                MyListingsFragmentDirections.actionMyListingsFragmentToEditApartmentFragment(apartment.apartmentID)
             )
         }
+
+
+        editApartmentAdapter = EditApartmentAdapter(emptyList(), itemClickedCallback, apartmentViewModel)
+
         binding.myListingsRV.adapter = editApartmentAdapter
 
         apartmentViewModel.getUserApartments(userID!!).addSnapshotListener { userApartments, _ ->

@@ -18,6 +18,8 @@ import com.google.firebase.storage.component2
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Locale
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 class ApartmentRepository(
     private val auth: FirebaseAuth,
@@ -100,27 +102,24 @@ class ApartmentRepository(
         return picturesLiveData
     }
 
-    fun getApartmentFirstPicture(apartmentID: String, userID: String): LiveData<String?> {
-        val pictureLiveData = MutableLiveData<String?>()
+    suspend fun getApartmentFirstPicture(apartmentID: String, userID: String): String? = suspendCoroutine { continuation ->
         val apartmentPicturesRef = storage.reference.child("images/$userID/apartments/$apartmentID")
 
         apartmentPicturesRef.listAll()
             .addOnSuccessListener { (items, _) ->
                 if (items.isNotEmpty()) {
                     items.first().downloadUrl.addOnSuccessListener { uri ->
-                        pictureLiveData.postValue(uri.toString())
-                        _currentApartment.value?.coverPicture = pictureLiveData.toString()
+                        continuation.resume(uri.toString())
+                        _currentApartment.value?.coverPicture = uri.toString()
                     }
                 } else {
-                    pictureLiveData.postValue(null)
+                    continuation.resume(null)
                 }
             }
             .addOnFailureListener { exception ->
                 Log.e(TAG, "Error listing images: ${exception.message}")
-                pictureLiveData.postValue(null)
+                continuation.resume(null)
             }
-
-        return pictureLiveData
     }
 
 

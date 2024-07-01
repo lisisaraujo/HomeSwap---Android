@@ -46,7 +46,7 @@ class ApartmentsListHomeFragment : Fragment() {
         apartmentAdapter = ApartmentAdapter(
             emptyList(),
             itemClickedCallback,
-            onLikeClickListener
+            onLikeClickListener, apartmentsViewModel
         )
         binding.apartmentListRV.adapter = apartmentAdapter
 

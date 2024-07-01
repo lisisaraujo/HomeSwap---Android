@@ -60,7 +60,7 @@ class UserDetailsFragment : Fragment() {
             apartmentViewModel.toggleLike(apartment)
         }
 
-        apartmentAdapter = ApartmentAdapter(emptyList(), itemClickedCallback, onLikeClickListener)
+        apartmentAdapter = ApartmentAdapter(emptyList(), itemClickedCallback, onLikeClickListener, apartmentViewModel)
         binding.userApartmentsRV.adapter = apartmentAdapter
 
         apartmentViewModel.getUserApartments(userID).addSnapshotListener{ userApartments, _ ->

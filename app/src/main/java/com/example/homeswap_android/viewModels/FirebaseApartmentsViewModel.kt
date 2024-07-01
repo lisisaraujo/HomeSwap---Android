@@ -3,6 +3,7 @@ package com.example.homeswap_android.viewModels
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.homeswap_android.data.models.Apartment
@@ -57,7 +58,11 @@ class FirebaseApartmentsViewModel : ViewModel() {
     }
 
     fun getApartmentFirstPicture(apartmentID: String, userID: String): LiveData<String?> {
-        return apartmentRepository.getApartmentFirstPicture(apartmentID, userID)
+        val result = MutableLiveData<String?>()
+        viewModelScope.launch {
+            result.value = apartmentRepository.getApartmentFirstPicture(apartmentID, userID).toString()
+        }
+        return result
     }
 
     fun uploadApartmentImages(uris: List<Uri>, apartmentID: String) {
