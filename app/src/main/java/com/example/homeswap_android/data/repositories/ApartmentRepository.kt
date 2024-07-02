@@ -124,32 +124,6 @@ class ApartmentRepository(
             }
         }
 
-
-    fun addApartment(apartment: Apartment, onComplete: (Apartment?) -> Unit) {
-        val currentUser = auth.currentUser
-        currentUser.let {
-            val newApartment = apartment.copy(userID = currentUser!!.uid)
-            apartmentsCollectionReference.add(newApartment)
-                .addOnSuccessListener { documentReference ->
-                    val updatedApartment = newApartment.copy(apartmentID = documentReference.id)
-                    documentReference.update("apartmentID", documentReference.id)
-                        .addOnSuccessListener {
-                            _newAddedApartment.postValue(updatedApartment)
-                            onComplete(updatedApartment)
-                        }
-                        .addOnFailureListener { exception ->
-                            Log.e(TAG, "Error updating apartment ID: ${exception.message}")
-                            onComplete(null)
-                        }
-                }
-                .addOnFailureListener { exception ->
-                    Log.e(TAG, "Error adding apartment: ${exception.message}")
-                    onComplete(null)
-                }
-        }
-
-    }
-
     fun uploadApartmentImages(
         uris: List<Uri>,
         apartmentID: String,
@@ -183,6 +157,34 @@ class ApartmentRepository(
                 onComplete(emptyList())
             }
     }
+
+
+    fun addApartment(apartment: Apartment, onComplete: (Apartment?) -> Unit) {
+        val currentUser = auth.currentUser
+        currentUser.let {
+            val newApartment = apartment.copy(userID = currentUser!!.uid)
+            apartmentsCollectionReference.add(newApartment)
+                .addOnSuccessListener { documentReference ->
+                    val updatedApartment = newApartment.copy(apartmentID = documentReference.id)
+                    documentReference.update("apartmentID", documentReference.id)
+                        .addOnSuccessListener {
+                            _newAddedApartment.postValue(updatedApartment)
+                            onComplete(updatedApartment)
+                        }
+                        .addOnFailureListener { exception ->
+                            Log.e(TAG, "Error updating apartment ID: ${exception.message}")
+                            onComplete(null)
+                        }
+                }
+                .addOnFailureListener { exception ->
+                    Log.e(TAG, "Error adding apartment: ${exception.message}")
+                    onComplete(null)
+                }
+        }
+
+    }
+
+
 
     fun updateApartmentImageURLs(
         apartmentID: String,

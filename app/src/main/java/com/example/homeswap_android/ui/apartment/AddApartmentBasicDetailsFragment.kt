@@ -158,5 +158,4 @@ class AddApartmentBasicDetailsFragment : Fragment() {
         val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         return format.format(utc.time)
     }
-
 }
