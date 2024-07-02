@@ -47,27 +47,11 @@ class MainActivity : AppCompatActivity() {
             Log.d("navDestination", navDestination.label.toString())
 
             when (navDestination.id) {
-                //Entfernt alle Destinations vom Stack bis zum ersten Destination mit der angegebenen id
-                R.id.homeFragment -> {
-                    navController.popBackStack(R.id.homeFragment, false)
+                R.id.homeFragment, R.id.checkFlightsFragment, R.id.userProfileFragment, R.id.favoritesFragment -> {
                     binding.bottomNavView.visibility = View.VISIBLE
+                    //update the selected item in bottom navigation
+                    binding.bottomNavView.menu.findItem(navDestination.id)?.isChecked = true
                 }
-
-                R.id.checkFlightsFragment -> {
-                    navController.popBackStack(R.id.checkFlightsFragment, false)
-                    binding.bottomNavView.visibility = View.VISIBLE
-                }
-
-                R.id.userProfileFragment -> {
-                    navController.popBackStack(R.id.userProfileFragment, false)
-                    binding.bottomNavView.visibility = View.VISIBLE
-                }
-
-                R.id.favoritesFragment -> {
-                    binding.bottomNavView.selectedItemId = R.id.favoritesFragment
-                    binding.bottomNavView.visibility = View.VISIBLE
-                }
-
                 else -> binding.bottomNavView.visibility = View.GONE
             }
 

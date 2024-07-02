@@ -107,22 +107,22 @@ class ApartmentRepository(
     }
 
 
-    suspend fun getApartmentFirstPicture(apartmentID: String, userID: String): String? =
-        withContext(Dispatchers.IO) {
-            try {
-                val apartmentPicturesRef =
-                    storage.reference.child("images/$userID/apartments/$apartmentID")
-                val listResult = apartmentPicturesRef.listAll().await()
-                if (listResult.items.isNotEmpty()) {
-                    listResult.items.first().downloadUrl.await().toString()
-                } else {
-                    null
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, "Error getting first picture: ${e.message}")
-                null
-            }
-        }
+//    suspend fun getApartmentFirstPicture(apartmentID: String, userID: String): String? =
+//        withContext(Dispatchers.IO) {
+//            try {
+//                val apartmentPicturesRef =
+//                    storage.reference.child("images/$userID/apartments/$apartmentID")
+//                val listResult = apartmentPicturesRef.listAll().await()
+//                if (listResult.items.isNotEmpty()) {
+//                    listResult.items.first().downloadUrl.await().toString()
+//                } else {
+//                    null
+//                }
+//            } catch (e: Exception) {
+//                Log.e(TAG, "Error getting first picture: ${e.message}")
+//                null
+//            }
+//        }
 
     fun uploadApartmentImages(
         uris: List<Uri>,
@@ -136,26 +136,18 @@ class ApartmentRepository(
             return
         }
 
-        val uploadTasks = uris.mapIndexed { index, uri ->
+       uris.mapIndexed { index, uri ->
             val imageRef =
                 storage.reference.child("images/${user.uid}/apartments/$apartmentID/image_$index")
-            imageRef.putFile(uri).continueWithTask { task ->
-                if (!task.isSuccessful) {
-                    task.exception?.let { throw it }
+            imageRef.putFile(uri).addOnSuccessListener {
+                if (index == 0) {
+                    imageRef.downloadUrl.addOnSuccessListener { url ->
+                        apartmentsCollectionReference.document(apartmentID)
+                            .update("coverPicture", url)
+                    }
                 }
-                imageRef.downloadUrl
             }
         }
-
-        Tasks.whenAllSuccess<Uri>(uploadTasks)
-            .addOnSuccessListener { downloadUriList ->
-                val downloadUrls = downloadUriList.map { it.toString() }
-                onComplete(downloadUrls)
-            }
-            .addOnFailureListener { exception ->
-                Log.e(TAG, "Error uploading images: ${exception.message}")
-                onComplete(emptyList())
-            }
     }
 
 
@@ -185,7 +177,6 @@ class ApartmentRepository(
     }
 
 
-
     fun updateApartmentImageURLs(
         apartmentID: String,
         imageUrls: List<String>,
@@ -206,7 +197,8 @@ class ApartmentRepository(
     private suspend fun deleteApartmentPictures(apartmentID: String, userID: String): Boolean {
         return withContext(Dispatchers.IO) {
             try {
-                val apartmentPicturesRef = storage.reference.child("images/$userID/apartments/$apartmentID")
+                val apartmentPicturesRef =
+                    storage.reference.child("images/$userID/apartments/$apartmentID")
                 val listResult = apartmentPicturesRef.listAll().await()
 
                 listResult.items.forEach { item ->
@@ -238,7 +230,6 @@ class ApartmentRepository(
             }
         }
     }
-
 
 
     fun updateApartment(apartment: Apartment) {

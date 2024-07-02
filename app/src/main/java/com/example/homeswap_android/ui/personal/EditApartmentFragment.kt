@@ -61,10 +61,9 @@ class EditApartmentFragment : Fragment() {
         var userID = ""
 
         apartmentViewModel.getApartment(apartmentID)
+
         apartmentViewModel.currentApartment.observe(viewLifecycleOwner) { apartment ->
-           apartment.let {
-                updateUI(apartment)
-            }
+            updateUI(apartment)
         }
 
 

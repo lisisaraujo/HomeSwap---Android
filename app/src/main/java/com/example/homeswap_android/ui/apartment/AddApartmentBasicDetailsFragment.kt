@@ -88,30 +88,11 @@ class AddApartmentBasicDetailsFragment : Fragment() {
                         selectedImageUris,
                         apartment.apartmentID
                     )
-                        .observe(viewLifecycleOwner) { uploadedUrls ->
-                            if (uploadedUrls.isNotEmpty()) {
-                                apartmentsViewModel.getApartmentFirstPicture(
-                                    apartment.apartmentID,
-                                    apartment.userID
-                                )
-                                    .observe(viewLifecycleOwner) { firstPictureUrl ->
-                                        Log.d("CoverPicURL", firstPictureUrl.toString())
-                                        firstPictureUrl.let {
-                                            apartment.coverPicture = firstPictureUrl ?: ""
-                                            Log.d("FirstPicAddApartment", apartment.coverPicture)
-                                            findNavController().navigate(R.id.addApartmentAdditionalDetailsFragment)
-                                        }
-                                    }
-                            } else {
-                                Log.e("UploadError", "Failed to upload images")
-                            }
-                        }
-                } else {
-                    findNavController().navigate(R.id.addApartmentAdditionalDetailsFragment)
                 }
+                findNavController().navigate(R.id.addApartmentAdditionalDetailsFragment)
             }
-        }
 
+        }
         binding.selectImagesButton.setOnClickListener {
             pickMultipleMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }

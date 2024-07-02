@@ -56,7 +56,7 @@ class SettingsFragment : Fragment() {
         }
 
         binding.settingsBackBTN.setOnClickListener {
-            findNavController().navigateUp()
+            findNavController().navigate(R.id.homeFragment)
         }
     }
 

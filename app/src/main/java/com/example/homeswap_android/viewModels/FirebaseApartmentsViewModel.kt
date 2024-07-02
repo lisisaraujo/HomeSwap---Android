@@ -57,20 +57,20 @@ class FirebaseApartmentsViewModel : ViewModel() {
         return apartmentRepository.getApartmentPictures(apartmentID, userID)
     }
 
-    fun getApartmentFirstPicture(apartmentID: String, userID: String): LiveData<String?> {
-        val firstPic = MutableLiveData<String?>()
-        viewModelScope.launch {
-            try {
-                val result = apartmentRepository.getApartmentFirstPicture(apartmentID, userID)
-                firstPic.value = result
-                Log.d("FirstPicVM", result ?: "No picture found")
-            } catch (e: Exception) {
-                Log.e("FirstPicVM", "Error getting first picture", e)
-                firstPic.value = null
-            }
-        }
-        return firstPic
-    }
+//    fun getApartmentFirstPicture(apartmentID: String, userID: String): LiveData<String?> {
+//        val firstPic = MutableLiveData<String?>()
+//        viewModelScope.launch {
+//            try {
+//                val result = apartmentRepository.getApartmentFirstPicture(apartmentID, userID)
+//                firstPic.value = result
+//                Log.d("FirstPicVM", result ?: "No picture found")
+//            } catch (e: Exception) {
+//                Log.e("FirstPicVM", "Error getting first picture", e)
+//                firstPic.value = null
+//            }
+//        }
+//        return firstPic
+//    }
 
 
     fun uploadApartmentImages(uris: List<Uri>, apartmentID: String): LiveData<List<String>> {
