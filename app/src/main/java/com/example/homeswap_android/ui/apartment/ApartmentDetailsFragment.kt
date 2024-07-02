@@ -55,21 +55,9 @@ class ApartmentDetailsFragment : Fragment() {
                 availabilityTV.text = "Available: ${apartment.startDate} to ${apartment.endDate}"
             }
 
-            if (apartment != null) {
+            apartment.let {
                 binding.apartmentTitleTV.text = apartment.title
-
-                apartmentViewModel.getApartmentFirstPicture(apartment.apartmentID, apartment.userID).observe(viewLifecycleOwner) { imageUrl ->
-                    Log.d("apartmentFirstPic", imageUrl ?: "No image URL")
-                    if (imageUrl != null) {
-                        binding.apartmentImageIV.load(imageUrl) {
-                            crossfade(true)
-                            placeholder(R.drawable.ic_launcher_foreground)
-                            error(R.drawable.ic_launcher_foreground)
-                        }
-                    } else {
-                        binding.apartmentImageIV.setImageResource(R.drawable.ic_launcher_foreground)
-                    }
-                }
+                binding.apartmentImageIV.load(apartment.coverPicture)
 
                 val userID = apartment.userID
                 userViewModel.fetchUserData(userID)

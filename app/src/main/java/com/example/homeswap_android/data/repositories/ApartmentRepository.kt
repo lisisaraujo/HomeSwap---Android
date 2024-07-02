@@ -1,6 +1,5 @@
 package com.example.homeswap_android.data.repositories
 
-import android.content.ContentValues.TAG
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -15,12 +14,13 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.component1
 import com.google.firebase.storage.component2
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Locale
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
+val TAG = "ApartmentRepository"
 class ApartmentRepository(
     private val auth: FirebaseAuth,
     private val storage: FirebaseStorage,
@@ -102,24 +102,34 @@ class ApartmentRepository(
         return picturesLiveData
     }
 
-    suspend fun getApartmentFirstPicture(apartmentID: String, userID: String): String? = suspendCoroutine { continuation ->
+    suspend fun getApartmentFirstPicture(apartmentID: String, userID: String): String {
+        var pictureURL: String? = ""
         val apartmentPicturesRef = storage.reference.child("images/$userID/apartments/$apartmentID")
 
-        apartmentPicturesRef.listAll()
-            .addOnSuccessListener { (items, _) ->
-                if (items.isNotEmpty()) {
-                    items.first().downloadUrl.addOnSuccessListener { uri ->
-                        continuation.resume(uri.toString())
-                        _currentApartment.value?.coverPicture = uri.toString()
+        withContext(Dispatchers.IO) {
+            try {
+                apartmentPicturesRef.listAll().addOnSuccessListener { (items, _) ->
+                    if (items.isNotEmpty()) {
+                        items.first().downloadUrl.addOnSuccessListener { uri ->
+                            pictureURL = uri.toString()
+                        }.addOnFailureListener { exception ->
+                            Log.e(TAG, "Error getting download URL: ${exception.message}")
+                            pictureURL = null
+                        }
+                    } else {
+                        pictureURL = null
                     }
-                } else {
-                    continuation.resume(null)
+                }.addOnFailureListener { exception ->
+                    Log.e(TAG, "Error listing images: ${exception.message}")
+                    pictureURL = null
                 }
+            } catch (e: Exception) {
+                Log.e(TAG, "Unexpected error: ${e.message}")
+                pictureURL = (null)
             }
-            .addOnFailureListener { exception ->
-                Log.e(TAG, "Error listing images: ${exception.message}")
-                continuation.resume(null)
-            }
+        }
+
+        return pictureURL!!
     }
 
 
@@ -177,7 +187,7 @@ class ApartmentRepository(
             }
     }
 
-    fun updateApartmentImages(
+    fun updateApartmentImageURLs(
         apartmentID: String,
         imageUrls: List<String>,
         onComplete: (Boolean) -> Unit

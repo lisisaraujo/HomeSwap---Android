@@ -58,37 +58,33 @@ class FirebaseApartmentsViewModel : ViewModel() {
     }
 
     fun getApartmentFirstPicture(apartmentID: String, userID: String): LiveData<String?> {
-        val result = MutableLiveData<String?>()
+        val firstPic = MutableLiveData<String?>()
         viewModelScope.launch {
-            result.value = apartmentRepository.getApartmentFirstPicture(apartmentID, userID).toString()
+            firstPic.value = apartmentRepository.getApartmentFirstPicture(apartmentID, userID)
+            Log.d("FirstPicVM", firstPic.value.toString())
+
         }
-        return result
+        return firstPic
     }
 
-    fun uploadApartmentImages(uris: List<Uri>, apartmentID: String) {
-        viewModelScope.launch {
-            apartmentRepository.uploadApartmentImages(uris, apartmentID) { downloadUrls ->
-                if (downloadUrls.isNotEmpty()) {
-                    // all images uploaded successfully
-                    // update the apartment document with these URLs
-                    updateApartmentWithImageUrls(apartmentID, downloadUrls)
-                } else {
-                    Log.e(TAG, "Failed to upload one or more images")
-                }
-            }
+    fun uploadApartmentImages(uris: List<Uri>, apartmentID: String): LiveData<List<String>> {
+        val resultLiveData = MutableLiveData<List<String>>()
+        apartmentRepository.uploadApartmentImages(uris, apartmentID) { urls ->
+            resultLiveData.postValue(urls)
         }
+        return resultLiveData
     }
 
     private fun updateApartmentWithImageUrls(apartmentID: String, imageUrls: List<String>) {
-        apartmentRepository.updateApartmentImages(apartmentID, imageUrls) { success ->
+        apartmentRepository.updateApartmentImageURLs(apartmentID, imageUrls) { success ->
             if (success) {
                 Log.d(TAG, "Successfully updated apartment with new image URLs")
+
             } else {
                 Log.e(TAG, "Failed to update apartment with new image URLs")
             }
         }
     }
-
 
 
     fun deleteApartment(apartmentID: String) {
@@ -117,20 +113,20 @@ class FirebaseApartmentsViewModel : ViewModel() {
     }
 
 
-fun loadLikedApartments() {
-    apartmentRepository.getLikedApartments()
-}
+    fun loadLikedApartments() {
+        apartmentRepository.getLikedApartments()
+    }
 
-fun clearSearch() {
-    apartmentRepository.clearSearch()
-}
+    fun clearSearch() {
+        apartmentRepository.clearSearch()
+    }
 
-fun searchApartments(
-    city: String? = null,
-    country: String? = null,
-    startDate: String? = null,
-    endDate: String? = null
-) {
-    apartmentRepository.searchApartments(city, country, startDate, endDate)
-}
+    fun searchApartments(
+        city: String? = null,
+        country: String? = null,
+        startDate: String? = null,
+        endDate: String? = null
+    ) {
+        apartmentRepository.searchApartments(city, country, startDate, endDate)
+    }
 }

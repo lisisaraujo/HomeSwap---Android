@@ -1,10 +1,15 @@
 package com.example.homeswap_android.ui.apartment
 
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -24,6 +29,21 @@ class EditApartmentFragment : Fragment() {
     private lateinit var binding: FragmentEditApartmentBinding
     private val apartmentViewModel: FirebaseApartmentsViewModel by activityViewModels()
     private val args: ApartmentDetailsFragmentArgs by navArgs()
+    private var selectedImageUris: List<Uri> = emptyList()
+    private var selectedStartDate: String = ""
+    private var selectedEndDate: String = ""
+
+    // Define the photo picker launcher for multiple images
+    private val pickMultipleMedia =
+        registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(5)) { uris ->
+            if (uris.isNotEmpty()) {
+                Log.d("PhotoPicker", "Number of items selected: ${uris.size}")
+                selectedImageUris = uris
+                displaySelectedImages()
+            } else {
+                Log.d("PhotoPicker", "No media selected")
+            }
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,18 +57,11 @@ class EditApartmentFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val apartmentID = args.apartmentID
+
         apartmentViewModel.getApartment(apartmentID)
         apartmentViewModel.currentApartment.observe(viewLifecycleOwner) { apartment ->
-            if (apartment != null) {
+           apartment.let {
                 updateUI(apartment)
-            }
-        }
-
-        apartmentViewModel.getApartmentFirstPicture(apartmentID, apartmentViewModel.currentApartment.value!!.userID).observe(viewLifecycleOwner){url ->
-            binding.apartmentImageIV.load(url){
-                crossfade(true)
-                placeholder(R.drawable.ic_launcher_foreground)
-                error(R.drawable.ic_launcher_foreground)
             }
         }
 
@@ -58,22 +71,33 @@ class EditApartmentFragment : Fragment() {
         }
 
         binding.saveChangesBTN.setOnClickListener {
-            saveChanges()
             toggleEditMode(false)
         }
 
-
+        binding.submitChangesBTN.setOnClickListener {
+            saveChanges()
+            findNavController().navigateUp()
+        }
 
         binding.apartmentDetailsBackBTN.setOnClickListener {
             findNavController().navigateUp()
         }
 
         binding.changeImageFAB.setOnClickListener {
-            // launch image picker intent
+            pickMultipleMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        }
+        apartmentViewModel.currentApartment.observe(viewLifecycleOwner) { apartment ->
+            apartment?.let {
+                Log.d("NewApartment", apartment.apartmentID)
+                if (selectedImageUris.isNotEmpty()) {
+                    apartmentViewModel.uploadApartmentImages(selectedImageUris, it.apartmentID)
+                }
+            }
         }
 
+
         binding.deleteApartmentBTN.setOnClickListener {
-           showDeleteApartmentConfirmationDialog(apartmentID)
+            showDeleteApartmentConfirmationDialog(apartmentID)
         }
     }
 
@@ -100,6 +124,20 @@ class EditApartmentFragment : Fragment() {
         binding.saveChangesBTN.visibility = if (isEditing) View.VISIBLE else View.GONE
     }
 
+    private fun displaySelectedImages() {
+        binding.selectedImagesContainer.removeAllViews()
+
+        // Add new images
+        selectedImageUris.forEach { uri ->
+            val imageView = ImageView(requireContext()).apply {
+                layoutParams = ViewGroup.LayoutParams(200, 200)
+                scaleType = ImageView.ScaleType.CENTER_CROP
+                load(uri)
+            }
+            binding.selectedImagesContainer.addView(imageView)
+        }
+    }
+
     private fun saveChanges() {
         val newTitle = binding.apartmentTitleET.text.toString()
         val newCountry = binding.countryET.text.toString()
@@ -112,6 +150,9 @@ class EditApartmentFragment : Fragment() {
                 city = newCity
             )
             apartmentViewModel.updateApartment(updatedApartment)
+            if (selectedImageUris.isNotEmpty()) {
+                apartmentViewModel.uploadApartmentImages(selectedImageUris, apartment.apartmentID)
+            }
         }
     }
 

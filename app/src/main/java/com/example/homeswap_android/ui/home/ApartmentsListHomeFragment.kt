@@ -46,12 +46,15 @@ class ApartmentsListHomeFragment : Fragment() {
         apartmentAdapter = ApartmentAdapter(
             emptyList(),
             itemClickedCallback,
-            onLikeClickListener, apartmentsViewModel
+            onLikeClickListener
         )
         binding.apartmentListRV.adapter = apartmentAdapter
 
         apartmentsViewModel.apartments.observe(viewLifecycleOwner) { apartments ->
             apartmentAdapter.updateApartments(apartments)
+           for(apartment in apartments){
+               Log.d("CoverPics", apartment.coverPicture)
+           }
         }
 
     }

@@ -64,7 +64,7 @@ class AddApartmentBasicDetailsFragment : Fragment() {
             val address = binding.addressET.text.toString()
             val startDate = selectedStartDate
             val endDate = selectedEndDate
-            val coverPicture = selectedImageUris.firstOrNull().toString()
+
 
             val newApartment = Apartment(
                 title = title,
@@ -75,19 +75,32 @@ class AddApartmentBasicDetailsFragment : Fragment() {
                 address = address,
                 startDate = startDate,
                 endDate = endDate,
-                coverPicture = coverPicture
             )
 
             addApartmentViewModel.addApartment(newApartment)
         }
 
-        addApartmentViewModel.newAddedApartment.observe(viewLifecycleOwner) { apartment ->
-            apartment?.let {
+        addApartmentViewModel.newAddedApartment.observe(viewLifecycleOwner) { newApartment ->
+            newApartment?.let { apartment ->
                 Log.d("NewApartment", apartment.apartmentID)
                 if (selectedImageUris.isNotEmpty()) {
-                    apartmentsViewModel.uploadApartmentImages(selectedImageUris, it.apartmentID)
+                    apartmentsViewModel.uploadApartmentImages(selectedImageUris, apartment.apartmentID)
+                        .observe(viewLifecycleOwner) { uploadedUrls ->
+                            if (uploadedUrls.isNotEmpty()) {
+                                // Images uploaded successfully, now get the first picture
+                                apartmentsViewModel.getApartmentFirstPicture(apartment.apartmentID, apartment.userID)
+                                    .observe(viewLifecycleOwner) { firstPictureUrl ->
+                                        apartment.coverPicture = firstPictureUrl ?: ""
+                                        Log.d("FirstPicAddApartment", apartment.coverPicture)
+                                        findNavController().navigate(R.id.addApartmentAdditionalDetailsFragment)
+                                    }
+                            } else {
+                                Log.e("UploadError", "Failed to upload images")
+                            }
+                        }
+                } else {
+                    findNavController().navigate(R.id.addApartmentAdditionalDetailsFragment)
                 }
-                findNavController().navigate(R.id.addApartmentAdditionalDetailsFragment)
             }
         }
 
@@ -106,10 +119,8 @@ class AddApartmentBasicDetailsFragment : Fragment() {
 
 
     private fun displaySelectedImages() {
-        // Clear existing images
         binding.selectedImagesContainer.removeAllViews()
 
-        // Add new images
         selectedImageUris.forEach { uri ->
             val imageView = ImageView(requireContext()).apply {
                 layoutParams = ViewGroup.LayoutParams(200, 200)  // Set appropriate size

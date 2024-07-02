@@ -41,7 +41,7 @@ class FavoritesFragment : Fragment() {
             apartmentsViewModel.loadLikedApartments()
         }
 
-        apartmentAdapter = ApartmentAdapter(emptyList(), itemClickedCallback, onLikeClickListener, apartmentsViewModel)
+        apartmentAdapter = ApartmentAdapter(emptyList(), itemClickedCallback, onLikeClickListener)
         binding.favoriteApartmentsRV.adapter = apartmentAdapter
 
         apartmentsViewModel.likedApartments.observe(viewLifecycleOwner) { likedApartments ->

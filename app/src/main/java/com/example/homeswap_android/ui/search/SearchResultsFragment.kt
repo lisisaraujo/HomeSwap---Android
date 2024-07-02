@@ -44,7 +44,7 @@ class SearchResultsFragment : Fragment() {
         apartmentAdapter = ApartmentAdapter(
             emptyList(),
             itemClickedCallback,
-            onLikeClickListener, apartmentsViewModel
+            onLikeClickListener
         )
         binding.searchResultRV.adapter = apartmentAdapter
 

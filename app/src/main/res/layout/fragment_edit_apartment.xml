@@ -67,15 +67,34 @@
 
         </com.google.android.material.card.MaterialCardView>
 
+        <HorizontalScrollView
+            android:id="@+id/horizontalScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/apartmentDetailsCV">
+
+
+            <LinearLayout
+                android:id="@+id/selectedImagesContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" />
+
+        </HorizontalScrollView>
+
         <TextView
             android:id="@+id/apartmentTitleTV"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
+            android:layout_marginTop="16dp"
             android:textSize="20sp"
             app:layout_constraintEnd_toStartOf="@+id/editButton"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/apartmentDetailsCV"
+            app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView"
             tools:text="Apartment Title" />
 
         <TextView
@@ -105,8 +124,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Edit"
+            app:layout_constraintBottom_toBottomOf="@+id/apartmentTitleTV"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/apartmentDetailsCV" />
+            app:layout_constraintTop_toTopOf="@+id/apartmentTitleTV" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/apartmentTitleTIL"
@@ -174,19 +194,33 @@
             app:layout_constraintTop_toBottomOf="@+id/cityTIL" />
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/submitChangesBTN"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Submit Changes"
+            android:textColor="@color/background_card"
+            app:cornerRadius="24dp"
+            app:layout_constraintBottom_toTopOf="@+id/deleteApartmentBTN"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cityTV" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/deleteApartmentBTN"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             android:text="Delete Apartment"
             android:textColor="@color/design_default_color_error"
             app:cornerRadius="24dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:strokeColor="@color/design_default_color_error" />
-
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

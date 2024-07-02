@@ -48,7 +48,7 @@ class MyListingsFragment : Fragment() {
         }
 
 
-        editApartmentAdapter = EditApartmentAdapter(emptyList(), itemClickedCallback, apartmentViewModel)
+        editApartmentAdapter = EditApartmentAdapter(emptyList(), itemClickedCallback)
 
         binding.myListingsRV.adapter = editApartmentAdapter
 
