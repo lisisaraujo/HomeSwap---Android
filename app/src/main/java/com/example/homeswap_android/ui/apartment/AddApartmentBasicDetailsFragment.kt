@@ -84,15 +84,23 @@ class AddApartmentBasicDetailsFragment : Fragment() {
             newApartment?.let { apartment ->
                 Log.d("NewApartment", apartment.apartmentID)
                 if (selectedImageUris.isNotEmpty()) {
-                    apartmentsViewModel.uploadApartmentImages(selectedImageUris, apartment.apartmentID)
+                    apartmentsViewModel.uploadApartmentImages(
+                        selectedImageUris,
+                        apartment.apartmentID
+                    )
                         .observe(viewLifecycleOwner) { uploadedUrls ->
                             if (uploadedUrls.isNotEmpty()) {
-                                // Images uploaded successfully, now get the first picture
-                                apartmentsViewModel.getApartmentFirstPicture(apartment.apartmentID, apartment.userID)
+                                apartmentsViewModel.getApartmentFirstPicture(
+                                    apartment.apartmentID,
+                                    apartment.userID
+                                )
                                     .observe(viewLifecycleOwner) { firstPictureUrl ->
-                                        apartment.coverPicture = firstPictureUrl ?: ""
-                                        Log.d("FirstPicAddApartment", apartment.coverPicture)
-                                        findNavController().navigate(R.id.addApartmentAdditionalDetailsFragment)
+                                        Log.d("CoverPicURL", firstPictureUrl.toString())
+                                        firstPictureUrl.let {
+                                            apartment.coverPicture = firstPictureUrl ?: ""
+                                            Log.d("FirstPicAddApartment", apartment.coverPicture)
+                                            findNavController().navigate(R.id.addApartmentAdditionalDetailsFragment)
+                                        }
                                     }
                             } else {
                                 Log.e("UploadError", "Failed to upload images")
@@ -150,4 +158,5 @@ class AddApartmentBasicDetailsFragment : Fragment() {
         val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         return format.format(utc.time)
     }
-    }
+
+}

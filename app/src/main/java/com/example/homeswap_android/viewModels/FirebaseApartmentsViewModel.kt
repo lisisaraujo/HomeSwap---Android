@@ -60,12 +60,18 @@ class FirebaseApartmentsViewModel : ViewModel() {
     fun getApartmentFirstPicture(apartmentID: String, userID: String): LiveData<String?> {
         val firstPic = MutableLiveData<String?>()
         viewModelScope.launch {
-            firstPic.value = apartmentRepository.getApartmentFirstPicture(apartmentID, userID)
-            Log.d("FirstPicVM", firstPic.value.toString())
-
+            try {
+                val result = apartmentRepository.getApartmentFirstPicture(apartmentID, userID)
+                firstPic.value = result
+                Log.d("FirstPicVM", result ?: "No picture found")
+            } catch (e: Exception) {
+                Log.e("FirstPicVM", "Error getting first picture", e)
+                firstPic.value = null
+            }
         }
         return firstPic
     }
+
 
     fun uploadApartmentImages(uris: List<Uri>, apartmentID: String): LiveData<List<String>> {
         val resultLiveData = MutableLiveData<List<String>>()
@@ -86,20 +92,16 @@ class FirebaseApartmentsViewModel : ViewModel() {
         }
     }
 
+    private val _deletionResult = MutableLiveData<Boolean>()
+    val deletionResult: LiveData<Boolean> = _deletionResult
 
-    fun deleteApartment(apartmentID: String) {
-        apartmentRepository.deleteApartment(apartmentID) { success ->
-            if (success) {
-                auth.currentUser?.uid?.let { userId ->
-                    getUserApartments(userId)
-                } ?: run {
-                    Log.e(TAG, "User is not authenticated")
-                }
-            } else {
-                Log.e(TAG, "Error deleting apartment")
-            }
+    fun deleteApartment(apartmentID: String, userID: String) {
+        viewModelScope.launch {
+            val result = apartmentRepository.deleteApartment(apartmentID, userID)
+            _deletionResult.postValue(result)
         }
     }
+
 
     fun toggleLike(apartment: Apartment) {
         val updatedApartment = apartment.copy(liked = !apartment.liked)

@@ -1,5 +1,6 @@
 package com.example.homeswap_android.data.repositories
 
+import android.content.ContentValues
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -12,15 +13,18 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageException
 import com.google.firebase.storage.component1
 import com.google.firebase.storage.component2
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 val TAG = "ApartmentRepository"
+
 class ApartmentRepository(
     private val auth: FirebaseAuth,
     private val storage: FirebaseStorage,
@@ -102,35 +106,23 @@ class ApartmentRepository(
         return picturesLiveData
     }
 
-    suspend fun getApartmentFirstPicture(apartmentID: String, userID: String): String {
-        var pictureURL: String? = ""
-        val apartmentPicturesRef = storage.reference.child("images/$userID/apartments/$apartmentID")
 
+    suspend fun getApartmentFirstPicture(apartmentID: String, userID: String): String? =
         withContext(Dispatchers.IO) {
             try {
-                apartmentPicturesRef.listAll().addOnSuccessListener { (items, _) ->
-                    if (items.isNotEmpty()) {
-                        items.first().downloadUrl.addOnSuccessListener { uri ->
-                            pictureURL = uri.toString()
-                        }.addOnFailureListener { exception ->
-                            Log.e(TAG, "Error getting download URL: ${exception.message}")
-                            pictureURL = null
-                        }
-                    } else {
-                        pictureURL = null
-                    }
-                }.addOnFailureListener { exception ->
-                    Log.e(TAG, "Error listing images: ${exception.message}")
-                    pictureURL = null
+                val apartmentPicturesRef =
+                    storage.reference.child("images/$userID/apartments/$apartmentID")
+                val listResult = apartmentPicturesRef.listAll().await()
+                if (listResult.items.isNotEmpty()) {
+                    listResult.items.first().downloadUrl.await().toString()
+                } else {
+                    null
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "Unexpected error: ${e.message}")
-                pictureURL = (null)
+                Log.e(TAG, "Error getting first picture: ${e.message}")
+                null
             }
         }
-
-        return pictureURL!!
-    }
 
 
     fun addApartment(apartment: Apartment, onComplete: (Apartment?) -> Unit) {
@@ -158,7 +150,11 @@ class ApartmentRepository(
 
     }
 
-    fun uploadApartmentImages(uris: List<Uri>, apartmentID: String, onComplete: (List<String>) -> Unit) {
+    fun uploadApartmentImages(
+        uris: List<Uri>,
+        apartmentID: String,
+        onComplete: (List<String>) -> Unit
+    ) {
         val user = auth.currentUser
         if (user == null) {
             Log.e(TAG, "No user logged in")
@@ -167,7 +163,8 @@ class ApartmentRepository(
         }
 
         val uploadTasks = uris.mapIndexed { index, uri ->
-            val imageRef = storage.reference.child("images/${user.uid}/apartments/$apartmentID/image_$index")
+            val imageRef =
+                storage.reference.child("images/${user.uid}/apartments/$apartmentID/image_$index")
             imageRef.putFile(uri).continueWithTask { task ->
                 if (!task.isSuccessful) {
                     task.exception?.let { throw it }
@@ -204,16 +201,43 @@ class ApartmentRepository(
     }
 
 
-    fun deleteApartment(apartmentID: String, onComplete: (Boolean) -> Unit) {
-        apartmentsCollectionReference.document(apartmentID).delete()
-            .addOnSuccessListener {
-                onComplete(true)
+    private suspend fun deleteApartmentPictures(apartmentID: String, userID: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val apartmentPicturesRef = storage.reference.child("images/$userID/apartments/$apartmentID")
+                val listResult = apartmentPicturesRef.listAll().await()
+
+                listResult.items.forEach { item ->
+                    item.delete().await()
+                }
+
+                true
+            } catch (e: Exception) {
+                Log.e(TAG, "Error deleting apartment pictures: ${e.message}")
+                false
             }
-            .addOnFailureListener { exception ->
-                Log.e(TAG, "Error deleting apartment: ${exception.message}")
-                onComplete(false)
-            }
+        }
     }
+
+    suspend fun deleteApartment(apartmentID: String, userID: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            val picturesDeleted = deleteApartmentPictures(apartmentID, userID)
+            if (!picturesDeleted) {
+                Log.w(TAG, "Failed to delete pictures for apartment $apartmentID")
+            }
+
+            try {
+                apartmentsCollectionReference.document(apartmentID).delete().await()
+                Log.d(TAG, "Apartment document $apartmentID deleted successfully")
+                true
+            } catch (e: Exception) {
+                Log.e(TAG, "Error deleting apartment document $apartmentID: ${e.message}")
+                false
+            }
+        }
+    }
+
+
 
     fun updateApartment(apartment: Apartment) {
         apartmentsCollectionReference.document(apartment.apartmentID).set(apartment)

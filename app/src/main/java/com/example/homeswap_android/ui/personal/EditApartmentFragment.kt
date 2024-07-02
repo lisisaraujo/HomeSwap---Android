@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -57,6 +58,7 @@ class EditApartmentFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val apartmentID = args.apartmentID
+        var userID = ""
 
         apartmentViewModel.getApartment(apartmentID)
         apartmentViewModel.currentApartment.observe(viewLifecycleOwner) { apartment ->
@@ -89,15 +91,24 @@ class EditApartmentFragment : Fragment() {
         apartmentViewModel.currentApartment.observe(viewLifecycleOwner) { apartment ->
             apartment?.let {
                 Log.d("NewApartment", apartment.apartmentID)
+                userID = apartment.userID
                 if (selectedImageUris.isNotEmpty()) {
                     apartmentViewModel.uploadApartmentImages(selectedImageUris, it.apartmentID)
                 }
             }
         }
 
+        apartmentViewModel.deletionResult.observe(viewLifecycleOwner) { success ->
+            if (success) {
+                Toast.makeText(context, "Apartment deleted successfully", Toast.LENGTH_SHORT).show()
+                findNavController().navigate(R.id.myListingsFragment)
+            } else {
+                Toast.makeText(context, "Failed to delete apartment", Toast.LENGTH_LONG).show()
+            }
+        }
 
         binding.deleteApartmentBTN.setOnClickListener {
-            showDeleteApartmentConfirmationDialog(apartmentID)
+            showDeleteApartmentConfirmationDialog(apartmentID, userID)
         }
     }
 
@@ -156,13 +167,12 @@ class EditApartmentFragment : Fragment() {
         }
     }
 
-    private fun showDeleteApartmentConfirmationDialog(apartmentID: String) {
+    private fun showDeleteApartmentConfirmationDialog(apartmentID: String, userID: String) {
         AlertDialog.Builder(requireContext())
             .setTitle("Delete Apartment")
             .setMessage("Are you sure you want to delete this apartment listing? This is a permanent action and all data related to this listing will be permanently deleted.")
             .setPositiveButton("Delete") { _, _ ->
-                apartmentViewModel.deleteApartment(apartmentID)
-                findNavController().navigate(R.id.myListingsFragment)
+                apartmentViewModel.deleteApartment(apartmentID, userID)
             }
             .setNegativeButton("Cancel", null)
             .setIcon(android.R.drawable.ic_dialog_alert)
