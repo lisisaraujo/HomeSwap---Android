@@ -96,6 +96,9 @@ dependencies {
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation("com.google.firebase:firebase-appcheck-debug")
 
+    // circle image view
+    implementation ("de.hdodenhof:circleimageview:3.1.0")
+
 
 
 }

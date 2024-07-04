@@ -106,24 +106,6 @@ class ApartmentRepository(
         return picturesLiveData
     }
 
-
-//    suspend fun getApartmentFirstPicture(apartmentID: String, userID: String): String? =
-//        withContext(Dispatchers.IO) {
-//            try {
-//                val apartmentPicturesRef =
-//                    storage.reference.child("images/$userID/apartments/$apartmentID")
-//                val listResult = apartmentPicturesRef.listAll().await()
-//                if (listResult.items.isNotEmpty()) {
-//                    listResult.items.first().downloadUrl.await().toString()
-//                } else {
-//                    null
-//                }
-//            } catch (e: Exception) {
-//                Log.e(TAG, "Error getting first picture: ${e.message}")
-//                null
-//            }
-//        }
-
     fun uploadApartmentImages(
         uris: List<Uri>,
         apartmentID: String,

@@ -1,7 +1,7 @@
 package com.example.homeswap_android.data.models
 
-data class ApartmentReview(
-    val apartmentID: String = "",
+data class UserReview(
+    val userID: String = "",
     override val reviewType: String = "",
     override val reviewID: String = "",
     override val reviewerID: String = "",

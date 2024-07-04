@@ -61,9 +61,6 @@ class HomeFragment : Fragment() {
             override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
 
-
-        Log.d("TabChangeHome", args.isApartments.toString())
-
         if (args.isUsers) {
             binding.tabLayout.selectTab(binding.tabLayout.getTabAt(1))
             binding.viewPager.setCurrentItem(1, false)

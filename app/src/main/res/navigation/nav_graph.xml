@@ -66,6 +66,9 @@
         <action
             android:id="@+id/action_apartmentDetailsFragment_to_apartmentPicturesFragment"
             app:destination="@id/apartmentPicturesFragment" />
+        <action
+            android:id="@+id/action_apartmentDetailsFragment_to_reviewsFragment"
+            app:destination="@id/reviewsFragment" />
     </fragment>
     <fragment
         android:id="@+id/apartmentsListHomeFragment"
@@ -111,6 +114,9 @@
         <action
             android:id="@+id/action_userDetailsFragment_to_apartmentDetailsFragment"
             app:destination="@id/apartmentDetailsFragment" />
+        <action
+            android:id="@+id/action_userDetailsFragment_to_reviewsFragment"
+            app:destination="@id/reviewsFragment" />
     </fragment>
     <fragment
         android:id="@+id/myListingsFragment"
@@ -188,6 +194,37 @@
         tools:layout="@layout/fragment_apartment_pictures" >
         <argument
             android:name="apartmentID"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/reviewsFragment"
+        android:name="com.example.homeswap_android.ui.reviews.ReviewsFragment"
+        android:label="ReviewsFragment"
+        tools:layout="@layout/fragment_review">
+        <argument
+            android:name="apartmentID"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="userID"
+            app:argType="string"
+            app:nullable="true" />
+        <action
+            android:id="@+id/action_reviewsFragment_to_addReviewFragment"
+            app:destination="@id/addReviewFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addReviewFragment"
+        android:name="com.example.homeswap_android.ui.reviews.AddReviewFragment"
+        android:label="fragment_add_review"
+        tools:layout="@layout/fragment_add_review" >
+        <argument
+            android:name="apartmentID"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="userID"
             app:argType="string"
             app:nullable="true" />
     </fragment>

@@ -6,6 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/cardview_light_background"
-    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
     tools:context=".ui.home.ApartmentsListHomeFragment"
     tools:listitem="@layout/apartment_list_item" />

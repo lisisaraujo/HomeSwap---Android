@@ -12,9 +12,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import coil.load
 import com.example.homeswap_android.R
+import com.example.homeswap_android.adapter.ReviewAdapter
+import com.example.homeswap_android.data.models.Review
 import com.example.homeswap_android.databinding.FragmentApartmentDetailsBinding
 import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
+import com.example.homeswap_android.viewModels.ReviewsViewModel
 
 
 class ApartmentDetailsFragment : Fragment() {
@@ -25,6 +28,8 @@ class ApartmentDetailsFragment : Fragment() {
     private val apartmentViewModel: FirebaseApartmentsViewModel by activityViewModels()
     private val userViewModel: FirebaseUsersViewModel by activityViewModels()
     private val args: ApartmentDetailsFragmentArgs by navArgs()
+    private var reviewAdapter = ReviewAdapter()
+    private val reviewsViewModel: ReviewsViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,6 +43,10 @@ class ApartmentDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+        reviewAdapter = ReviewAdapter()
+        binding.reviewsRV.adapter = reviewAdapter
+
         val apartmentID = args.apartmentID
 
         apartmentViewModel.getApartment(apartmentID)
@@ -45,10 +54,12 @@ class ApartmentDetailsFragment : Fragment() {
         apartmentViewModel.currentApartment.observe(viewLifecycleOwner) { apartment ->
 
             with(binding) {
-                typeOfHomeTV.text = (if(apartment.typeOfHome.isNotBlank()) apartment.typeOfHome else "-").toString()
+                typeOfHomeTV.text =
+                    (if (apartment.typeOfHome.isNotBlank()) apartment.typeOfHome else "-").toString()
                 roomsTV.text = "Rooms: ${apartment.rooms}"
                 maxGuestsTV.text = "Guests: ${apartment.maxGuests}"
-                petsAllowedTV.text = if (apartment.petsAllowed) "Pets Allowed" else "No Pets Allowed"
+                petsAllowedTV.text =
+                    if (apartment.petsAllowed) "Pets Allowed" else "No Pets Allowed"
                 homeOfficeTV.text = if (apartment.homeOffice) "Home Office" else "No Home Office"
                 hasWifiTV.text = if (apartment.hasWifi) "Wifi" else "No Wifi"
                 ratingTV.text = "Rating: ${apartment.rating}"
@@ -65,19 +76,41 @@ class ApartmentDetailsFragment : Fragment() {
 
         }
 
+        reviewsViewModel.getApartmentReviews(apartmentID)
+            .addSnapshotListener { apartmentReviews, error ->
+                if (error != null) {
+                    Log.e(TAG, "Error fetching apartment reviews", error)
+                    return@addSnapshotListener
+                }
+                val apartmentReviewsList =
+                    apartmentReviews?.toObjects(Review::class.java)
+                Log.d(TAG, apartmentReviewsList.toString())
+                reviewAdapter.submitList(apartmentReviewsList)
+                binding.reviewsTV.text = "Reviews (${apartmentReviewsList!!.size})"
+            }
+
+
         userViewModel.currentUserData.observe(viewLifecycleOwner) { user ->
             if (user != null) {
                 binding.userNameTV.text = user.name
-                binding.profilePicIV.load(user.profilePic)
+                binding.userProfilePicIV.load(user.profilePic)
             }
 
             binding.userDetailsCV.setOnClickListener {
-                findNavController().navigate(ApartmentDetailsFragmentDirections.actionApartmentDetailsFragmentToUserDetailsFragment(user!!.userID))
+                findNavController().navigate(
+                    ApartmentDetailsFragmentDirections.actionApartmentDetailsFragmentToUserDetailsFragment(
+                        user!!.userID
+                    )
+                )
             }
         }
 
         binding.apartmentDetailsBackBTN.setOnClickListener {
-            findNavController().navigate(ApartmentDetailsFragmentDirections.actionApartmentDetailsFragmentToHomeFragment(isApartments = true))
+            findNavController().navigate(
+                ApartmentDetailsFragmentDirections.actionApartmentDetailsFragmentToHomeFragment(
+                    isApartments = true
+                )
+            )
         }
 
         apartmentViewModel.currentApartment.observe(viewLifecycleOwner) {
@@ -85,15 +118,25 @@ class ApartmentDetailsFragment : Fragment() {
         }
 
         binding.apartmentDetailsLikeBTN.setOnClickListener {
-           apartmentViewModel.currentApartment.observe(viewLifecycleOwner){currentApartment ->
-              apartmentViewModel.toggleLike(currentApartment)
-               if (currentApartment.liked) binding.apartmentDetailsLikeBTN.setImageResource(R.drawable.baseline_favorite_24)
-                   else binding.apartmentDetailsLikeBTN.setImageResource(R.drawable.favorite_48px)
-               }
-           }
+            apartmentViewModel.currentApartment.observe(viewLifecycleOwner) { currentApartment ->
+                apartmentViewModel.toggleLike(currentApartment)
+                if (currentApartment.liked) binding.apartmentDetailsLikeBTN.setImageResource(R.drawable.baseline_favorite_24)
+                else binding.apartmentDetailsLikeBTN.setImageResource(R.drawable.favorite_48px)
+            }
+        }
 
         binding.apartmentImageIV.setOnClickListener {
-            findNavController().navigate(ApartmentDetailsFragmentDirections.actionApartmentDetailsFragmentToApartmentPicturesFragment(apartmentID))
+            findNavController().navigate(
+                ApartmentDetailsFragmentDirections.actionApartmentDetailsFragmentToApartmentPicturesFragment(
+                    apartmentID
+                )
+            )
         }
+
+
+        binding.reviewsTV.setOnClickListener {
+            findNavController().navigate(ApartmentDetailsFragmentDirections.actionApartmentDetailsFragmentToReviewsFragment(apartmentID = apartmentID, userID = null))
         }
+    }
+
     }
