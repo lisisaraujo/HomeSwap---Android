@@ -12,7 +12,7 @@ data class Apartment (
     val address: String = "",
     var startDate: String = "",
     var endDate: String = "",
-    var reviews: MutableList<ApartmentReview> = mutableListOf(),
+    var reviews: MutableList<Review> = mutableListOf(),
     var coverPicture: String = "",
     var liked: Boolean = false,
     var petsAllowed: Boolean = false,

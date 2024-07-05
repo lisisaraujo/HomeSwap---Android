@@ -10,9 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.example.homeswap_android.data.models.ApartmentReview
 import com.example.homeswap_android.data.models.Review
-import com.example.homeswap_android.data.models.UserReview
 import com.example.homeswap_android.databinding.FragmentAddReviewBinding
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 import com.example.homeswap_android.viewModels.ReviewsViewModel
@@ -48,25 +46,27 @@ class AddReviewFragment : Fragment() {
 
             val newReview = if (apartmentID != null) {
                 Log.d("ApartmentID", apartmentID)
-                ApartmentReview(
+                Review(
+                    reviewType = "apartment",
                     reviewerID = usersViewModel.currentUser.value!!.uid,
                     reviewerName = usersViewModel.currentUserData.value!!.name,
                     review = review,
                     date = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()),
                     rating = rating,
                     reviewerProfilePic = usersViewModel.currentUserData.value!!.profilePic,
-                    apartmentID = apartmentID
+                    destinationID = apartmentID
                 )
             } else {
                 Log.d("UserID", userID!!)
-                UserReview(
+                Review(
+                    reviewType = "user",
                     reviewerID = usersViewModel.currentUser.value!!.uid,
                     reviewerName = usersViewModel.currentUserData.value!!.name,
                     review = review,
                     date = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()),
                     rating = rating,
                     reviewerProfilePic = usersViewModel.currentUserData.value!!.profilePic,
-                    userID = userID
+                    destinationID = userID
                 )
             }
 

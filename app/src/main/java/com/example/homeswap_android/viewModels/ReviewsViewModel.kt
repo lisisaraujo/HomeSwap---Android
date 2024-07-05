@@ -1,11 +1,7 @@
 package com.example.homeswap_android.viewModels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.example.homeswap_android.data.models.ApartmentReview
 import com.example.homeswap_android.data.models.Review
-import com.example.homeswap_android.data.models.UserReview
-import com.example.homeswap_android.data.repositories.ApartmentRepository
 import com.example.homeswap_android.data.repositories.ReviewsRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore

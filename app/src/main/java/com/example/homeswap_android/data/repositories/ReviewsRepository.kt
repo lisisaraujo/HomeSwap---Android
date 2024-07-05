@@ -3,10 +3,7 @@ package com.example.homeswap_android.data.repositories
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.homeswap_android.data.models.Apartment
-import com.example.homeswap_android.data.models.ApartmentReview
 import com.example.homeswap_android.data.models.Review
-import com.example.homeswap_android.data.models.UserReview
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.Query
@@ -25,22 +22,22 @@ class ReviewsRepository(
     fun getUserReviews(userID: String): Query {
         return reviewsCollectionReference
             .whereEqualTo("reviewType", "user")
-            .whereEqualTo("userID", userID)
+            .whereEqualTo("destinationID", userID)
     }
 
     fun getApartmentReviews(apartmentID: String): Query {
         return reviewsCollectionReference
             .whereEqualTo("reviewType", "apartment")
-            .whereEqualTo("apartmentID", apartmentID)
+            .whereEqualTo("destinationID", apartmentID)
     }
 
     fun addReview(review: Review, onSuccess: () -> Unit, onFailure: (Exception) -> Unit){
         val currentUser = auth.currentUser
         currentUser?.let {
-            val reviewMap = when (review) {
-                is ApartmentReview -> mapOf(
-                    "reviewType" to "apartment",
-                    "apartmentID" to review.apartmentID,
+            val reviewMap =
+             mapOf(
+                    "reviewType" to review.reviewType,
+                    "destinationID" to review.destinationID,
                     "reviewID" to review.reviewID,
                     "reviewerID" to review.reviewerID,
                     "reviewerName" to review.reviewerName,
@@ -49,21 +46,6 @@ class ReviewsRepository(
                     "rating" to review.rating,
                     "reviewerProfilePic" to review.reviewerProfilePic
                 )
-
-                is UserReview -> mapOf(
-                    "reviewType" to "user",
-                    "userID" to review.userID,
-                    "reviewID" to review.reviewID,
-                    "reviewerID" to review.reviewerID,
-                    "reviewerName" to review.reviewerName,
-                    "review" to review.review,
-                    "date" to review.date,
-                    "rating" to review.rating,
-                    "reviewerProfilePic" to review.reviewerProfilePic
-                )
-
-                else -> throw IllegalArgumentException("Unsupported review type")
-            }
 
             reviewsCollectionReference.add(reviewMap)
                 .addOnSuccessListener { documentReference ->
