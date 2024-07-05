@@ -1,6 +1,7 @@
 package com.example.homeswap_android.ui.user
 
 import ApartmentAdapter
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -12,18 +13,24 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import coil.load
 import com.example.homeswap_android.R
+import com.example.homeswap_android.adapter.ReviewAdapter
 import com.example.homeswap_android.data.models.Apartment
+import com.example.homeswap_android.data.models.Review
 import com.example.homeswap_android.databinding.FragmentUserDetailsBinding
+import com.example.homeswap_android.ui.apartment.ApartmentDetailsFragmentDirections
 import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
+import com.example.homeswap_android.viewModels.ReviewsViewModel
 
 class UserDetailsFragment : Fragment() {
     private lateinit var binding: FragmentUserDetailsBinding
     private val apartmentViewModel: FirebaseApartmentsViewModel by activityViewModels()
     private val userViewModel: FirebaseUsersViewModel by activityViewModels()
+    private val reviewsViewModel: ReviewsViewModel by activityViewModels()
     private val args: UserDetailsFragmentArgs by navArgs()
 
     private lateinit var apartmentAdapter: ApartmentAdapter
+    private lateinit var reviewsAdapter: ReviewAdapter
 
     val TAG = "UserDetailsFragment"
     override fun onCreateView(
@@ -34,8 +41,12 @@ class UserDetailsFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        reviewsAdapter = ReviewAdapter()
+        binding.userReviewsRV.adapter = reviewsAdapter
 
         val userID = args.userID!!
 
@@ -74,6 +85,23 @@ class UserDetailsFragment : Fragment() {
 
         userViewModel.currentUser.observe(viewLifecycleOwner) {
             if (it == null) findNavController().navigate(R.id.loginFragment)
+        }
+
+        reviewsViewModel.getUserReviews(userID)
+            .addSnapshotListener { userReviews, error ->
+                if (error != null) {
+                    Log.e(TAG, "Error fetching apartment reviews", error)
+                    return@addSnapshotListener
+                }
+                val userReviewsList =
+                    userReviews?.toObjects(Review::class.java)
+                Log.d(TAG, userReviewsList.toString())
+                reviewsAdapter.submitList(userReviewsList)
+                binding.userReviewsTV.text = "Reviews (${userReviewsList!!.size})"
+            }
+
+        binding.userReviewsTV.setOnClickListener {
+            findNavController().navigate(UserDetailsFragmentDirections.actionUserDetailsFragmentToReviewsFragment(apartmentID = null, userID = userID))
         }
     }
 }

@@ -21,9 +21,13 @@ class ReviewsRepository(
     private val _reviews = MutableLiveData<List<Review>>()
     val reviews: LiveData<List<Review>> = _reviews
 
-    private val _newAddedReview = MutableLiveData<Review>()
-    val newAddedReview: LiveData<Review> = _newAddedReview
+    private val _newAddedReview = MutableLiveData<Review?>()
+    val newAddedReview: LiveData<Review?> = _newAddedReview
 
+
+    fun resetNewAddedReview() {
+        _newAddedReview.value = null
+    }
 
     fun getUserReviews(userID: String): Query {
         return reviewsCollectionReference
@@ -86,5 +90,8 @@ class ReviewsRepository(
                     Log.e(TAG, "Error adding review: ${exception.message}")
                 }
         }
+
     }
+
+
     }

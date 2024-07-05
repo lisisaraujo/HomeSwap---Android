@@ -26,6 +26,10 @@ class ReviewsViewModel : ViewModel() {
     val newAddedReview = reviewsRepository.newAddedReview
 
 
+    fun resetNewAddedReview() {
+        reviewsRepository.resetNewAddedReview()
+    }
+
     fun getUserReviews(userID: String): Query {
         return reviewsRepository.getUserReviews(userID)
     }

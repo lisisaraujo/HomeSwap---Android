@@ -28,7 +28,7 @@ class ApartmentDetailsFragment : Fragment() {
     private val apartmentViewModel: FirebaseApartmentsViewModel by activityViewModels()
     private val userViewModel: FirebaseUsersViewModel by activityViewModels()
     private val args: ApartmentDetailsFragmentArgs by navArgs()
-    private var reviewAdapter = ReviewAdapter()
+    private lateinit var reviewsAdapter: ReviewAdapter
     private val reviewsViewModel: ReviewsViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -44,8 +44,8 @@ class ApartmentDetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-        reviewAdapter = ReviewAdapter()
-        binding.reviewsRV.adapter = reviewAdapter
+        reviewsAdapter = ReviewAdapter()
+        binding.reviewsRV.adapter = reviewsAdapter
 
         val apartmentID = args.apartmentID
 
@@ -85,7 +85,7 @@ class ApartmentDetailsFragment : Fragment() {
                 val apartmentReviewsList =
                     apartmentReviews?.toObjects(Review::class.java)
                 Log.d(TAG, apartmentReviewsList.toString())
-                reviewAdapter.submitList(apartmentReviewsList)
+                reviewsAdapter.submitList(apartmentReviewsList)
                 binding.reviewsTV.text = "Reviews (${apartmentReviewsList!!.size})"
             }
 

@@ -49,6 +49,7 @@ val TAG = "AddReviewFragment"
 
 
             val newReview = if (apartmentID != null) {
+                Log.d("ApartmentID", apartmentID)
                 ApartmentReview(
                     reviewerID = usersViewModel.currentUser.value!!.uid,
                     reviewerName = usersViewModel.currentUserData.value!!.name,
@@ -56,9 +57,10 @@ val TAG = "AddReviewFragment"
                     date = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()),
                     rating = rating,
                     reviewerProfilePic = usersViewModel.currentUserData.value!!.profilePic,
-                    apartmentID = apartmentID!!
+                    apartmentID = apartmentID
                 )
             } else {
+                Log.d("UserID", userID!!)
                 UserReview(
                     reviewerID = usersViewModel.currentUser.value!!.uid,
                     reviewerName = usersViewModel.currentUserData.value!!.name,
@@ -66,7 +68,7 @@ val TAG = "AddReviewFragment"
                     date = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()),
                     rating = rating,
                     reviewerProfilePic = usersViewModel.currentUserData.value!!.profilePic,
-                    userID = userID!!
+                    userID = userID
                 )
             }
             reviewsViewModel.addReview(newReview)
@@ -75,7 +77,10 @@ val TAG = "AddReviewFragment"
 
         reviewsViewModel.newAddedReview.observe(viewLifecycleOwner){review ->
             review.let {
-                Log.d(TAG, review.review)
+                if (review != null) {
+                    Log.d(TAG, review.review)
+                }
+                reviewsViewModel.resetNewAddedReview()
                 findNavController().navigateUp()
             }
         }

@@ -81,4 +81,30 @@
         tools:listitem="@layout/apartment_list_item"
         tools:itemCount="4" />
 
+    <TextView
+        android:id="@+id/userReviewsTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text=""
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/userApartmentsRV"
+        app:layout_constraintTop_toBottomOf="@+id/userApartmentsRV" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/userReviewsRV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@color/cardview_light_background"
+        android:orientation="horizontal"
+        android:clipToPadding="false"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userReviewsTV"
+        tools:listitem="@layout/review_list_item" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
