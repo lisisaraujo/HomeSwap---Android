@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -19,11 +20,9 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-//package com.example.homeswap_android.ui.reviews
-
 
 class AddReviewFragment : Fragment() {
-val TAG = "AddReviewFragment"
+    val TAG = "AddReviewFragment"
 
     private lateinit var binding: FragmentAddReviewBinding
     private val reviewsViewModel: ReviewsViewModel by activityViewModels()
@@ -46,7 +45,6 @@ val TAG = "AddReviewFragment"
         binding.submitButton.setOnClickListener {
             val review = binding.reviewET.text.toString()
             val rating = binding.ratingBar.rating
-
 
             val newReview = if (apartmentID != null) {
                 Log.d("ApartmentID", apartmentID)
@@ -71,18 +69,27 @@ val TAG = "AddReviewFragment"
                     userID = userID
                 )
             }
-            reviewsViewModel.addReview(newReview)
-        }
 
+            reviewsViewModel.addReview(
+                newReview,
+                onSuccess = {
+                    Toast.makeText(
+                        context,
+                        "Review submitted successfully.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    findNavController().navigateUp()
+                },
+                onFailure = { exception ->
 
-        reviewsViewModel.newAddedReview.observe(viewLifecycleOwner){review ->
-            review.let {
-                if (review != null) {
-                    Log.d(TAG, review.review)
+                    Log.e("AddReviewFragment", "Failed to add review: ${exception.message}")
+                    Toast.makeText(
+                        context,
+                        "Failed to add review. Please try again.",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
-                reviewsViewModel.resetNewAddedReview()
-                findNavController().navigateUp()
-            }
+            )
         }
     }
 }

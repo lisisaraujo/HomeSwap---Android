@@ -21,13 +21,6 @@ class ReviewsRepository(
     private val _reviews = MutableLiveData<List<Review>>()
     val reviews: LiveData<List<Review>> = _reviews
 
-    private val _newAddedReview = MutableLiveData<Review?>()
-    val newAddedReview: LiveData<Review?> = _newAddedReview
-
-
-    fun resetNewAddedReview() {
-        _newAddedReview.value = null
-    }
 
     fun getUserReviews(userID: String): Query {
         return reviewsCollectionReference
@@ -41,7 +34,7 @@ class ReviewsRepository(
             .whereEqualTo("apartmentID", apartmentID)
     }
 
-    fun addReview(review: Review) {
+    fun addReview(review: Review, onSuccess: () -> Unit, onFailure: (Exception) -> Unit){
         val currentUser = auth.currentUser
         currentUser?.let {
             val reviewMap = when (review) {
@@ -56,6 +49,7 @@ class ReviewsRepository(
                     "rating" to review.rating,
                     "reviewerProfilePic" to review.reviewerProfilePic
                 )
+
                 is UserReview -> mapOf(
                     "reviewType" to "user",
                     "userID" to review.userID,
@@ -67,31 +61,28 @@ class ReviewsRepository(
                     "rating" to review.rating,
                     "reviewerProfilePic" to review.reviewerProfilePic
                 )
+
                 else -> throw IllegalArgumentException("Unsupported review type")
             }
 
             reviewsCollectionReference.add(reviewMap)
                 .addOnSuccessListener { documentReference ->
-                    val updatedReview = when (review) {
-                        is ApartmentReview -> review.copy(reviewID = documentReference.id)
-                        is UserReview -> review.copy(reviewID = documentReference.id)
-                        else -> throw IllegalArgumentException("Unsupported review type")
-                    }
                     documentReference.update("reviewID", documentReference.id)
                         .addOnSuccessListener {
-                            _newAddedReview.postValue(updatedReview)
-                            Log.d(TAG, updatedReview.review)
+                            Log.d(TAG, "Review added successfully with ID: ${documentReference.id}")
+                            onSuccess()
                         }
                         .addOnFailureListener { exception ->
                             Log.e(TAG, "Error updating review ID: ${exception.message}")
+                            onFailure(exception)
                         }
                 }
                 .addOnFailureListener { exception ->
                     Log.e(TAG, "Error adding review: ${exception.message}")
+                    onFailure(exception)
                 }
         }
-
     }
 
 
-    }
+}

@@ -23,13 +23,6 @@ class ReviewsViewModel : ViewModel() {
     private val reviewsRepository =
         ReviewsRepository(auth, storage, reviewsCollectionReference)
 
-    val newAddedReview = reviewsRepository.newAddedReview
-
-
-    fun resetNewAddedReview() {
-        reviewsRepository.resetNewAddedReview()
-    }
-
     fun getUserReviews(userID: String): Query {
         return reviewsRepository.getUserReviews(userID)
     }
@@ -38,7 +31,7 @@ class ReviewsViewModel : ViewModel() {
         return reviewsRepository.getApartmentReviews(apartmentID)
     }
 
-    fun addReview(review: Review) {
-        reviewsRepository.addReview(review)
+    fun addReview(review: Review, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+        reviewsRepository.addReview(review, onSuccess, onFailure)
     }
 }
