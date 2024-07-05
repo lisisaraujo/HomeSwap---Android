@@ -74,16 +74,13 @@ class MainActivity : AppCompatActivity() {
 
                 if (navController.currentDestination?.id == R.id.usersListHomeFragment) {
                     val builder = AlertDialog.Builder(this@MainActivity)
-                    builder.setTitle("Bitte Bestätigen")
+                    builder.setTitle("Please confirm")
 
-                    builder.setPositiveButton("Ja") { _, _ ->
+                    builder.setPositiveButton("Yes") { _, _ ->
                         finish()
                     }
-
-                    builder.setNegativeButton("Nein") { _, _ ->
-
+                    builder.setNegativeButton("No") { _, _ ->
                     }
-
                     builder.show()
                 } else {
                     navController.navigateUp()

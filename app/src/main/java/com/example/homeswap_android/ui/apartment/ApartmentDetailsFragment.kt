@@ -52,92 +52,103 @@ class ApartmentDetailsFragment : Fragment() {
         apartmentViewModel.getApartment(apartmentID)
 
         apartmentViewModel.currentApartment.observe(viewLifecycleOwner) { apartment ->
+            if (apartment != null) {
+                with(binding) {
+                    typeOfHomeTV.text =
+                        (if (apartment.typeOfHome.isNotBlank()) apartment.typeOfHome else "-").toString()
+                    roomsTV.text = "Rooms: ${apartment.rooms}"
+                    maxGuestsTV.text = "Guests: ${apartment.maxGuests}"
+                    petsAllowedTV.text =
+                        if (apartment.petsAllowed) "Pets Allowed" else "No Pets Allowed"
+                    homeOfficeTV.text =
+                        if (apartment.homeOffice) "Home Office" else "No Home Office"
+                    hasWifiTV.text = if (apartment.hasWifi) "Wifi" else "No Wifi"
+                    ratingTV.text = "Rating: ${apartment.rating}"
+                    availabilityTV.text =
+                        "Available: ${apartment.startDate} to ${apartment.endDate}"
 
-            with(binding) {
-                typeOfHomeTV.text =
-                    (if (apartment.typeOfHome.isNotBlank()) apartment.typeOfHome else "-").toString()
-                roomsTV.text = "Rooms: ${apartment.rooms}"
-                maxGuestsTV.text = "Guests: ${apartment.maxGuests}"
-                petsAllowedTV.text =
-                    if (apartment.petsAllowed) "Pets Allowed" else "No Pets Allowed"
-                homeOfficeTV.text = if (apartment.homeOffice) "Home Office" else "No Home Office"
-                hasWifiTV.text = if (apartment.hasWifi) "Wifi" else "No Wifi"
-                ratingTV.text = "Rating: ${apartment.rating}"
-                availabilityTV.text = "Available: ${apartment.startDate} to ${apartment.endDate}"
-            }
+                    apartmentTitleTV.text = apartment.title
+                    apartmentImageIV.load(apartment.coverPicture)
+                    Log.d(TAG, "ApartmentCoverPic: ${apartment.coverPicture}")
 
-            apartment.let {
-                binding.apartmentTitleTV.text = apartment.title
-                binding.apartmentImageIV.load(apartment.coverPicture)
-                Log.d(TAG, "ApartmentCoverPic: ${apartment.coverPicture}")
-
-                val userID = apartment.userID
-                userViewModel.fetchUserData(userID)
-            }
-
-        }
-
-        reviewsViewModel.getApartmentReviews(apartmentID)
-            .addSnapshotListener { apartmentReviews, error ->
-                if (error != null) {
-                    Log.e(TAG, "Error fetching apartment reviews", error)
-                    return@addSnapshotListener
+                    val userID = apartment.userID
+                    userViewModel.fetchUserData(userID)
                 }
-                val apartmentReviewsList =
-                    apartmentReviews?.toObjects(Review::class.java)
-                Log.d(TAG, apartmentReviewsList.toString())
-                reviewsAdapter.submitList(apartmentReviewsList)
-                binding.reviewsTV.text = "Reviews (${apartmentReviewsList!!.size})"
             }
 
+            reviewsViewModel.getApartmentReviews(apartmentID)
+                .addSnapshotListener { apartmentReviews, error ->
+                    if (error != null) {
+                        Log.e(TAG, "Error fetching apartment reviews", error)
+                        return@addSnapshotListener
+                    }
+                    val apartmentReviewsList =
+                        apartmentReviews?.toObjects(Review::class.java)
+                    Log.d(TAG, apartmentReviewsList.toString())
+                    reviewsAdapter.submitList(apartmentReviewsList)
+                    binding.reviewsTV.text = "Reviews (${apartmentReviewsList!!.size})"
+                }
 
-        userViewModel.currentUserData.observe(viewLifecycleOwner) { user ->
-            if (user != null) {
-                binding.userNameTV.text = user.name
-                binding.userProfilePicIV.load(user.profilePic)
+
+            userViewModel.currentUserData.observe(viewLifecycleOwner) { user ->
+                if (user != null) {
+                    binding.userNameTV.text = user.name
+                    binding.userProfilePicIV.load(user.profilePic)
+                }
+
+                binding.userDetailsCV.setOnClickListener {
+                    findNavController().navigate(
+                        ApartmentDetailsFragmentDirections.actionApartmentDetailsFragmentToUserDetailsFragment(
+                            user!!.userID
+                        )
+                    )
+                }
             }
 
-            binding.userDetailsCV.setOnClickListener {
+            binding.apartmentDetailsBackBTN.setOnClickListener {
                 findNavController().navigate(
-                    ApartmentDetailsFragmentDirections.actionApartmentDetailsFragmentToUserDetailsFragment(
-                        user!!.userID
+                    ApartmentDetailsFragmentDirections.actionApartmentDetailsFragmentToHomeFragment(
+                        isApartments = true
+                    )
+                )
+            }
+
+            apartmentViewModel.currentApartment.observe(viewLifecycleOwner) {
+                if (it == null) findNavController().navigate(R.id.loginFragment)
+            }
+
+            binding.apartmentDetailsLikeBTN.setOnClickListener {
+                apartmentViewModel.currentApartment.observe(viewLifecycleOwner) { currentApartment ->
+                    if (currentApartment != null) {
+                        apartmentViewModel.toggleLike(currentApartment)
+                        if (currentApartment.liked) binding.apartmentDetailsLikeBTN.setImageResource(
+                            R.drawable.baseline_favorite_24
+                        )
+                        else binding.apartmentDetailsLikeBTN.setImageResource(R.drawable.favorite_48px)
+                    }
+
+                }
+
+            }
+
+            binding.apartmentImageIV.setOnClickListener {
+                findNavController().navigate(
+                    ApartmentDetailsFragmentDirections.actionApartmentDetailsFragmentToApartmentPicturesFragment(
+                        apartmentID
+                    )
+                )
+            }
+
+
+            binding.reviewsTV.setOnClickListener {
+                findNavController().navigate(
+                    ApartmentDetailsFragmentDirections.actionApartmentDetailsFragmentToReviewsFragment(
+                        apartmentID = apartmentID,
+                        userID = null
                     )
                 )
             }
         }
 
-        binding.apartmentDetailsBackBTN.setOnClickListener {
-            findNavController().navigate(
-                ApartmentDetailsFragmentDirections.actionApartmentDetailsFragmentToHomeFragment(
-                    isApartments = true
-                )
-            )
-        }
-
-        apartmentViewModel.currentApartment.observe(viewLifecycleOwner) {
-            if (it == null) findNavController().navigate(R.id.loginFragment)
-        }
-
-        binding.apartmentDetailsLikeBTN.setOnClickListener {
-            apartmentViewModel.currentApartment.observe(viewLifecycleOwner) { currentApartment ->
-                apartmentViewModel.toggleLike(currentApartment)
-                if (currentApartment.liked) binding.apartmentDetailsLikeBTN.setImageResource(R.drawable.baseline_favorite_24)
-                else binding.apartmentDetailsLikeBTN.setImageResource(R.drawable.favorite_48px)
-            }
-        }
-
-        binding.apartmentImageIV.setOnClickListener {
-            findNavController().navigate(
-                ApartmentDetailsFragmentDirections.actionApartmentDetailsFragmentToApartmentPicturesFragment(
-                    apartmentID
-                )
-            )
-        }
-
-
-        binding.reviewsTV.setOnClickListener {
-            findNavController().navigate(ApartmentDetailsFragmentDirections.actionApartmentDetailsFragmentToReviewsFragment(apartmentID = apartmentID, userID = null))
-        }
     }
-
-    }
+}

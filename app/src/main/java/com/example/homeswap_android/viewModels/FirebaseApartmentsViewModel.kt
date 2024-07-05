@@ -76,15 +76,18 @@ class FirebaseApartmentsViewModel : ViewModel() {
         }
     }
 
-
-    private val _deletionResult = MutableLiveData<Boolean>()
-    val deletionResult: LiveData<Boolean> = _deletionResult
-
-    fun deleteApartment(apartmentID: String, userID: String) {
-        viewModelScope.launch {
-           apartmentRepository.deleteApartment(apartmentID, userID)
-            _deletionResult.value = true
-        }
+    fun deleteApartment(
+        apartmentID: String,
+        userID: String,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        apartmentRepository.deleteApartment(
+            apartmentID,
+            userID,
+            onSuccess = onSuccess,
+            onFailure = onFailure
+        )
     }
 
     fun toggleLike(apartment: Apartment) {

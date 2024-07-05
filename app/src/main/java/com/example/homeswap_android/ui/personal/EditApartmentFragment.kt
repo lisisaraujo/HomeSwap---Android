@@ -63,7 +63,7 @@ class EditApartmentFragment : Fragment() {
         apartmentViewModel.getApartment(apartmentID)
 
         apartmentViewModel.currentApartment.observe(viewLifecycleOwner) { apartment ->
-            updateUI(apartment)
+         if(apartment != null) updateUI(apartment)
         }
 
 
@@ -94,15 +94,6 @@ class EditApartmentFragment : Fragment() {
                 if (selectedImageUris.isNotEmpty()) {
                     apartmentViewModel.uploadApartmentImages(selectedImageUris, it.apartmentID)
                 }
-            }
-        }
-
-        apartmentViewModel.deletionResult.observe(viewLifecycleOwner) { success ->
-            if (success) {
-                Toast.makeText(context, "Apartment deleted successfully", Toast.LENGTH_SHORT).show()
-                findNavController().navigate(R.id.myListingsFragment)
-            } else {
-                Toast.makeText(context, "Failed to delete apartment", Toast.LENGTH_LONG).show()
             }
         }
 
@@ -171,7 +162,18 @@ class EditApartmentFragment : Fragment() {
             .setTitle("Delete Apartment")
             .setMessage("Are you sure you want to delete this apartment listing? This is a permanent action and all data related to this listing will be permanently deleted.")
             .setPositiveButton("Delete") { _, _ ->
-                apartmentViewModel.deleteApartment(apartmentID, userID)
+                Toast.makeText(context, "Deleting apartment...", Toast.LENGTH_SHORT).show()
+                apartmentViewModel.deleteApartment(
+                    apartmentID,
+                    userID,
+                    onSuccess = {
+                        Toast.makeText(context, "Apartment deleted successfully", Toast.LENGTH_SHORT).show()
+                        findNavController().navigateUp()
+                    },
+                    onFailure = { exception ->
+                        Toast.makeText(context, "Failed to delete apartment: ${exception.message}", Toast.LENGTH_LONG).show()
+                    }
+                )
             }
             .setNegativeButton("Cancel", null)
             .setIcon(android.R.drawable.ic_dialog_alert)

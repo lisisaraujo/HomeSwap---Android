@@ -74,6 +74,10 @@ class ReviewsFragment : Fragment() {
                 )
             )
         }
+
+        binding.toolbar.setNavigationOnClickListener{
+            findNavController().navigateUp()
+        }
     }
 }
 

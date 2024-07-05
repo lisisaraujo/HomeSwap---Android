@@ -34,8 +34,8 @@ class ApartmentRepository(
     private val _apartments = MutableLiveData<List<Apartment>>()
     val apartments: LiveData<List<Apartment>> = _apartments
 
-    private val _currentApartment = MutableLiveData<Apartment>()
-    val currentApartment: LiveData<Apartment> = _currentApartment
+    private val _currentApartment = MutableLiveData<Apartment?>()
+    val currentApartment: LiveData<Apartment?> = _currentApartment
 
     private val _newAddedApartment = MutableLiveData<Apartment?>()
     val newAddedApartment: MutableLiveData<Apartment?> = _newAddedApartment
@@ -72,11 +72,17 @@ class ApartmentRepository(
     fun getApartment(apartmentID: String) {
         apartmentsCollectionReference.document(apartmentID).get()
             .addOnSuccessListener { documentSnapshot ->
-                val apartment = documentSnapshot.toObject(Apartment::class.java)
-                _currentApartment.postValue(apartment!!)
+                if (documentSnapshot.exists()) {
+                    val apartment = documentSnapshot.toObject(Apartment::class.java)
+                    _currentApartment.postValue(apartment)
+                } else {
+                    Log.d(TAG, "Apartment document does not exist for ID: $apartmentID")
+                    _currentApartment.postValue(null)
+                }
             }
             .addOnFailureListener { exception ->
                 Log.e(TAG, "Error fetching apartment: ${exception.message}")
+                _currentApartment.postValue(null)
             }
     }
 
@@ -118,7 +124,7 @@ class ApartmentRepository(
             return
         }
 
-       uris.mapIndexed { index, uri ->
+        uris.mapIndexed { index, uri ->
             val imageRef =
                 storage.reference.child("images/${user.uid}/apartments/$apartmentID/image_$index")
             imageRef.putFile(uri).addOnSuccessListener {
@@ -176,42 +182,87 @@ class ApartmentRepository(
     }
 
 
-    private suspend fun deleteApartmentPictures(apartmentID: String, userID: String): Boolean {
-        return withContext(Dispatchers.IO) {
-            try {
-                val apartmentPicturesRef =
-                    storage.reference.child("images/$userID/apartments/$apartmentID")
-                val listResult = apartmentPicturesRef.listAll().await()
+    private fun deleteApartmentPictures(
+        apartmentID: String,
+        userID: String,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        val apartmentPicturesRef = storage.reference.child("images/$userID/apartments/$apartmentID")
 
-                listResult.items.forEach { item ->
-                    item.delete().await()
+        apartmentPicturesRef.listAll()
+            .addOnSuccessListener { listResult ->
+                if (listResult.items.isEmpty()) {
+                    // no pictures to delete
+                    onSuccess()
+                    return@addOnSuccessListener
                 }
 
-                true
-            } catch (e: Exception) {
-                Log.e(TAG, "Error deleting apartment pictures: ${e.message}")
-                false
+                var deletedCount = 0
+                var hasError = false
+
+                listResult.items.forEach { item ->
+                    item.delete()
+                        .addOnSuccessListener {
+                            deletedCount++
+                            if (deletedCount == listResult.items.size && !hasError) {
+                                Log.d(TAG, "All apartment pictures deleted successfully")
+                                onSuccess()
+                            }
+                        }
+                        .addOnFailureListener { exception ->
+                            if (!hasError) {
+                                hasError = true
+                                Log.e(TAG, "Error deleting apartment picture: ${exception.message}")
+                                onFailure(exception)
+                            }
+                        }
+                }
             }
-        }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Error listing apartment pictures: ${exception.message}")
+                onFailure(exception)
+            }
     }
 
-    suspend fun deleteApartment(apartmentID: String, userID: String): Boolean {
-        return withContext(Dispatchers.IO) {
-            val picturesDeleted = deleteApartmentPictures(apartmentID, userID)
-            if (!picturesDeleted) {
-                Log.w(TAG, "Failed to delete pictures for apartment $apartmentID")
-            }
 
-            try {
-                apartmentsCollectionReference.document(apartmentID).delete().await()
-                Log.d(TAG, "Apartment document $apartmentID deleted successfully")
-                true
-            } catch (e: Exception) {
-                Log.e(TAG, "Error deleting apartment document $apartmentID: ${e.message}")
-                false
+    fun deleteApartment(
+        apartmentID: String,
+        userID: String,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        deleteApartmentPictures(
+            apartmentID,
+            userID,
+            onSuccess = {
+                //pictures deleted successfully, now delete the apartment
+                apartmentsCollectionReference.document(apartmentID).delete()
+                    .addOnSuccessListener {
+                        Log.d(TAG, "Apartment with ID $apartmentID deleted successfully")
+                        onSuccess()
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.e(TAG, "Error deleting apartment document: ${exception.message}")
+                        onFailure(exception)
+                    }
+            },
+            onFailure = { exception ->
+                Log.w(TAG, "Failed to delete pictures for apartment $apartmentID: ${exception.message}")
+                //proceed with deleting the apartment document even if picture deletion fails
+                apartmentsCollectionReference.document(apartmentID).delete()
+                    .addOnSuccessListener {
+                        Log.d(TAG, "Apartment with ID $apartmentID deleted successfully, but picture deletion failed")
+                        onSuccess()
+                    }
+                    .addOnFailureListener { docException ->
+                        Log.e(TAG, "Error deleting apartment document: ${docException.message}")
+                        onFailure(docException)
+                    }
             }
-        }
+        )
     }
+
 
 
     fun updateApartment(apartment: Apartment) {
