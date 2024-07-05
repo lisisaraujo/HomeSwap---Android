@@ -7,11 +7,9 @@ import com.example.homeswap_android.data.models.Review
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.Query
-import com.google.firebase.storage.FirebaseStorage
 
 class ReviewsRepository(
     private val auth: FirebaseAuth,
-    private val storage: FirebaseStorage,
     private val reviewsCollectionReference: CollectionReference,
 ) {
 

@@ -14,10 +14,9 @@ class ReviewsViewModel : ViewModel() {
 
     private val auth = FirebaseAuth.getInstance()
     private val firestore = FirebaseFirestore.getInstance()
-    private val storage = FirebaseStorage.getInstance()
     private val reviewsCollectionReference = firestore.collection("reviews")
     private val reviewsRepository =
-        ReviewsRepository(auth, storage, reviewsCollectionReference)
+        ReviewsRepository(auth, reviewsCollectionReference)
 
     fun getUserReviews(userID: String): Query {
         return reviewsRepository.getUserReviews(userID)

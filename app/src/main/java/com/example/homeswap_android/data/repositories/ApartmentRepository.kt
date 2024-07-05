@@ -125,7 +125,7 @@ class ApartmentRepository(
                 if (index == 0) {
                     imageRef.downloadUrl.addOnSuccessListener { url ->
                         apartmentsCollectionReference.document(apartmentID)
-                            .update("coverPicture", url)
+                            .update("coverPicture", url.toString())
                     }
                 }
             }

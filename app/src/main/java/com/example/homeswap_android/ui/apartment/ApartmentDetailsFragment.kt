@@ -69,6 +69,7 @@ class ApartmentDetailsFragment : Fragment() {
             apartment.let {
                 binding.apartmentTitleTV.text = apartment.title
                 binding.apartmentImageIV.load(apartment.coverPicture)
+                Log.d(TAG, "ApartmentCoverPic: ${apartment.coverPicture}")
 
                 val userID = apartment.userID
                 userViewModel.fetchUserData(userID)
