@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/flightListCV"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="16dp"
-    android:layout_marginTop="8dp"
-    android:layout_marginEnd="16dp"
-    android:layout_marginBottom="8dp"
+    android:layout_margin="8dp"
     app:cardCornerRadius="16dp"
     app:cardElevation="4dp"
     app:strokeColor="@color/background"
@@ -17,24 +14,148 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/background">
+        android:padding="16dp">
 
         <TextView
-            android:id="@+id/flightOriginTV"
-            android:layout_width="0dp"
+            android:id="@+id/totalPriceTV"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
             android:textAppearance="?attr/textAppearanceHeadline6"
             android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@id/userListProfilePicIV"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="flight origin" />
+            tools:text="$299.99" />
 
+        <!-- Outbound Flight Details -->
+        <TextView
+            android:id="@+id/outboundAirlineTV"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?attr/textAppearanceHeadline6"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/totalPriceTV"
+            tools:text="Airline Name" />
 
+        <TextView
+            android:id="@+id/outboundDepartureTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textAppearance="?attr/textAppearanceBody1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/outboundAirlineTV"
+            tools:text="BER 10:00" />
+
+        <ImageView
+            android:id="@+id/outboundFlightArrowIV"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/connecting_airports_48px"
+            app:layout_constraintStart_toEndOf="@id/outboundDepartureTV"
+            app:layout_constraintEnd_toStartOf="@id/outboundArrivalTV"
+            app:layout_constraintTop_toTopOf="@id/outboundDepartureTV"
+            app:layout_constraintBottom_toBottomOf="@id/outboundDepartureTV" />
+
+        <TextView
+            android:id="@+id/outboundArrivalTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?attr/textAppearanceBody1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/outboundDepartureTV"
+            tools:text="LON 12:30" />
+
+        <TextView
+            android:id="@+id/outboundDurationTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textAppearance="?attr/textAppearanceBody2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/outboundDepartureTV"
+            tools:text="Duration: 2h 30m" />
+
+        <TextView
+            android:id="@+id/outboundStopsTV"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textAppearance="?attr/textAppearanceBody2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/outboundDurationTV"
+            tools:text="1 stop: FRA" />
+
+        <!-- Return Flight Details -->
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/returnFlightGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="returnAirlineTV,returnDepartureTV,returnFlightArrowIV,returnArrivalTV,returnDurationTV,returnStopsTV" />
+
+        <TextView
+            android:id="@+id/returnAirlineTV"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textAppearance="?attr/textAppearanceHeadline6"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/outboundStopsTV"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="Airline Name" />
+
+        <TextView
+            android:id="@+id/returnDepartureTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textAppearance="?attr/textAppearanceBody1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/returnAirlineTV"
+            tools:text="LON 10:00" />
+
+        <ImageView
+            android:id="@+id/returnFlightArrowIV"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/connecting_airports_48px"
+            app:layout_constraintStart_toEndOf="@id/returnDepartureTV"
+            app:layout_constraintEnd_toStartOf="@id/returnArrivalTV"
+            app:layout_constraintTop_toTopOf="@id/returnDepartureTV"
+            app:layout_constraintBottom_toBottomOf="@id/returnDepartureTV" />
+
+        <TextView
+            android:id="@+id/returnArrivalTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?attr/textAppearanceBody1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/returnDepartureTV"
+            tools:text="BER 12:30" />
+
+        <TextView
+            android:id="@+id/returnDurationTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textAppearance="?attr/textAppearanceBody2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/returnDepartureTV"
+            tools:text="Duration: 2h 30m" />
+
+        <TextView
+            android:id="@+id/returnStopsTV"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textAppearance="?attr/textAppearanceBody2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/returnDurationTV"
+            tools:text="1 stop: FRA" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

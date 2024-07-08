@@ -1,5 +1,6 @@
 package com.example.homeswap_android.ui.search
 
+import android.annotation.SuppressLint
 import android.icu.util.Calendar
 import android.icu.util.TimeZone
 import android.os.Bundle
@@ -15,6 +16,7 @@ import com.example.homeswap_android.databinding.FragmentSearchBinding
 import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 
 class SearchFragment : Fragment() {
@@ -32,54 +34,10 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-        binding.showDatePickerButton.setOnClickListener {
-            showDateRangePicker()
-        }
-
-        apartmentViewModel.apartmentsBySearch.observe(viewLifecycleOwner) { apartmentsBySearchList ->
-            Log.d("ApartmentsBySearch", apartmentsBySearchList.toString())
-            if (apartmentsBySearchList.isNotEmpty()) {
-                findNavController().navigate(R.id.searchResultsFragment)
-            }
-        }
-
-        binding.searchButton.setOnClickListener {
-            performSearch()
-        }
-
-        binding.searchApartmentBackBTN.setOnClickListener {
-            findNavController().navigateUp()
-        }
-    }
-
-    private fun showDateRangePicker() {
-        val picker = MaterialDatePicker.Builder.dateRangePicker()
-            .setTheme(R.style.ThemeMaterialCalendar)
-            .setTitleText("Select Dates")
-            .build()
-
-        picker.show(parentFragmentManager, "dateRangePicker")
-        picker.addOnPositiveButtonClickListener { selection ->
-            val startDate = convertTimeToDate(selection.first)
-            val endDate = convertTimeToDate(selection.second)
-            binding.selectedDateRange.text = "$startDate - $endDate"
-        }
-    }
-
-    private fun convertTimeToDate(time: Long): String {
-        val utc = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-        utc.timeInMillis = time
-        val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-        return format.format(utc.time)
-    }
-
-    private fun performSearch() {
         val country = binding.countryInput.text.toString().trim()
         val city = binding.cityInput.text.toString().trim()
         val dateRange = binding.selectedDateRange.text.toString()
 
-        // process date range
         val startDate: String?
         val endDate: String?
         if (dateRange.contains(" - ")) {
@@ -91,12 +49,45 @@ class SearchFragment : Fragment() {
             endDate = null
         }
 
-        apartmentViewModel.searchApartments(
-            city = city.takeIf { it.isNotBlank() },
-            country = country.takeIf { it.isNotBlank() },
-            startDate = startDate,
-            endDate = endDate
-        )
+        binding.showDatePickerButton.setOnClickListener {
+            showDateRangePicker()
+        }
+
+        apartmentViewModel.apartmentsBySearch.observe(viewLifecycleOwner) { apartmentsBySearchList ->
+            Log.d("ApartmentsBySearch", apartmentsBySearchList.toString())
+            if (apartmentsBySearchList.isNotEmpty()) {
+                findNavController().navigate(SearchFragmentDirections.actionSearchFragmentToSearchResultsFragment(city, startDate, endDate ))
+            }
+        }
+
+        binding.searchButton.setOnClickListener {
+            apartmentViewModel.searchApartments(
+                city = city.takeIf { it.isNotBlank() },
+                country = country.takeIf { it.isNotBlank() },
+                startDate = startDate,
+                endDate = endDate
+            )
+        }
+
+        binding.searchApartmentBackBTN.setOnClickListener {
+            findNavController().navigateUp()
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun showDateRangePicker() {
+        val picker = MaterialDatePicker.Builder.dateRangePicker()
+            .setTheme(R.style.ThemeMaterialCalendar)
+            .setTitleText("Select Dates")
+            .build()
+
+        picker.show(parentFragmentManager, "dateRangePicker")
+        picker.addOnPositiveButtonClickListener { selection ->
+            val startDate = Date(selection.first)
+            val endDate = Date(selection.second)
+            val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            binding.selectedDateRange.text = "${dateFormat.format(startDate)} - ${dateFormat.format(endDate)}"
+        }
     }
 
 }

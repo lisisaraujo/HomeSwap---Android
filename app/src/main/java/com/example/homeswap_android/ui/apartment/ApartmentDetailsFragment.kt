@@ -49,9 +49,7 @@ class ApartmentDetailsFragment : Fragment() {
 
         val apartmentID = args.apartmentID
 
-        apartmentViewModel.getApartment(apartmentID)
-
-        apartmentViewModel.currentApartment.observe(viewLifecycleOwner) { apartment ->
+        apartmentViewModel.getApartment(apartmentID).observe(viewLifecycleOwner){apartment ->
             if (apartment != null) {
                 with(binding) {
                     typeOfHomeTV.text =
@@ -74,7 +72,8 @@ class ApartmentDetailsFragment : Fragment() {
                     val userID = apartment.userID
                     userViewModel.fetchUserData(userID)
                 }
-            }
+        }
+
 
             reviewsViewModel.getApartmentReviews(apartmentID)
                 .addSnapshotListener { apartmentReviews, error ->

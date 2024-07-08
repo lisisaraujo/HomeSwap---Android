@@ -45,8 +45,8 @@ class FirebaseApartmentsViewModel : ViewModel() {
         apartmentRepository.getApartments()
     }
 
-    fun getApartment(apartmentID: String) {
-        apartmentRepository.getApartment(apartmentID)
+    fun getApartment(apartmentID: String): LiveData<Apartment> {
+        return apartmentRepository.getApartment(apartmentID)
     }
 
     fun getUserApartments(userID: String): Query {

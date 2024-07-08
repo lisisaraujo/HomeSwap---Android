@@ -69,21 +69,23 @@ class ApartmentRepository(
             }
     }
 
-    fun getApartment(apartmentID: String) {
+    fun getApartment(apartmentID: String): LiveData<Apartment>  {
+        var resultLiveData: MutableLiveData<Apartment> = MutableLiveData()
         apartmentsCollectionReference.document(apartmentID).get()
             .addOnSuccessListener { documentSnapshot ->
                 if (documentSnapshot.exists()) {
                     val apartment = documentSnapshot.toObject(Apartment::class.java)
-                    _currentApartment.postValue(apartment)
+                    resultLiveData.postValue(apartment)
                 } else {
                     Log.d(TAG, "Apartment document does not exist for ID: $apartmentID")
-                    _currentApartment.postValue(null)
+                    resultLiveData.postValue(null)
                 }
             }
             .addOnFailureListener { exception ->
                 Log.e(TAG, "Error fetching apartment: ${exception.message}")
-                _currentApartment.postValue(null)
+                resultLiveData.postValue(null)
             }
+        return resultLiveData
     }
 
     fun getUserApartments(userID: String): Query {

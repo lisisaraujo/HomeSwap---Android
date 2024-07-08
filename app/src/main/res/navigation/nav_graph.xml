@@ -38,7 +38,24 @@
         android:id="@+id/checkFlightsFragment"
         android:name="com.example.homeswap_android.ui.checkFlights.CheckFlightsFragment"
         android:label="fragment_check_flights"
-        tools:layout="@layout/fragment_check_flights" />
+        tools:layout="@layout/fragment_check_flights" >
+        <argument
+            android:name="destination"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="origin"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="departureDate"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="returnDate"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.example.homeswap_android.ui.personal.SettingsFragment"
@@ -177,6 +194,9 @@
         <action
             android:id="@+id/action_searchResultsFragment_to_apartmentDetailsFragment"
             app:destination="@id/apartmentDetailsFragment" />
+        <action
+            android:id="@+id/action_searchResultsFragment_to_checkFlightsFragment"
+            app:destination="@id/checkFlightsFragment" />
     </fragment>
     <fragment
         android:id="@+id/addApartmentAdditionalDetailsFragment"

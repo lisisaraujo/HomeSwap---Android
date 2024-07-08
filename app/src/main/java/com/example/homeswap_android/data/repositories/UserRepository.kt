@@ -307,4 +307,11 @@ class UserRepository(
             }
         }
     }
+    fun updateUserData(userId: String, updates: Map<String, Any>) {
+            try {
+                getUserDocumentReference(userId).update(updates)
+            } catch (e: Exception) {
+                Log.e("FirebaseUsersViewModel", "Error updating user data", e)
+            }
+        }
 }

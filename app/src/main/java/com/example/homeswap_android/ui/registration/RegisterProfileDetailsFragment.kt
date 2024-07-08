@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -41,7 +42,6 @@ class RegisterProfileDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Safely access currentUser and getUserDocumentReference inside onViewCreated
         usersViewModel.currentUser.observe(viewLifecycleOwner) { firebaseUser ->
             firebaseUser?.let { user ->
                 val userID = user.uid
@@ -61,16 +61,29 @@ class RegisterProfileDetailsFragment : Fragment() {
                                     placeholder(R.drawable.ic_launcher_foreground)
                                 }
                             }
+                            //pre-fill city and country if available
+                            binding.etCity.setText(profile.city)
+                            binding.etCountry.setText(profile.country)
                         }
                     }
                 }
 
                 binding.continueBTN.setOnClickListener {
-                    findNavController().navigate(R.id.homeFragment)
+                    val city = binding.etCity.text.toString().trim()
+                    val country = binding.etCountry.text.toString().trim()
+
+                    if (city.isNotEmpty() && country.isNotEmpty()) {
+                        usersViewModel.updateUserData(userID, mapOf(
+                            "city" to city,
+                            "country" to country
+                        ))
+                        findNavController().navigate(R.id.homeFragment)
+                    } else {
+                        Toast.makeText(context, "Fill out all data to continue", Toast.LENGTH_LONG).show()
+
+                    }
                 }
-            } ?: run {
-                Log.e("RegisterProfileDetailsFragment", "Current user is null")
-            }
+            } ?: Log.e("RegisterProfileDetailsFragment", "Current user is null")
         }
     }
 }

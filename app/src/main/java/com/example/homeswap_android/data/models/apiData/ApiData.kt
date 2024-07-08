@@ -2,7 +2,20 @@ package com.example.homeswap_android.data.models.apiData
 
 data class FlightResponse(
     val data: List<FlightOffer>,
+    val dictionaries: Dictionaries
 )
+
+data class Dictionaries(
+    val carriers: Map<String, String>,
+    val aircraft: Map<String, String>,
+    val currencies: Map<String, String>,
+    val locations: Map<String, Location>
+)
+data class Location(
+    val cityCode: String,
+    val countryCode: String
+)
+
 
 data class FlightOffer(
     val type: String,
@@ -11,6 +24,10 @@ data class FlightOffer(
     val numberOfBookableSeats: Int,
     val itineraries: List<Itinerary>,
     val price: Price,
+    )
+
+data class FlightDictionaries(
+    val carriers: Map<String, String>
 )
 
 data class Itinerary(
@@ -21,10 +38,13 @@ data class Itinerary(
 data class Segment(
     val departure: Departure,
     val arrival: Arrival,
+    val carrierCode: String,
     val number: String,
+    val aircraft: Aircraft,
+    val operating: Operating?,
     val duration: String,
     val id: String,
-    val numberOfStops: Int,
+    val numberOfStops: Int
 )
 
 data class Departure(
@@ -52,5 +72,32 @@ data class Fee(
     val type: String
 )
 
+// flight search response
 
+data class AirportSearchResponse(
+    val data: List<Airport>
+)
+
+data class Airport(
+    val id: String,
+    val type: String,
+    val subType: String,
+    val name: String,
+    val detailedName: String,
+    val iataCode: String,
+    val address: Address
+)
+
+data class Address(
+    val cityName: String,
+    val countryName: String
+)
+
+data class Aircraft(
+    val code: String
+)
+
+data class Operating(
+    val carrierCode: String
+)
 

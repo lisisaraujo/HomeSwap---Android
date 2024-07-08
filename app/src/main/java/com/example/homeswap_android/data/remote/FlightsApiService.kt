@@ -3,6 +3,7 @@ package com.example.homeswap_android.data.remote
 import com.example.homeswap_android.amadeusAPI.amadeusToken.AmadeusAccessTokenProvider
 import com.example.homeswap_android.amadeusAPI.amadeusToken.AccessTokenAuthenticator
 import com.example.homeswap_android.amadeusAPI.amadeusToken.AccessTokenInterceptor
+import com.example.homeswap_android.data.models.apiData.AirportSearchResponse
 import com.example.homeswap_android.data.models.apiData.FlightResponse
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -51,6 +52,13 @@ interface FlightsApiService {
         @Query("departureDate") departureDate: String,
         @Query("adults") adults: Int = 1,
     ): FlightResponse
+
+    @GET("v1/reference-data/locations")
+    suspend fun searchAirports(
+        @Query("subType") subType: String = "CITY",
+        @Query("keyword") keyword: String,
+        @Query("page[limit]") limit: Int = 1
+    ): AirportSearchResponse
 }
 
 object FlightsApi {
