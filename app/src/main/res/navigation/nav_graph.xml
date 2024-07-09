@@ -44,10 +44,6 @@
             app:argType="string"
             app:nullable="true" />
         <argument
-            android:name="origin"
-            app:argType="string"
-            app:nullable="true" />
-        <argument
             android:name="departureDate"
             app:argType="string"
             app:nullable="true" />
@@ -180,15 +176,15 @@
         android:label="fragment_search_results"
         tools:layout="@layout/fragment_search_results" >
         <argument
-            android:name="location"
+            android:name="destination"
             app:argType="string"
             app:nullable="true" />
         <argument
-            android:name="startDate"
+            android:name="departureDate"
             app:argType="string"
             app:nullable="true" />
         <argument
-            android:name="endDate"
+            android:name="returnDate"
             app:argType="string"
             app:nullable="true" />
         <action

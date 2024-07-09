@@ -1,9 +1,6 @@
 package com.example.homeswap_android.viewModels
 
 import android.net.Uri
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.homeswap_android.data.models.UserData
 import com.example.homeswap_android.data.repositories.UserRepository
@@ -20,14 +17,15 @@ class FirebaseUsersViewModel : ViewModel() {
     val usersCollectionReference = firestore.collection("users")
     private val userRepository = UserRepository(auth, storage, usersCollectionReference, firestore)
 
-    val currentUser = userRepository.currentUser
-    val currentUserData = userRepository.currentUserData
+    val loggedInUser = userRepository.loggedInUser
+    val loggedInUserData = userRepository.loggedInUserData
     val users = userRepository.users
     val loginResult = userRepository.loginResult
     val registerResult = userRepository.registerResult
 
     init {
         userRepository.setupUserEnv()
+        refreshLoggedInUserData()
     }
 
 
@@ -77,5 +75,9 @@ class FirebaseUsersViewModel : ViewModel() {
 
     fun updateUserData(userId: String, updates: Map<String, Any>) {
         userRepository.updateUserData(userId, updates)
+    }
+
+    fun refreshLoggedInUserData() {
+        userRepository.refreshLoggedInUserData()
     }
 }

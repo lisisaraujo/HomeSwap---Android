@@ -12,8 +12,6 @@ import com.example.homeswap_android.adapter.UserAdapter
 import com.example.homeswap_android.data.models.UserData
 import com.example.homeswap_android.databinding.FragmentUsersListHomeBinding
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.toObject
 
 class UsersListHomeFragment : Fragment() {
@@ -52,7 +50,7 @@ class UsersListHomeFragment : Fragment() {
             userAdapter.updateUsers(users)
         }
 
-        userViewModel.currentUser.observe(viewLifecycleOwner) { user ->
+        userViewModel.loggedInUser.observe(viewLifecycleOwner) { user ->
             user?.let { currentUser ->
                 val userID = currentUser.uid
                 val userRef = userViewModel.getUserDocumentReference(userID)

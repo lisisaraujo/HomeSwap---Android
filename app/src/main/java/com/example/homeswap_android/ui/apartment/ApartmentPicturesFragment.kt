@@ -42,7 +42,7 @@ class ApartmentPicturesFragment : Fragment() {
         binding.recyclerView.adapter = photoAdapter
 
         val apartmentID = args.apartmentID
-        val userID = userViewModel.currentUser.value?.uid!!
+        val userID = userViewModel.loggedInUser.value?.uid!!
 
         apartmentViewModel.getApartmentPictures(apartmentID, userID).observe(viewLifecycleOwner) { pictureUrls ->
             if (pictureUrls.isNotEmpty()) {

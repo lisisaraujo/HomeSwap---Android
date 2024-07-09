@@ -17,7 +17,6 @@ import com.example.homeswap_android.adapter.ReviewAdapter
 import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.data.models.Review
 import com.example.homeswap_android.databinding.FragmentUserDetailsBinding
-import com.example.homeswap_android.ui.apartment.ApartmentDetailsFragmentDirections
 import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 import com.example.homeswap_android.viewModels.ReviewsViewModel
@@ -53,7 +52,7 @@ class UserDetailsFragment : Fragment() {
         userViewModel.fetchUserData(userID)
         apartmentViewModel.getUserApartments(userID)
 
-        userViewModel.currentUserData.observe(viewLifecycleOwner) { user ->
+        userViewModel.loggedInUserData.observe(viewLifecycleOwner) { user ->
             if (user != null) {
                 binding.userProfileNameTV.text = user.name
                 binding.userProfileIV.load(user.profilePic)
@@ -83,7 +82,7 @@ class UserDetailsFragment : Fragment() {
             findNavController().navigate(UserDetailsFragmentDirections.actionUserDetailsFragmentToHomeFragment(isUsers = true))
         }
 
-        userViewModel.currentUser.observe(viewLifecycleOwner) {
+        userViewModel.loggedInUser.observe(viewLifecycleOwner) {
             if (it == null) findNavController().navigate(R.id.loginFragment)
         }
 

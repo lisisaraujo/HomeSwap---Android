@@ -16,7 +16,6 @@ import com.example.homeswap_android.R
 import com.example.homeswap_android.data.models.UserData
 import com.example.homeswap_android.databinding.FragmentRegisterProfileDetailsBinding
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
-import com.google.firebase.firestore.ListenerRegistration
 
 class RegisterProfileDetailsFragment : Fragment() {
     private lateinit var binding: FragmentRegisterProfileDetailsBinding
@@ -42,7 +41,7 @@ class RegisterProfileDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        usersViewModel.currentUser.observe(viewLifecycleOwner) { firebaseUser ->
+        usersViewModel.loggedInUser.observe(viewLifecycleOwner) { firebaseUser ->
             firebaseUser?.let { user ->
                 val userID = user.uid
                 val userRef = usersViewModel.getUserDocumentReference(userID)

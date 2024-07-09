@@ -1,13 +1,12 @@
 package com.example.homeswap_android.ui.search
 
 import android.annotation.SuppressLint
-import android.icu.util.Calendar
-import android.icu.util.TimeZone
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -23,6 +22,11 @@ class SearchFragment : Fragment() {
     private lateinit var binding: FragmentSearchBinding
     private val apartmentViewModel: FirebaseApartmentsViewModel by activityViewModels()
 
+    var startDate: String? = null
+    var endDate: String? = null
+    var country: String? = null
+    var destination: String? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -34,20 +38,8 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val country = binding.countryInput.text.toString().trim()
-        val city = binding.cityInput.text.toString().trim()
-        val dateRange = binding.selectedDateRange.text.toString()
 
-        val startDate: String?
-        val endDate: String?
-        if (dateRange.contains(" - ")) {
-            val dates = dateRange.split(" - ")
-            startDate = dates[0]
-            endDate = dates[1]
-        } else {
-            startDate = null
-            endDate = null
-        }
+
 
         binding.showDatePickerButton.setOnClickListener {
             showDateRangePicker()
@@ -55,18 +47,34 @@ class SearchFragment : Fragment() {
 
         apartmentViewModel.apartmentsBySearch.observe(viewLifecycleOwner) { apartmentsBySearchList ->
             Log.d("ApartmentsBySearch", apartmentsBySearchList.toString())
+            Log.d("SearchFragment", "$startDate, $endDate, $destination")
             if (apartmentsBySearchList.isNotEmpty()) {
-                findNavController().navigate(SearchFragmentDirections.actionSearchFragmentToSearchResultsFragment(city, startDate, endDate ))
+                findNavController().navigate(
+                    SearchFragmentDirections.actionSearchFragmentToSearchResultsFragment(
+                        destination = destination,
+                        departureDate = startDate,
+                        returnDate = endDate
+                    )
+                )
+            } else {
+                Toast.makeText(context, "No apartments found", Toast.LENGTH_LONG).show()
             }
         }
 
         binding.searchButton.setOnClickListener {
+
+            country = binding.countryInput.text.toString().trim()
+            destination = binding.cityInput.text.toString().trim()
+
+            Log.d("SearchFragmentStartDate", "$startDate, $endDate")
+            Log.d("SearchFragmentDestinationCountry", "$destination, $country")
             apartmentViewModel.searchApartments(
-                city = city.takeIf { it.isNotBlank() },
-                country = country.takeIf { it.isNotBlank() },
+                city = destination.takeIf { it!!.isNotBlank() },
+                country = country.takeIf { it!!.isNotBlank() },
                 startDate = startDate,
                 endDate = endDate
             )
+
         }
 
         binding.searchApartmentBackBTN.setOnClickListener {
@@ -83,11 +91,14 @@ class SearchFragment : Fragment() {
 
         picker.show(parentFragmentManager, "dateRangePicker")
         picker.addOnPositiveButtonClickListener { selection ->
-            val startDate = Date(selection.first)
-            val endDate = Date(selection.second)
             val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-            binding.selectedDateRange.text = "${dateFormat.format(startDate)} - ${dateFormat.format(endDate)}"
-        }
-    }
 
+            startDate = dateFormat.format(Date(selection.first))
+            endDate = dateFormat.format(Date(selection.second))
+            binding.selectedDateRange.text =
+                "$startDate - $endDate"
+        }
+
+
+    }
 }

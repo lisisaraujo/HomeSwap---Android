@@ -11,7 +11,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 
@@ -22,13 +21,18 @@ class UserRepository(
     private val firestore: FirebaseFirestore,
 ) {
 
-    private val _currentUser = MutableLiveData<FirebaseUser?>()
-    val currentUser: LiveData<FirebaseUser?>
-        get() = _currentUser
+    val TAG = "userRepository"
+    private val _loggedInUser = MutableLiveData<FirebaseUser?>()
+    val loggedInUser: LiveData<FirebaseUser?>
+        get() = _loggedInUser
 
-    private val _currentUserData = MutableLiveData<UserData?>()
-    val currentUserData: LiveData<UserData?>
-        get() = _currentUserData
+    private val _loggedInUserData = MutableLiveData<UserData?>()
+    val loggedInUserData: LiveData<UserData?>
+        get() = _loggedInUserData
+
+    private val _selectedUserData = MutableLiveData<UserData?>()
+    val selectedUserData: LiveData<UserData?>
+        get() = _selectedUserData
 
     private val _users = MutableLiveData<List<UserData>>()
     val users: LiveData<List<UserData>>
@@ -47,8 +51,9 @@ class UserRepository(
     init {
         usersCollectionReference.addSnapshotListener { value, error ->
             _users.postValue(value!!.toObjects(UserData::class.java))
-
         }
+
+        auth.currentUser?.let { setupUserEnv() }
     }
 
     fun getUserDocumentReference(userID: String): DocumentReference {
@@ -58,17 +63,34 @@ class UserRepository(
 
     fun setupUserEnv() {
         val user = auth.currentUser
-        _currentUser.postValue(user)
+        _loggedInUser.postValue(user)
         if (user != null) {
-            userDataDocumentReference.postValue(usersCollectionReference.document(user.uid))
+      userDataDocumentReference.postValue(usersCollectionReference.document(user.uid))
             Log.d("NewUser", user.email.toString())
+            getLoggedInUserData(user.uid)
         }
+    }
+
+    private fun getLoggedInUserData(userID: String){
+        usersCollectionReference.document(userID).get()
+            .addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    val userData = documentSnapshot.toObject(UserData::class.java)
+                    _loggedInUserData.postValue(userData)
+                } else {
+                    Log.d("FirebaseUsersViewModel", "User data not found for ID: $userID")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e("FirebaseUsersViewModel", "Error fetching user data: $exception")
+            }
     }
 
     fun setProfile(profile: UserData) {
         userDataDocumentReference.value?.set(profile)
         userDataDocumentReference.value?.update("userID", userDataDocumentReference.value?.id)
         Log.d("NewProfile", profile.userID)
+        _loggedInUserData.postValue(profile)
     }
 
     fun login(email: String, password: String) {
@@ -81,6 +103,8 @@ class UserRepository(
                 Log.e(TAG, "Login failed: ${exception.message}")
                 _loginResult.value = false
             }
+
+        refreshLoggedInUserData()
     }
 
     fun register(email: String, password: String, userData: UserData) {
@@ -141,7 +165,7 @@ class UserRepository(
             .addOnSuccessListener { documentSnapshot ->
                 if (documentSnapshot.exists()) {
                     val userData = documentSnapshot.toObject(UserData::class.java)
-                    _currentUserData.postValue(userData)
+                    _selectedUserData.postValue(userData)
                 } else {
                     Log.d("FirebaseUsersViewModel", "User data not found for ID: $userID")
                 }
@@ -314,4 +338,12 @@ class UserRepository(
                 Log.e("FirebaseUsersViewModel", "Error updating user data", e)
             }
         }
+
+    fun refreshLoggedInUserData() {
+        Log.d(TAG, "Refreshing logged-in user data")
+        auth.currentUser?.let { user ->
+            Log.d(TAG, "Current user UID: ${user.uid}")
+            fetchUserData(user.uid)
+        } ?: Log.d(TAG, "No current user")
+    }
 }

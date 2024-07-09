@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.homeswap_android.data.models.apiData.Dictionaries
 import com.example.homeswap_android.data.models.apiData.FlightOffer
 import com.example.homeswap_android.data.models.apiData.FlightResponse
 import com.example.homeswap_android.data.models.apiData.Price
@@ -26,8 +27,8 @@ class FlightsViewModel : ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
-    private val _errorMessage = MutableLiveData<String>()
-    val errorMessage: LiveData<String> = _errorMessage
+    private val _errorMessage = MutableLiveData<String?>()
+    val errorMessage: LiveData<String?> = _errorMessage
 
     private val _flightResponse = MutableLiveData<FlightResponse>()
     val flightResponse: LiveData<FlightResponse> = _flightResponse
@@ -67,6 +68,7 @@ class FlightsViewModel : ViewModel() {
     }
 
     fun searchRoundTripFlights(originCity: String, destinationCity: String, departureDate: Date, returnDate: Date, adults: Int = 1) {
+//        clearFlightsSearch()
         _isLoading.value = true
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -76,7 +78,7 @@ class FlightsViewModel : ViewModel() {
                 val outboundResponse = repository.searchFlightsByCity(originCity, destinationCity, formattedDepartureDate, adults)
                 val inboundResponse = repository.searchFlightsByCity(destinationCity, originCity, formattedReturnDate, adults)
 
-                // Combine the responses
+                //combine the responses
                 val combinedFlights = outboundResponse.data.zip(inboundResponse.data) { outbound, inbound ->
                     FlightOffer(
                         type = "round-trip",
@@ -96,7 +98,7 @@ class FlightsViewModel : ViewModel() {
 
                 val combinedResponse = FlightResponse(
                     data = combinedFlights,
-                    dictionaries = outboundResponse.dictionaries // Assuming dictionaries are the same for both responses
+                    dictionaries = outboundResponse.dictionaries //assuming dictionaries are the same for both responses
                 )
 
                 _flightResponse.postValue(combinedResponse)
@@ -108,6 +110,21 @@ class FlightsViewModel : ViewModel() {
                 _isLoading.postValue(false)
             }
         }
+    }
+
+    fun clearFlightsSearch() {
+        _flights.postValue(emptyList())
+        _flightResponse.postValue(FlightResponse(
+            data = emptyList(),
+            dictionaries = Dictionaries(
+                carriers = emptyMap(),
+                aircraft = emptyMap(),
+                currencies = emptyMap(),
+                locations = emptyMap()
+            )
+        ))
+        _isLoading.postValue(false)
+        _errorMessage.postValue(null)
     }
 
 }

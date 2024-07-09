@@ -65,7 +65,7 @@ class SettingsFragment : Fragment() {
             .setTitle("Email Verification Required")
             .setMessage("You need to verify your email before adding an apartment. Would you like to send a verification email?")
             .setPositiveButton("Send Email") { _, _ ->
-                userViewModel.currentUser.value?.let { user ->
+                userViewModel.loggedInUser.value?.let { user ->
                     userViewModel.sendEmailVerification(user)
                     Toast.makeText(requireContext(), "Verification email sent", Toast.LENGTH_SHORT).show()
                 }

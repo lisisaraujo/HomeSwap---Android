@@ -12,9 +12,7 @@ import coil.load
 import com.example.homeswap_android.R
 import com.example.homeswap_android.data.models.UserData
 import com.example.homeswap_android.databinding.FragmentMyProfileBinding
-import com.example.homeswap_android.databinding.FragmentRegisterProfileDetailsBinding
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
-import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.toObject
 
 class MyProfileFragment : Fragment() {
@@ -34,7 +32,7 @@ class MyProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        usersViewModel.currentUser.observe(viewLifecycleOwner) { currentUser ->
+        usersViewModel.loggedInUser.observe(viewLifecycleOwner) { currentUser ->
 
             if (currentUser == null) {
                 findNavController().navigate(R.id.loginFragment)

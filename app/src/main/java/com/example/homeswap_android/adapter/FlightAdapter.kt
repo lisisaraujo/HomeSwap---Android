@@ -32,7 +32,7 @@ class FlightAdapter(
         val flight = flights[position]
         val binding = holder.binding
 
-        // Outbound flight
+        //outbound flight
         bindFlightDetails(binding, flight.itineraries[0], isOutbound = true)
 
         // Return flight
@@ -47,6 +47,7 @@ class FlightAdapter(
         binding.totalPriceTV.text = "${flight.price.currency} ${flight.price.total}"
     }
 
+    @SuppressLint("SetTextI18n")
     private fun bindFlightDetails(
         binding: FlightListItemBinding,
         itinerary: Itinerary,

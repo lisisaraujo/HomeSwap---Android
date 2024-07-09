@@ -89,7 +89,7 @@ class ApartmentDetailsFragment : Fragment() {
                 }
 
 
-            userViewModel.currentUserData.observe(viewLifecycleOwner) { user ->
+            userViewModel.loggedInUserData.observe(viewLifecycleOwner) { user ->
                 if (user != null) {
                     binding.userNameTV.text = user.name
                     binding.userProfilePicIV.load(user.profilePic)

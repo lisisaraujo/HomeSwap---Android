@@ -15,17 +15,10 @@ import com.example.homeswap_android.R
 import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.databinding.FragmentSearchResultsBinding
 import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
-import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
-import com.example.homeswap_android.viewModels.FlightsViewModel
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 class SearchResultsFragment : Fragment() {
     private lateinit var binding: FragmentSearchResultsBinding
     private val apartmentsViewModel: FirebaseApartmentsViewModel by activityViewModels()
-    private val flightsViewModel: FlightsViewModel by activityViewModels()
-    private val usersViewModel: FirebaseUsersViewModel by activityViewModels()
-
 
     private lateinit var apartmentAdapter: ApartmentAdapter
     private val args: SearchResultsFragmentArgs by navArgs()
@@ -42,13 +35,11 @@ class SearchResultsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val user = usersViewModel.currentUserData
-        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-        val destination = args.location
-        val departureDate = args.startDate?.let { dateString -> dateFormat.parse(dateString) }
-        val returnDate = args.endDate?.let { dateString -> dateFormat.parse(dateString) }
-        val origin = user.value!!.city
-
+        // Create a bundle
+        val bundle = Bundle()
+        bundle.putString("destination", args.destination)
+        bundle.putString("departureDate", args.departureDate)
+        bundle.putString("returnDate", args.returnDate)
 
         apartmentsViewModel.getApartments()
 
@@ -91,16 +82,11 @@ class SearchResultsFragment : Fragment() {
         }
 
         binding.flightSearchChip.setOnClickListener {
-            Log.d("SearchResults", "Destination: $destination, Origin: $origin, DepartureDate: $departureDate, ReturnDate: $returnDate")
+            Log.d("ArgsDestination", args.destination.toString())
+            Log.d("BundleData", "${bundle.getString("destination")}, ${bundle.getString("departureDate")}, ${bundle.getString("returnDate")}")
 
-            findNavController().navigate(
-                SearchResultsFragmentDirections.actionSearchResultsFragmentToCheckFlightsFragment(
-                    destination,
-                    origin,
-                    departureDate.toString(),
-                    returnDate.toString()
-                )
-            )
+            findNavController().navigate(R.id.checkFlightsFragment, bundle)
         }
+
     }
 }

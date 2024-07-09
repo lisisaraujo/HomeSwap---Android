@@ -48,24 +48,24 @@ class AddReviewFragment : Fragment() {
                 Log.d("ApartmentID", apartmentID)
                 Review(
                     reviewType = "apartment",
-                    reviewerID = usersViewModel.currentUser.value!!.uid,
-                    reviewerName = usersViewModel.currentUserData.value!!.name,
+                    reviewerID = usersViewModel.loggedInUser.value!!.uid,
+                    reviewerName = usersViewModel.loggedInUserData.value!!.name,
                     review = review,
                     date = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()),
                     rating = rating,
-                    reviewerProfilePic = usersViewModel.currentUserData.value!!.profilePic,
+                    reviewerProfilePic = usersViewModel.loggedInUserData.value!!.profilePic,
                     destinationID = apartmentID
                 )
             } else {
                 Log.d("UserID", userID!!)
                 Review(
                     reviewType = "user",
-                    reviewerID = usersViewModel.currentUser.value!!.uid,
-                    reviewerName = usersViewModel.currentUserData.value!!.name,
+                    reviewerID = usersViewModel.loggedInUser.value!!.uid,
+                    reviewerName = usersViewModel.loggedInUserData.value!!.name,
                     review = review,
                     date = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()),
                     rating = rating,
-                    reviewerProfilePic = usersViewModel.currentUserData.value!!.profilePic,
+                    reviewerProfilePic = usersViewModel.loggedInUserData.value!!.profilePic,
                     destinationID = userID
                 )
             }
