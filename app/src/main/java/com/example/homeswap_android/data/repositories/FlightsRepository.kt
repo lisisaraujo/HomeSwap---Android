@@ -8,7 +8,7 @@ import com.example.homeswap_android.data.models.apiData.FlightOffer
 import com.example.homeswap_android.data.models.apiData.FlightResponse
 import com.example.homeswap_android.data.models.apiData.Price
 import com.example.homeswap_android.data.remote.FlightsApi
-import com.example.homeswap_android.utils.Utils.dateFormat
+import com.example.homeswap_android.utils.Utils.toApiFormat
 import java.util.Date
 
 class FlightsRepository {
@@ -30,7 +30,7 @@ class FlightsRepository {
     private val _clearSearch = MutableLiveData<Boolean>(false)
     val clearSearch: LiveData<Boolean> = _clearSearch
 
-    private val apiService = FlightsApi.flightsApiService
+    private val flightsApiService = FlightsApi.flightsApiService
 
     suspend fun loadFlights(
         origin: String,
@@ -39,7 +39,7 @@ class FlightsRepository {
         adults: Int = 1
     ): List<FlightOffer> {
         return try {
-            val flightsResponse = apiService.getFlights(
+            val flightsResponse = flightsApiService.getFlights(
                 origin = origin,
                 destination = destination,
                 departureDate = departureDate,
@@ -58,11 +58,11 @@ class FlightsRepository {
         val originIata = getIataCode(originCity)
         val destinationIata = getIataCode(destinationCity)
 
-        return apiService.getFlights(originIata, destinationIata, departureDate, adults)
+        return flightsApiService.getFlights(originIata, destinationIata, departureDate, adults)
     }
 
     private suspend fun getIataCode(cityName: String): String {
-        val response = apiService.searchAirports(keyword = cityName)
+        val response = flightsApiService.searchAirports(keyword = cityName)
         return response.data.firstOrNull()?.iataCode
             ?: throw IllegalArgumentException("No IATA code found for $cityName")
     }
@@ -70,8 +70,8 @@ class FlightsRepository {
     suspend fun searchRoundTripFlights(originCity: String, destinationCity: String, departureDate: Date, returnDate: Date, adults: Int = 1) {
         try {
             _isLoading.postValue(true)
-            val formattedDepartureDate = dateFormat.format(departureDate)
-            val formattedReturnDate = dateFormat.format(returnDate)
+            val formattedDepartureDate = departureDate.toApiFormat()
+            val formattedReturnDate = returnDate.toApiFormat()
 
             val outboundResponse = searchFlightsByCity(originCity, destinationCity, formattedDepartureDate, adults)
             val inboundResponse = searchFlightsByCity(destinationCity, originCity, formattedReturnDate, adults)

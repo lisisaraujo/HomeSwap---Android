@@ -101,3 +101,5 @@ data class Operating(
     val carrierCode: String
 )
 
+data class LocationSuggestion(val id: String, val name: String, val description: String)
+

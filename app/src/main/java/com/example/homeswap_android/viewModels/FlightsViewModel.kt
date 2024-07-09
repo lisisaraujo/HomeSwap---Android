@@ -10,6 +10,8 @@ import kotlinx.coroutines.launch
 import java.util.Date
 
 class FlightsViewModel : ViewModel() {
+
+    val TAG = "FlightsViewModel"
     private val repository = FlightsRepository()
 
     val flights: LiveData<List<FlightOffer>> = repository.flights
@@ -19,14 +21,26 @@ class FlightsViewModel : ViewModel() {
     val clearSearch = repository.clearSearch
 
 
-
-    fun searchRoundTripFlights(originCity: String, destinationCity: String, departureDate: Date, returnDate: Date, adults: Int = 1) {
+    fun searchRoundTripFlights(
+        originCity: String,
+        destinationCity: String,
+        departureDate: Date,
+        returnDate: Date,
+        adults: Int = 1
+    ) {
         viewModelScope.launch {
-            repository.searchRoundTripFlights(originCity, destinationCity, departureDate, returnDate, adults)
+            repository.searchRoundTripFlights(
+                originCity,
+                destinationCity,
+                departureDate,
+                returnDate,
+                adults
+            )
         }
     }
 
     fun clearFlightsSearch() {
         repository.clearFlightsSearch()
     }
+
 }

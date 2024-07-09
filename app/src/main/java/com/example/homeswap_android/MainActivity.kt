@@ -13,7 +13,9 @@ import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.example.homeswap_android.databinding.ActivityMainBinding
+import com.example.homeswap_android.utils.Utils.googlePlacesApiKey
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
+import com.google.android.libraries.places.api.Places
 import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
 import com.google.firebase.appcheck.FirebaseAppCheck
@@ -37,6 +39,9 @@ class MainActivity : AppCompatActivity() {
         Firebase.appCheck.installAppCheckProviderFactory(
             DebugAppCheckProviderFactory.getInstance(),
         )
+
+        // google places API initialization
+        Places.initialize(applicationContext, googlePlacesApiKey)
 
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment

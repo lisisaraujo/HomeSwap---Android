@@ -2,11 +2,15 @@ package com.example.homeswap_android.ui.checkFlights
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import com.example.homeswap_android.R
@@ -16,12 +20,18 @@ import com.example.homeswap_android.databinding.FragmentCheckFlightsBinding
 import com.example.homeswap_android.utils.Utils.dateFormat
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 import com.example.homeswap_android.viewModels.FlightsViewModel
+import com.google.android.gms.common.api.ApiException
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
+import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.text.ParseException
 import java.util.Date
-import java.util.Locale
 
 class CheckFlightsFragment : Fragment() {
+
+    val TAG = "CheckFlightsFragment"
+
     private lateinit var binding: FragmentCheckFlightsBinding
 
     private val flightViewModel: FlightsViewModel by activityViewModels()
@@ -32,11 +42,18 @@ class CheckFlightsFragment : Fragment() {
 
     private var userOrigin: String? = null
 
+    private var argsDestination: String? = null
+    private var argsDepartureDateString: String? = null
+    private var argsReturnDateString: String? = null
+
+    private var origin: String? = null
     private var destination: String? = null
-    private var departureDateString: String? = null
-    private var returnDateString: String? = null
+    private var departureDate: Date? = null
+    private var returnDate: Date? = null
 
     private var hasBundleData = false
+
+    private lateinit var placesClient: PlacesClient
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -45,12 +62,20 @@ class CheckFlightsFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // set up recyclerview
+        placesClient = Places.createClient(requireContext())
+
+        setupAutoCompleteTextView(binding.etOrigin)
+        setupAutoCompleteTextView(binding.etDestination)
+
+
+        //set up recyclerview
         val recyclerView = binding.rvFlightsList
-        val flightAdapter = FlightAdapter(emptyList(), Dictionaries(emptyMap(), emptyMap(), emptyMap(), emptyMap()))
+        val flightAdapter =
+            FlightAdapter(emptyList(), Dictionaries(emptyMap(), emptyMap(), emptyMap(), emptyMap()))
         recyclerView.adapter = flightAdapter
 
         //clear search fields
@@ -61,12 +86,13 @@ class CheckFlightsFragment : Fragment() {
         }
 
 
-        // get args from bundle
-        destination = arguments?.getString("destination")
-        departureDateString = arguments?.getString("departureDate")
-        returnDateString = arguments?.getString("returnDate")
+        //get args from bundle
+        argsDestination = arguments?.getString("destination")
+        argsDepartureDateString = arguments?.getString("departureDate")
+        argsReturnDateString = arguments?.getString("returnDate")
 
-        hasBundleData = destination != null && departureDateString != null && returnDateString != null
+        hasBundleData =
+            argsDestination != null && argsDepartureDateString != null && argsReturnDateString != null
 
 
         setupDateRangePicker()
@@ -118,20 +144,20 @@ class CheckFlightsFragment : Fragment() {
 
         Log.d(
             "CheckFlightsBundleData",
-            "$destination, $departureDateString, $returnDateString, $userOrigin"
+            "$argsDestination, $argsDepartureDateString, $argsReturnDateString, $userOrigin"
         )
 
         try {
-            departureDate = departureDateString?.let { dateFormat.parse(it) }
-            returnDate = returnDateString?.let { dateFormat.parse(it) }
+            departureDate = argsDepartureDateString?.let { dateFormat.parse(it) }
+            returnDate = argsReturnDateString?.let { dateFormat.parse(it) }
         } catch (e: ParseException) {
             Log.e("CheckFlightsFragment", "Error parsing dates: ${e.message}")
         }
 
-        if (userOrigin != null && destination != null && departureDate != null && returnDate != null) {
+        if (userOrigin != null && argsDestination != null && departureDate != null && returnDate != null) {
             flightViewModel.searchRoundTripFlights(
                 userOrigin!!,
-                destination!!,
+                argsDestination!!,
                 departureDate,
                 returnDate
             )
@@ -143,22 +169,24 @@ class CheckFlightsFragment : Fragment() {
     private fun performManualSearch() {
         flightViewModel.clearFlightsSearch()
 
-        val origin = binding.etOrigin.text.toString()
-        val destination = binding.etDestination.text.toString()
-        val departureDate = selectedStartDate
-        val returnDate = selectedEndDate
+        origin = binding.etOrigin.text.toString()
+        destination = binding.etDestination.text.toString()
+        departureDate = selectedStartDate
+        returnDate = selectedEndDate
 
-        if (origin.isNotBlank() && destination.isNotBlank() && departureDate != null && returnDate != null) {
-            flightViewModel.searchRoundTripFlights(origin, destination, departureDate, returnDate)
+        if (origin!!.isNotBlank() && destination!!.isNotBlank() && departureDate != null && returnDate != null) {
+            flightViewModel.searchRoundTripFlights(origin!!, destination!!, departureDate!!, returnDate!!)
         } else {
-            Toast.makeText(context, "Fill out all data to search for flights", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Fill out all data to search for flights", Toast.LENGTH_LONG)
+                .show()
         }
     }
+
     @SuppressLint("SetTextI18n")
     private fun prefillFromApartmentSearch() {
         binding.etOrigin.setText(userOrigin)
-        binding.etDestination.setText(destination)
-        binding.etDateRange.setText("$departureDateString - $returnDateString")
+        binding.etDestination.setText(argsDestination)
+        binding.etDateRange.setText("$argsDepartureDateString - $argsReturnDateString")
     }
 
     private fun setupDateRangePicker() {
@@ -197,5 +225,66 @@ class CheckFlightsFragment : Fragment() {
         binding.etDateRange.setText("")
         selectedStartDate = null
         selectedEndDate = null
+    }
+
+    private fun setupAutoCompleteTextView(autoCompleteTextView: AutoCompleteTextView) {
+        val adapter =
+            ArrayAdapter<String>(requireContext(), android.R.layout.simple_dropdown_item_1line)
+        autoCompleteTextView.setAdapter(adapter)
+
+        autoCompleteTextView.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                if ((s?.length ?: 0) >= 2) {
+                    performAutoComplete(s.toString(), adapter)
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
+
+        //add this part to handle item selection
+        autoCompleteTextView.setOnItemClickListener { _, _, position, _ ->
+            val selectedPlace = adapter.getItem(position)
+            //do something with the selected place
+            handleSelectedPlace(autoCompleteTextView, selectedPlace)
+        }
+    }
+
+    private fun handleSelectedPlace(view: AutoCompleteTextView, selectedPlace: String?) {
+        selectedPlace?.let {
+            //extract the first part of the string before the comma
+            val firstPart = it.split(",").firstOrNull()?.trim() ?: it
+
+            //set the text of the AutoCompleteTextView to the first part, because second part is the country
+            view.setText(firstPart)
+
+            //depending on which AutoCompleteTextView was clicked, store the first part
+            when (view.id) {
+                R.id.et_origin -> {
+                    origin = firstPart
+                }
+                R.id.et_destination -> {
+                    destination = firstPart
+                }
+            }
+        }
+    }
+
+    private fun performAutoComplete(query: String, adapter: ArrayAdapter<String>) {
+        val request = FindAutocompletePredictionsRequest.builder()
+            .setQuery(query)
+            .build()
+
+        placesClient.findAutocompletePredictions(request).addOnSuccessListener { response ->
+            adapter.clear()
+            response.autocompletePredictions.forEach { prediction ->
+                adapter.add(prediction.getFullText(null).toString())
+            }
+        }.addOnFailureListener { exception ->
+            if (exception is ApiException) {
+                Log.e(TAG, "Place not found: ${exception.statusCode}")
+            }
+        }
     }
 }

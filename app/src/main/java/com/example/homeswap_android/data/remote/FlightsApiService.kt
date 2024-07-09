@@ -5,6 +5,8 @@ import com.example.homeswap_android.amadeusAPI.amadeusToken.AccessTokenAuthentic
 import com.example.homeswap_android.amadeusAPI.amadeusToken.AccessTokenInterceptor
 import com.example.homeswap_android.data.models.apiData.AirportSearchResponse
 import com.example.homeswap_android.data.models.apiData.FlightResponse
+import com.example.homeswap_android.utils.Utils.amadeusClientID
+import com.example.homeswap_android.utils.Utils.amadeusClientSecret
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.OkHttpClient
@@ -17,9 +19,10 @@ import retrofit2.http.Query
 const val BASE_URL = "https://test.api.amadeus.com/"
 
 val tokenProvider = AmadeusAccessTokenProvider(
-    clientId = "5IPT3yNfOTjQbDGvr6awwyGRw0JfmrI4",
-    clientSecret = "ncqEFgmjA21mo81c"
+    clientId = amadeusClientID,
+    clientSecret = amadeusClientSecret
 )
+
 
 val authenticator = AccessTokenAuthenticator(tokenProvider)
 val interceptor = AccessTokenInterceptor(tokenProvider)
@@ -59,6 +62,7 @@ interface FlightsApiService {
         @Query("keyword") keyword: String,
         @Query("page[limit]") limit: Int = 1
     ): AirportSearchResponse
+
 }
 
 object FlightsApi {
