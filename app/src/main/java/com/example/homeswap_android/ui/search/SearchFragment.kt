@@ -12,11 +12,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.homeswap_android.R
 import com.example.homeswap_android.databinding.FragmentSearchBinding
+import com.example.homeswap_android.utils.Utils.dateFormat
 import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
 import com.google.android.material.datepicker.MaterialDatePicker
-import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Locale
 
 class SearchFragment : Fragment() {
     private lateinit var binding: FragmentSearchBinding
@@ -91,7 +90,6 @@ class SearchFragment : Fragment() {
 
         picker.show(parentFragmentManager, "dateRangePicker")
         picker.addOnPositiveButtonClickListener { selection ->
-            val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
             startDate = dateFormat.format(Date(selection.first))
             endDate = dateFormat.format(Date(selection.second))

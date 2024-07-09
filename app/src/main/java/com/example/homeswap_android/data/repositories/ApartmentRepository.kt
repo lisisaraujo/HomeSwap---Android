@@ -6,7 +6,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.homeswap_android.data.models.Apartment
-import com.google.android.gms.tasks.Tasks
+import com.example.homeswap_android.utils.Utils.dateFormat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
@@ -16,12 +16,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageException
 import com.google.firebase.storage.component1
 import com.google.firebase.storage.component2
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 val TAG = "ApartmentRepository"
 
@@ -344,8 +339,6 @@ class ApartmentRepository(
         searchStart: String,
         searchEnd: String
     ): Boolean {
-        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-
         if (apartmentStart.isBlank() || apartmentEnd.isBlank() || searchStart.isBlank() || searchEnd.isBlank()) {
             return false
         }

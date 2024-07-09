@@ -1,20 +1,13 @@
 package com.example.homeswap_android.viewModels
 
-import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.homeswap_android.data.models.apiData.Dictionaries
 import com.example.homeswap_android.data.models.apiData.FlightOffer
 import com.example.homeswap_android.data.models.apiData.FlightResponse
-import com.example.homeswap_android.data.models.apiData.Price
 import com.example.homeswap_android.data.repositories.FlightsRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Locale
 
 class FlightsViewModel : ViewModel() {
     private val repository = FlightsRepository()

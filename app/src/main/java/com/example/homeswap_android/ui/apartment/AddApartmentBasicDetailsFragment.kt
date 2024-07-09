@@ -19,12 +19,10 @@ import coil.load
 import com.example.homeswap_android.R
 import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.databinding.FragmentAddApartmentBasicDetailsBinding
+import com.example.homeswap_android.utils.Utils.dateFormat
 import com.example.homeswap_android.viewModels.AddApartmentViewModel
 import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
 import com.google.android.material.datepicker.MaterialDatePicker
-import java.lang.System.load
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 class AddApartmentBasicDetailsFragment : Fragment() {
 
@@ -136,7 +134,6 @@ class AddApartmentBasicDetailsFragment : Fragment() {
     private fun convertTimeToDate(time: Long): String {
         val utc = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
         utc.timeInMillis = time
-        val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-        return format.format(utc.time)
+        return dateFormat.format(utc.time)
     }
 }

@@ -12,11 +12,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.homeswap_android.data.models.Review
 import com.example.homeswap_android.databinding.FragmentAddReviewBinding
+import com.example.homeswap_android.utils.Utils.dateFormat
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 import com.example.homeswap_android.viewModels.ReviewsViewModel
-import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Locale
 
 
 class AddReviewFragment : Fragment() {
@@ -51,7 +50,7 @@ class AddReviewFragment : Fragment() {
                     reviewerID = usersViewModel.loggedInUser.value!!.uid,
                     reviewerName = usersViewModel.loggedInUserData.value!!.name,
                     review = review,
-                    date = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()),
+                    date = dateFormat.format(Date()),
                     rating = rating,
                     reviewerProfilePic = usersViewModel.loggedInUserData.value!!.profilePic,
                     destinationID = apartmentID
@@ -63,7 +62,7 @@ class AddReviewFragment : Fragment() {
                     reviewerID = usersViewModel.loggedInUser.value!!.uid,
                     reviewerName = usersViewModel.loggedInUserData.value!!.name,
                     review = review,
-                    date = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()),
+                    date = dateFormat.format(Date()),
                     rating = rating,
                     reviewerProfilePic = usersViewModel.loggedInUserData.value!!.profilePic,
                     destinationID = userID

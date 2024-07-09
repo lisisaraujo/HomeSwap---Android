@@ -13,11 +13,11 @@ import com.example.homeswap_android.R
 import com.example.homeswap_android.adapter.FlightAdapter
 import com.example.homeswap_android.data.models.apiData.Dictionaries
 import com.example.homeswap_android.databinding.FragmentCheckFlightsBinding
+import com.example.homeswap_android.utils.Utils.dateFormat
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 import com.example.homeswap_android.viewModels.FlightsViewModel
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.text.ParseException
-import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
@@ -36,8 +36,6 @@ class CheckFlightsFragment : Fragment() {
     private var departureDateString: String? = null
     private var returnDateString: String? = null
 
-    private var isSearchInitiated = false
-
     private var hasBundleData = false
 
     override fun onCreateView(
@@ -50,23 +48,30 @@ class CheckFlightsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // set up recyclerview
+        val recyclerView = binding.rvFlightsList
+        val flightAdapter = FlightAdapter(emptyList(), Dictionaries(emptyMap(), emptyMap(), emptyMap(), emptyMap()))
+        recyclerView.adapter = flightAdapter
+
+        //clear search fields
         flightViewModel.clearSearch.observe(viewLifecycleOwner) { shouldClear ->
             if (shouldClear) {
                 clearInputFields()
             }
         }
+
+
+        // get args from bundle
         destination = arguments?.getString("destination")
         departureDateString = arguments?.getString("departureDate")
         returnDateString = arguments?.getString("returnDate")
 
         hasBundleData = destination != null && departureDateString != null && returnDateString != null
 
+
         setupDateRangePicker()
         observeUserData()
 
-        val recyclerView = binding.rvFlightsList
-        val flightAdapter = FlightAdapter(emptyList(), Dictionaries(emptyMap(), emptyMap(), emptyMap(), emptyMap()))
-        recyclerView.adapter = flightAdapter
 
         flightViewModel.flightResponse.observe(viewLifecycleOwner) { response ->
             flightAdapter.updateFlights(response.data, response.dictionaries)
@@ -98,7 +103,6 @@ class CheckFlightsFragment : Fragment() {
 
     private fun observeUserData() {
         userViewModel.loggedInUserData.observe(viewLifecycleOwner) { user ->
-            Log.d("UserDataLoggedIn", user.toString())
             userOrigin = user?.city
             prefillFromApartmentSearch()
 
@@ -109,7 +113,6 @@ class CheckFlightsFragment : Fragment() {
     }
 
     private fun performSearchWithBundle() {
-        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         var departureDate: Date? = null
         var returnDate: Date? = null
 
@@ -181,7 +184,6 @@ class CheckFlightsFragment : Fragment() {
     }
 
     private fun updateDateRangeDisplay() {
-        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         val startDateString = selectedStartDate?.let { dateFormat.format(it) } ?: "Not selected"
         val endDateString = selectedEndDate?.let { dateFormat.format(it) } ?: "Not selected"
         binding.etDateRange.setText("$startDateString - $endDateString")

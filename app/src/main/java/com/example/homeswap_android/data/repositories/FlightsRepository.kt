@@ -3,17 +3,13 @@ package com.example.homeswap_android.data.repositories
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.example.homeswap_android.data.models.apiData.Dictionaries
 import com.example.homeswap_android.data.models.apiData.FlightOffer
 import com.example.homeswap_android.data.models.apiData.FlightResponse
 import com.example.homeswap_android.data.models.apiData.Price
 import com.example.homeswap_android.data.remote.FlightsApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
+import com.example.homeswap_android.utils.Utils.dateFormat
 import java.util.Date
-import java.util.Locale
 
 class FlightsRepository {
     private val TAG = "FlightsRepository"
@@ -74,8 +70,8 @@ class FlightsRepository {
     suspend fun searchRoundTripFlights(originCity: String, destinationCity: String, departureDate: Date, returnDate: Date, adults: Int = 1) {
         try {
             _isLoading.postValue(true)
-            val formattedDepartureDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(departureDate)
-            val formattedReturnDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(returnDate)
+            val formattedDepartureDate = dateFormat.format(departureDate)
+            val formattedReturnDate = dateFormat.format(returnDate)
 
             val outboundResponse = searchFlightsByCity(originCity, destinationCity, formattedDepartureDate, adults)
             val inboundResponse = searchFlightsByCity(destinationCity, originCity, formattedReturnDate, adults)
