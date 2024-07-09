@@ -85,4 +85,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         tools:listitem="@layout/flight_list_item" />
 
+    <ProgressBar
+        android:id="@+id/loadingSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@id/rv_flights_list"
+        app:layout_constraintBottom_toBottomOf="@id/rv_flights_list"
+        app:layout_constraintStart_toStartOf="@id/rv_flights_list"
+        app:layout_constraintEnd_toEndOf="@id/rv_flights_list" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

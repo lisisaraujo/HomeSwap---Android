@@ -13,10 +13,9 @@ import com.example.homeswap_android.databinding.FlightListItemBinding
 
 class FlightAdapter(
     private var flights: List<FlightOffer>,
-    private val dictionaries: Dictionaries
+    private var dictionaries: Dictionaries
 ) :
     RecyclerView.Adapter<FlightAdapter.MyViewHolder>() {
-
     class MyViewHolder(val binding: FlightListItemBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -35,7 +34,7 @@ class FlightAdapter(
         //outbound flight
         bindFlightDetails(binding, flight.itineraries[0], isOutbound = true)
 
-        // Return flight
+        //return flight
         if (flight.itineraries.size > 1) {
             bindFlightDetails(binding, flight.itineraries[1], isOutbound = false)
         } else {
@@ -43,8 +42,9 @@ class FlightAdapter(
             binding.returnFlightGroup.visibility = View.GONE
         }
 
-        // Total price
-        binding.totalPriceTV.text = "${flight.price.currency} ${flight.price.total}"
+        // total price
+        val formattedPrice = String.format("%.2f", flight.price.total.toDouble())
+        binding.totalPriceTV.text = "${flight.price.currency} $formattedPrice"
     }
 
     @SuppressLint("SetTextI18n")
@@ -90,10 +90,19 @@ class FlightAdapter(
                 binding.returnStopsTV.text = "Non-stop"
             }
         }
+
+
     }
 
     override fun getItemCount(): Int {
         return flights.size
     }
+
+    fun updateFlights(newFlights: List<FlightOffer>, newDictionaries: Dictionaries) {
+        flights = newFlights
+        dictionaries = newDictionaries
+        notifyDataSetChanged()
+    }
+
 }
 

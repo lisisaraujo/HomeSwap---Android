@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import com.example.homeswap_android.R
 import com.example.homeswap_android.adapter.FlightAdapter
+import com.example.homeswap_android.data.models.apiData.Dictionaries
 import com.example.homeswap_android.databinding.FragmentCheckFlightsBinding
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 import com.example.homeswap_android.viewModels.FlightsViewModel
@@ -35,6 +36,10 @@ class CheckFlightsFragment : Fragment() {
     private var departureDateString: String? = null
     private var returnDateString: String? = null
 
+    private var isSearchInitiated = false
+
+    private var hasBundleData = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -45,17 +50,31 @@ class CheckFlightsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        flightViewModel.clearSearch.observe(viewLifecycleOwner) { shouldClear ->
+            if (shouldClear) {
+                clearInputFields()
+            }
+        }
+        destination = arguments?.getString("destination")
+        departureDateString = arguments?.getString("departureDate")
+        returnDateString = arguments?.getString("returnDate")
+
+        hasBundleData = destination != null && departureDateString != null && returnDateString != null
+
         setupDateRangePicker()
         observeUserData()
-        prefillFromApartmentSearch()
 
         val recyclerView = binding.rvFlightsList
+        val flightAdapter = FlightAdapter(emptyList(), Dictionaries(emptyMap(), emptyMap(), emptyMap(), emptyMap()))
+        recyclerView.adapter = flightAdapter
+
         flightViewModel.flightResponse.observe(viewLifecycleOwner) { response ->
-            recyclerView.adapter = FlightAdapter(response.data, response.dictionaries)
+            flightAdapter.updateFlights(response.data, response.dictionaries)
+            updateLoadingState(false)
         }
 
         flightViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            // Show or hide loading indicator
+            updateLoadingState(isLoading)
         }
 
         flightViewModel.errorMessage.observe(viewLifecycleOwner) { errorMessage ->
@@ -64,6 +83,7 @@ class CheckFlightsFragment : Fragment() {
                     Toast.makeText(context, it, Toast.LENGTH_LONG).show()
                 }
             }
+            updateLoadingState(false)
         }
 
         binding.btnSearchFlights.setOnClickListener {
@@ -71,22 +91,25 @@ class CheckFlightsFragment : Fragment() {
         }
     }
 
+    private fun updateLoadingState(isLoading: Boolean) {
+        binding.loadingSpinner.visibility = if (isLoading) View.VISIBLE else View.GONE
+        binding.rvFlightsList.visibility = if (isLoading) View.GONE else View.VISIBLE
+    }
+
     private fun observeUserData() {
         userViewModel.loggedInUserData.observe(viewLifecycleOwner) { user ->
             Log.d("UserDataLoggedIn", user.toString())
             userOrigin = user?.city
-            performSearchWithBundle()
+            prefillFromApartmentSearch()
+
+            if (hasBundleData) {
+                performSearchWithBundle()
+            }
         }
     }
 
     private fun performSearchWithBundle() {
-        // Read the data from the bundle
-        destination = arguments?.getString("destination")
-        departureDateString = arguments?.getString("departureDate")
-        returnDateString = arguments?.getString("returnDate")
-
         val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-
         var departureDate: Date? = null
         var returnDate: Date? = null
 
@@ -97,14 +120,9 @@ class CheckFlightsFragment : Fragment() {
 
         try {
             departureDate = departureDateString?.let { dateFormat.parse(it) }
-        } catch (e: ParseException) {
-            Log.e("CheckFlightsFragment", "Error parsing departure date: ${e.message}")
-        }
-
-        try {
             returnDate = returnDateString?.let { dateFormat.parse(it) }
         } catch (e: ParseException) {
-            Log.e("CheckFlightsFragment", "Error parsing return date: ${e.message}")
+            Log.e("CheckFlightsFragment", "Error parsing dates: ${e.message}")
         }
 
         if (userOrigin != null && destination != null && departureDate != null && returnDate != null) {
@@ -115,8 +133,7 @@ class CheckFlightsFragment : Fragment() {
                 returnDate
             )
         } else {
-            Toast.makeText(context, "Please enter your flight search manually", Toast.LENGTH_LONG)
-                .show()
+            Toast.makeText(context, "Insufficient data for search", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -131,11 +148,9 @@ class CheckFlightsFragment : Fragment() {
         if (origin.isNotBlank() && destination.isNotBlank() && departureDate != null && returnDate != null) {
             flightViewModel.searchRoundTripFlights(origin, destination, departureDate, returnDate)
         } else {
-            Toast.makeText(context, "Fill out all data to search for flights", Toast.LENGTH_LONG)
-                .show()
+            Toast.makeText(context, "Fill out all data to search for flights", Toast.LENGTH_LONG).show()
         }
     }
-
     @SuppressLint("SetTextI18n")
     private fun prefillFromApartmentSearch() {
         binding.etOrigin.setText(userOrigin)
@@ -172,5 +187,13 @@ class CheckFlightsFragment : Fragment() {
         binding.etDateRange.setText("$startDateString - $endDateString")
         binding.etDateRange.contentDescription =
             "Selected date range: from $startDateString to $endDateString"
+    }
+
+    private fun clearInputFields() {
+        binding.etOrigin.setText("")
+        binding.etDestination.setText("")
+        binding.etDateRange.setText("")
+        selectedStartDate = null
+        selectedEndDate = null
     }
 }
