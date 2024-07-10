@@ -48,11 +48,11 @@ class SearchFragment : Fragment() {
             binding.destinationInput.setText(selectedPlace)
         }
 
-        binding.showDatePickerButton.setOnClickListener {
+        binding.etDateRange.setOnClickListener {
             Utils.showDateRangePicker(parentFragmentManager) { start, end ->
                 startDate = start
                 endDate = end
-                binding.selectedDateRange.text = "$start - $end"
+                binding.selectedDateRange.hint = "$start - $end"
             }
         }
 

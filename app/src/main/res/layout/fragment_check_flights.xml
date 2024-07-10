@@ -9,9 +9,12 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/til_origin"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:hint="Origin"
+        app:endIconMode="clear_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -26,10 +29,12 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/til_destination"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:hint="Destination"
+        app:endIconMode="clear_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/til_origin">
@@ -38,19 +43,23 @@
             android:id="@+id/et_destination"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clickable="true"
             android:inputType="text" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/til_date_range"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:hint="Select Dates"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/til_destination">
+        app:layout_constraintTop_toBottomOf="@id/til_destination"
+        app:startIconDrawable="@drawable/baseline_calendar_month_24"
+        app:endIconMode="custom">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_date_range"
@@ -58,7 +67,8 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             android:focusable="false"
-            android:inputType="none" />
+            android:inputType="none"
+            android:paddingStart="48dp"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 
