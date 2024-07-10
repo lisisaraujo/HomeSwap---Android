@@ -104,6 +104,8 @@ dependencies {
     // google places api
     implementation ("com.google.android.libraries.places:places:3.1.0")
 
+    implementation ("com.google.android.material:material:1.4.0")
+
 
 
 

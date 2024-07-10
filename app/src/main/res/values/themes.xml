@@ -10,10 +10,11 @@
     </style>
 
 
+<!--    <style name="ThemeMaterialCalendar" parent="ThemeOverlay.MaterialComponents.MaterialCalendar">-->
+<!--        <item name="android:windowFullscreen">false</item>-->
+<!--    </style>-->
 
     <style name="Theme.HomeSwapAndroid" parent="Base.Theme.HomeSwapAndroid" />
     
-    <style name="ThemeMaterialCalendar" parent="ThemeOverlay.MaterialComponents.MaterialCalendar">
-        <item name="android:windowFullscreen">false</item>
-    </style>
+
 </resources>

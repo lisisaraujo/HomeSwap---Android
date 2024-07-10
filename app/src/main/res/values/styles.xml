@@ -6,5 +6,7 @@
         <item name="boxStrokeWidth">2dp</item>
     </style>
 
-
+    <style name="ThemeMaterialCalendar" parent="ThemeOverlay.MaterialComponents.MaterialCalendar">
+        <item name="colorPrimary">@color/primary</item>
+    </style>
 </resources>

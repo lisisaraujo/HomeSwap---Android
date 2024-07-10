@@ -44,7 +44,6 @@ class SearchResultsFragment : Fragment() {
         apartmentsViewModel.getApartments()
 
         val itemClickedCallback: (Apartment) -> Unit = { apartment ->
-            Log.d("ItemCallbackApartment", apartment.apartmentID)
             findNavController().navigate(
                 SearchResultsFragmentDirections.actionSearchResultsFragmentToApartmentDetailsFragment(
                     apartment.apartmentID
@@ -53,10 +52,6 @@ class SearchResultsFragment : Fragment() {
         }
 
         val onLikeClickListener: (Apartment) -> Unit = { apartment ->
-            Log.d(
-                "LikeClicked",
-                "onLikeClickListener called for apartment ${apartment.apartmentID}"
-            )
             apartmentsViewModel.toggleLike(apartment)
         }
 
@@ -82,9 +77,6 @@ class SearchResultsFragment : Fragment() {
         }
 
         binding.flightSearchChip.setOnClickListener {
-            Log.d("ArgsDestination", args.destination.toString())
-            Log.d("BundleData", "${bundle.getString("destination")}, ${bundle.getString("departureDate")}, ${bundle.getString("returnDate")}")
-
             findNavController().navigate(R.id.checkFlightsFragment, bundle)
         }
 

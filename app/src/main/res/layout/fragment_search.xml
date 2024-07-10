@@ -16,36 +16,19 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/baseline_arrow_back_ios_new_24" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/countryInputLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:hint="Enter country"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchApartmentBackBTN">
-
-        <AutoCompleteTextView
-            android:id="@+id/countryInput"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="text" />
-
-    </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/cityInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:hint="Enter city"
+        android:hint="Enter location"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/countryInputLayout">
+        app:layout_constraintTop_toBottomOf="@+id/searchApartmentBackBTN">
 
         <AutoCompleteTextView
-            android:id="@+id/cityInput"
+            android:id="@+id/destinationInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text" />

@@ -39,7 +39,7 @@ class FlightsViewModel : ViewModel() {
         }
     }
 
-    fun clearFlightsSearch() {
+    fun clearSearch() {
         repository.clearFlightsSearch()
     }
 

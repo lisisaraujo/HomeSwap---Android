@@ -6,4 +6,7 @@
     <string name="join_homeswap">
         <b><u>Join</u></b> HomeSwap
     </string>
+
+    <!-- Add this line to define the date_range string -->
+    <string name="date_range">%1$s - %2$s</string>
 </resources>
