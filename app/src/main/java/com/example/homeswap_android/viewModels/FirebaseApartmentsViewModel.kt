@@ -112,10 +112,15 @@ class FirebaseApartmentsViewModel : ViewModel() {
 
     fun searchApartments(
         city: String? = null,
-        country: String? = null,
         startDate: String? = null,
-        endDate: String? = null
+        endDate: String? = null,
+        typeOfHome: String? = null,
+        petsAllowed: Boolean? = null,
+        homeOffice: Boolean? = null,
+        hasWifi: Boolean? = null,
+        rooms: Int? = null,
+        maxGuests: Int? = null
     ) {
-        apartmentRepository.searchApartments(city, country, startDate, endDate)
+        apartmentRepository.searchApartments(city, startDate, endDate, typeOfHome, petsAllowed, homeOffice, hasWifi, rooms, maxGuests)
     }
 }

@@ -14,11 +14,15 @@ import androidx.navigation.fragment.navArgs
 import com.example.homeswap_android.R
 import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.databinding.FragmentSearchResultsBinding
+import com.example.homeswap_android.viewModels.FiltersViewModel
 import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
+import com.google.android.material.chip.Chip
 
 class SearchResultsFragment : Fragment() {
     private lateinit var binding: FragmentSearchResultsBinding
     private val apartmentsViewModel: FirebaseApartmentsViewModel by activityViewModels()
+    private val filtersViewModel: FiltersViewModel by activityViewModels()
+
 
     private lateinit var apartmentAdapter: ApartmentAdapter
     private val args: SearchResultsFragmentArgs by navArgs()
@@ -81,4 +85,5 @@ class SearchResultsFragment : Fragment() {
         }
 
     }
+
 }

@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.homeswap_android.data.models.Apartment
+import com.example.homeswap_android.data.models.apiData.FlightOffer
 import com.example.homeswap_android.utils.Utils.dateFormat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
@@ -64,7 +65,7 @@ class ApartmentRepository(
             }
     }
 
-    fun getApartment(apartmentID: String): LiveData<Apartment>  {
+    fun getApartment(apartmentID: String): LiveData<Apartment> {
         var resultLiveData: MutableLiveData<Apartment> = MutableLiveData()
         apartmentsCollectionReference.document(apartmentID).get()
             .addOnSuccessListener { documentSnapshot ->
@@ -245,11 +246,17 @@ class ApartmentRepository(
                     }
             },
             onFailure = { exception ->
-                Log.w(TAG, "Failed to delete pictures for apartment $apartmentID: ${exception.message}")
+                Log.w(
+                    TAG,
+                    "Failed to delete pictures for apartment $apartmentID: ${exception.message}"
+                )
                 //proceed with deleting the apartment document even if picture deletion fails
                 apartmentsCollectionReference.document(apartmentID).delete()
                     .addOnSuccessListener {
-                        Log.d(TAG, "Apartment with ID $apartmentID deleted successfully, but picture deletion failed")
+                        Log.d(
+                            TAG,
+                            "Apartment with ID $apartmentID deleted successfully, but picture deletion failed"
+                        )
                         onSuccess()
                     }
                     .addOnFailureListener { docException ->
@@ -259,7 +266,6 @@ class ApartmentRepository(
             }
         )
     }
-
 
 
     fun updateApartment(apartment: Apartment) {
@@ -294,9 +300,14 @@ class ApartmentRepository(
 
     fun searchApartments(
         city: String?,
-        country: String?,
         startDate: String?,
-        endDate: String?
+        endDate: String?,
+        typeOfHome: String?,
+        petsAllowed: Boolean?,
+        homeOffice: Boolean?,
+        hasWifi: Boolean?,
+        rooms: Int?,
+        maxGuests: Int?
     ) {
         var query: Query = apartmentsCollectionReference
 
@@ -304,8 +315,27 @@ class ApartmentRepository(
             query = query.whereEqualTo("cityLower", city.lowercase())
         }
 
-        if (!country.isNullOrBlank()) {
-            query = query.whereEqualTo("countryLower", country.lowercase())
+        if (!typeOfHome.isNullOrBlank()) {
+            query = query.whereEqualTo("typeOfHome", typeOfHome)
+        }
+
+        if (petsAllowed != null) {
+            query = query.whereEqualTo("petsAllowed", petsAllowed)
+        }
+
+        if (homeOffice != null) {
+            query = query.whereEqualTo("homeOffice", petsAllowed)
+        }
+
+        if (hasWifi != null) {
+            query = query.whereEqualTo("hasWifi", petsAllowed)
+        }
+
+        if (rooms != 0) {
+            query = query.whereEqualTo("rooms", rooms)
+        }
+        if (maxGuests != 0) {
+            query = query.whereEqualTo("maxGuests", maxGuests)
         }
 
         query.get()
@@ -352,4 +382,5 @@ class ApartmentRepository(
             false
         }
     }
+
 }
