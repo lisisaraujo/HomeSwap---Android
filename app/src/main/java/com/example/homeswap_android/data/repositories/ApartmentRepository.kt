@@ -319,35 +319,39 @@ class ApartmentRepository(
             query = query.whereEqualTo("typeOfHome", typeOfHome)
         }
 
-        if (petsAllowed != null) {
-            query = query.whereEqualTo("petsAllowed", petsAllowed)
+        if (petsAllowed == true) {
+            query = query.whereEqualTo("petsAllowed", true)
         }
 
-        if (homeOffice != null) {
-            query = query.whereEqualTo("homeOffice", petsAllowed)
+        if (homeOffice == true) {
+            query = query.whereEqualTo("homeOffice", true)
         }
 
-        if (hasWifi != null) {
-            query = query.whereEqualTo("hasWifi", petsAllowed)
+        if (hasWifi == true) {
+            query = query.whereEqualTo("hasWifi", true)
         }
 
-        if (rooms != 0) {
+        if (rooms != null && rooms != 0) {
             query = query.whereEqualTo("rooms", rooms)
         }
-        if (maxGuests != 0) {
+
+        if (maxGuests != null && maxGuests != 0) {
             query = query.whereEqualTo("maxGuests", maxGuests)
         }
 
         query.get()
             .addOnSuccessListener { querySnapshot ->
                 val apartments = querySnapshot.toObjects(Apartment::class.java)
+                Log.d(TAG, "Apartments fetched: ${apartments.size}")
                 val filteredApartments = filterByDate(apartments, startDate, endDate)
+                Log.d(TAG, "Filtered Apartments: ${filteredApartments.size}")
                 _apartmentsBySearch.postValue(filteredApartments)
             }
             .addOnFailureListener { exception ->
                 Log.e(TAG, "Error searching apartments: ${exception.message}")
                 _apartmentsBySearch.postValue(emptyList())
             }
+
     }
 
     private fun filterByDate(
@@ -382,5 +386,6 @@ class ApartmentRepository(
             false
         }
     }
+
 
 }

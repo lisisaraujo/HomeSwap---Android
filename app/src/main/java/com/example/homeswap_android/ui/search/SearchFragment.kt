@@ -3,6 +3,7 @@ package com.example.homeswap_android.ui.search
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +23,7 @@ import com.google.android.libraries.places.api.net.PlacesClient
 import kotlin.math.max
 
 class SearchFragment : Fragment() {
+    val TAG = "SearchFragment"
 
     private lateinit var binding: FragmentSearchBinding
     private val apartmentViewModel: FirebaseApartmentsViewModel by activityViewModels()
@@ -69,6 +71,7 @@ class SearchFragment : Fragment() {
         }
 
         apartmentViewModel.apartmentsBySearch.observe(viewLifecycleOwner) { apartmentsBySearchList ->
+            Log.d(TAG, apartmentsBySearchList.toString())
             if (apartmentsBySearchList.isNotEmpty()) {
                 findNavController().navigate(
                     SearchFragmentDirections.actionSearchFragmentToSearchResultsFragment(
@@ -77,6 +80,7 @@ class SearchFragment : Fragment() {
                         returnDate = endDate
                     )
                 )
+
             } else {
                 Toast.makeText(context, "No apartments found", Toast.LENGTH_LONG).show()
             }
@@ -102,6 +106,16 @@ class SearchFragment : Fragment() {
                 maxGuests = maxGuests.takeIf { it != 0 }
 
                 )
+
+            Log.d(TAG, "City: $destination")
+            Log.d(TAG, "StartDate: $startDate")
+            Log.d(TAG, "EndDate: $endDate")
+            Log.d(TAG, "typeOfHome: $typeOfHome")
+            Log.d(TAG, "petsAllowed: $petsAllowed")
+            Log.d(TAG, "HomeOffice: $homeOffice")
+            Log.d(TAG, "hasWifi: $hasWifi")
+            Log.d(TAG, "rooms: $rooms")
+            Log.d(TAG, "maxGuests: $maxGuests")
         }
 
         binding.searchApartmentBackBTN.setOnClickListener {
