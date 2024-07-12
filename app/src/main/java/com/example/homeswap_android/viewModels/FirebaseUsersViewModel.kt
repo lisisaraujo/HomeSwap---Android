@@ -23,6 +23,8 @@ class FirebaseUsersViewModel : ViewModel() {
     val loginResult = userRepository.loginResult
     val registerResult = userRepository.registerResult
 
+    val currentUser = userRepository.currentUser
+
     init {
         userRepository.setupUserEnv()
         refreshLoggedInUserData()
@@ -79,5 +81,9 @@ class FirebaseUsersViewModel : ViewModel() {
 
     fun refreshLoggedInUserData() {
         userRepository.refreshLoggedInUserData()
+    }
+
+    fun isUserLoggedIn(): Boolean {
+        return auth.currentUser != null
     }
 }

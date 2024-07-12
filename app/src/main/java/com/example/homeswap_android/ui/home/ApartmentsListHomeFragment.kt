@@ -9,14 +9,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.example.homeswap_android.R
 import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.databinding.FragmentApartmentsListHomeBinding
 import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
+import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 
 class ApartmentsListHomeFragment : Fragment() {
     private lateinit var binding: FragmentApartmentsListHomeBinding
     private val apartmentsViewModel: FirebaseApartmentsViewModel by activityViewModels()
     private lateinit var apartmentAdapter: ApartmentAdapter
+    private val userViewModel: FirebaseUsersViewModel by activityViewModels()
+
 
 
 
@@ -30,6 +34,7 @@ class ApartmentsListHomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
 
         apartmentsViewModel.getApartments()
 

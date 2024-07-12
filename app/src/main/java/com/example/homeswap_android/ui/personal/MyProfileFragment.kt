@@ -33,11 +33,8 @@ class MyProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         usersViewModel.loggedInUser.observe(viewLifecycleOwner) { currentUser ->
-
-            if (currentUser == null) {
-                findNavController().navigate(R.id.loginFragment)
-            } else {
-                val userRef = usersViewModel.getUserDocumentReference(currentUser.uid)
+            currentUser.let {
+                val userRef = usersViewModel.getUserDocumentReference(currentUser!!.uid)
                 userRef.addSnapshotListener { value, error ->
                     if (error != null) {
                         Log.d(TAG, "User not found.")
@@ -53,6 +50,7 @@ class MyProfileFragment : Fragment() {
                     }
                 }
             }
+
         }
 
         binding.menuButton.setOnClickListener {

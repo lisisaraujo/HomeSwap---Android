@@ -10,6 +10,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.example.homeswap_android.databinding.ActivityMainBinding
@@ -27,8 +28,7 @@ import com.google.firebase.initialize
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-
-
+    private val userViewModel: FirebaseUsersViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity() {
         Firebase.appCheck.installAppCheckProviderFactory(
             DebugAppCheckProviderFactory.getInstance(),
         )
+
 
         // google places API initialization
         Places.initialize(applicationContext, googlePlacesApiKey)
@@ -62,6 +63,10 @@ class MainActivity : AppCompatActivity() {
                 else -> binding.bottomNavView.visibility = View.GONE
             }
 
+        }
+
+        if (!userViewModel.isUserLoggedIn()) {
+            navController.navigate(R.id.loginFragment)
         }
 
         //Listener der bei BottomNavigation Klick ausgeführt

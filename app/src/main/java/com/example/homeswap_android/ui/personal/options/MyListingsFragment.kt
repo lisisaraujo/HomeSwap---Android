@@ -60,8 +60,8 @@ class MyListingsFragment : Fragment() {
 
         }
 
-        userViewModel.loggedInUser.observe(viewLifecycleOwner) {
-            if (it == null) findNavController().navigate(R.id.loginFragment)
-        }
+//        userViewModel.loggedInUser.observe(viewLifecycleOwner) {
+//            if (it == null) findNavController().navigate(R.id.loginFragment)
+//        }
     }
 }

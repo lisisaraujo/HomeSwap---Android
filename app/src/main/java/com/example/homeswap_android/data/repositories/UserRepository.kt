@@ -22,6 +22,11 @@ class UserRepository(
 ) {
 
     val TAG = "userRepository"
+
+    private val _currentUser = MutableLiveData<FirebaseUser?>()
+    val currentUser: LiveData<FirebaseUser?>
+        get() = _currentUser
+
     private val _loggedInUser = MutableLiveData<FirebaseUser?>()
     val loggedInUser: LiveData<FirebaseUser?>
         get() = _loggedInUser
@@ -54,6 +59,9 @@ class UserRepository(
         }
 
         auth.currentUser?.let { setupUserEnv() }
+
+            refreshLoggedInUserData()
+
     }
 
     fun getUserDocumentReference(userID: String): DocumentReference {
@@ -63,15 +71,16 @@ class UserRepository(
 
     fun setupUserEnv() {
         val user = auth.currentUser
-        _loggedInUser.postValue(user)
         if (user != null) {
-      userDataDocumentReference.postValue(usersCollectionReference.document(user.uid))
+            _loggedInUser.postValue(user)
+            userDataDocumentReference.postValue(usersCollectionReference.document(user.uid))
             Log.d("NewUser", user.email.toString())
             getLoggedInUserData(user.uid)
         }
     }
 
-    private fun getLoggedInUserData(userID: String){
+
+    private fun getLoggedInUserData(userID: String) {
         usersCollectionReference.document(userID).get()
             .addOnSuccessListener { documentSnapshot ->
                 if (documentSnapshot.exists()) {
@@ -146,7 +155,9 @@ class UserRepository(
 
     fun signOut() {
         auth.signOut()
-        setupUserEnv()
+        _loggedInUser.postValue(null)
+        Log.d(TAG, loggedInUser.value?.email ?: "No user logged in")
+
     }
 
     fun fetchUsers() {
@@ -234,7 +245,11 @@ class UserRepository(
             }
     }
 
-    private fun deleteApartmentAndPictures(apartmentID: String, userID: String, onAllDeleted: () -> Unit) {
+    private fun deleteApartmentAndPictures(
+        apartmentID: String,
+        userID: String,
+        onAllDeleted: () -> Unit
+    ) {
         val apartmentPicturesRef = storage.reference.child("images/$userID/apartments/$apartmentID")
 
         apartmentPicturesRef.listAll()
@@ -319,7 +334,6 @@ class UserRepository(
     }
 
 
-
     fun checkEmailVerificationStatus(onComplete: (Boolean) -> Unit) {
         val user = auth.currentUser
         user?.reload()?.addOnCompleteListener { task ->
@@ -331,13 +345,14 @@ class UserRepository(
             }
         }
     }
+
     fun updateUserData(userId: String, updates: Map<String, Any>) {
-            try {
-                getUserDocumentReference(userId).update(updates)
-            } catch (e: Exception) {
-                Log.e("FirebaseUsersViewModel", "Error updating user data", e)
-            }
+        try {
+            getUserDocumentReference(userId).update(updates)
+        } catch (e: Exception) {
+            Log.e("FirebaseUsersViewModel", "Error updating user data", e)
         }
+    }
 
     fun refreshLoggedInUserData() {
         Log.d(TAG, "Refreshing logged-in user data")

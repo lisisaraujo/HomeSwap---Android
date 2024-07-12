@@ -18,9 +18,7 @@ class UsersListHomeFragment : Fragment() {
 
     private val TAG = "UsersListHomeFragment"
 
-    private var _binding: FragmentUsersListHomeBinding? = null
-    private val binding get() = _binding!!
-
+    private lateinit var binding: FragmentUsersListHomeBinding
     private val userViewModel: FirebaseUsersViewModel by activityViewModels()
     private lateinit var userAdapter: UserAdapter
 
@@ -28,7 +26,7 @@ class UsersListHomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentUsersListHomeBinding.inflate(inflater, container, false)
+        binding = FragmentUsersListHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
 

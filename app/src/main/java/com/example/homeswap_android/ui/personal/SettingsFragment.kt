@@ -31,8 +31,13 @@ class SettingsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.logoutBTN.setOnClickListener {
+            Log.d("LogOut", userViewModel.loggedInUser.value?.email.toString())
             userViewModel.signOut()
-            findNavController().navigate(R.id.loginFragment)
+            Log.d("LogOut", userViewModel.loggedInUser.value?.email.toString())
+        }
+
+        userViewModel.loggedInUser.observe(viewLifecycleOwner) { user ->
+            if (user == null) findNavController().navigate(R.id.loginFragment)
         }
 
         binding.addApartmentBTN.setOnClickListener {

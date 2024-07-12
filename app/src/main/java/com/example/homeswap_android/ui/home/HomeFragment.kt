@@ -1,6 +1,7 @@
 package com.example.homeswap_android.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,8 @@ import com.google.android.material.tabs.TabLayout
 
 class HomeFragment : Fragment() {
 
+    val TAG = "HomeFragment"
+
     private lateinit var binding: FragmentHomeBinding
     private val args: HomeFragmentArgs by navArgs()
     private val userViewModel: FirebaseUsersViewModel by activityViewModels()
@@ -28,7 +31,8 @@ class HomeFragment : Fragment() {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         // check if user is logged in before going to homepage
-        userViewModel.loggedInUser.observe(viewLifecycleOwner) { user ->
+        userViewModel.currentUser.observe(viewLifecycleOwner) { user ->
+            Log.d(TAG, user?.email.toString())
             if (user == null) {
                 findNavController().navigate(R.id.loginFragment)
             }
