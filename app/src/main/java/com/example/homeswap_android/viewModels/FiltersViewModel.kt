@@ -16,4 +16,5 @@ class FiltersViewModel: ViewModel() {
     private val apartmentsCollectionReference = firestore.collection("apartments")
     private val apartmentRepository = ApartmentRepository(auth, storage, apartmentsCollectionReference)
 
+
 }

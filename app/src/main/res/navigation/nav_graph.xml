@@ -193,6 +193,10 @@
         <action
             android:id="@+id/action_searchResultsFragment_to_checkFlightsFragment"
             app:destination="@id/checkFlightsFragment" />
+        <argument
+            android:name="filters"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/addApartmentAdditionalDetailsFragment"

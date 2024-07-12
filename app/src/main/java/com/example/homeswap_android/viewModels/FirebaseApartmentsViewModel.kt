@@ -30,6 +30,9 @@ class FirebaseApartmentsViewModel : ViewModel() {
     val currentApartment = apartmentRepository.currentApartment
     val likedApartments = apartmentRepository.likedApartments
     val apartmentsBySearch = apartmentRepository.apartmentsBySearch
+    val searchCompletedEvent = apartmentRepository.searchCompletedEvent
+    val loadingApartments = apartmentRepository.loadingApartments
+
 
     init {
         getApartments()
@@ -115,12 +118,12 @@ class FirebaseApartmentsViewModel : ViewModel() {
         startDate: String? = null,
         endDate: String? = null,
         typeOfHome: String? = null,
-        petsAllowed: Boolean? = null,
-        homeOffice: Boolean? = null,
-        hasWifi: Boolean? = null,
+        amenities: List<String>? = null,
         rooms: Int? = null,
         maxGuests: Int? = null
-    ) {
-        apartmentRepository.searchApartments(city, startDate, endDate, typeOfHome, petsAllowed, homeOffice, hasWifi, rooms, maxGuests)
+    )  {
+        viewModelScope.launch {
+            apartmentRepository.searchApartments(city, startDate, endDate, typeOfHome, amenities, rooms, maxGuests)
+        }
     }
 }

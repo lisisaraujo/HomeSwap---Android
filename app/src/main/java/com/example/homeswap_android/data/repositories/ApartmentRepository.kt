@@ -1,12 +1,11 @@
 package com.example.homeswap_android.data.repositories
 
-import android.content.ContentValues
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.homeswap_android.data.models.Apartment
-import com.example.homeswap_android.data.models.apiData.FlightOffer
 import com.example.homeswap_android.utils.Utils.dateFormat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
@@ -14,9 +13,11 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageException
 import com.google.firebase.storage.component1
 import com.google.firebase.storage.component2
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.tasks.await
 import java.text.ParseException
 
 val TAG = "ApartmentRepository"
@@ -30,6 +31,9 @@ class ApartmentRepository(
     private val _apartments = MutableLiveData<List<Apartment>>()
     val apartments: LiveData<List<Apartment>> = _apartments
 
+    private val _loadingApartments = MutableLiveData<Boolean>()
+    val loadingApartments: LiveData<Boolean> = _loadingApartments
+
     private val _currentApartment = MutableLiveData<Apartment?>()
     val currentApartment: LiveData<Apartment?> = _currentApartment
 
@@ -41,6 +45,10 @@ class ApartmentRepository(
 
     private val _apartmentsBySearch = MutableLiveData<List<Apartment>>()
     val apartmentsBySearch: LiveData<List<Apartment>> = _apartmentsBySearch
+
+    private val _searchCompletedEvent = MutableSharedFlow<Unit>()
+    val searchCompletedEvent: SharedFlow<Unit> = _searchCompletedEvent
+
 
     init {
         apartmentsCollectionReference.addSnapshotListener { value, error ->
@@ -298,14 +306,12 @@ class ApartmentRepository(
         _newAddedApartment.postValue(null)
     }
 
-    fun searchApartments(
+    suspend fun searchApartments(
         city: String?,
         startDate: String?,
         endDate: String?,
         typeOfHome: String?,
-        petsAllowed: Boolean?,
-        homeOffice: Boolean?,
-        hasWifi: Boolean?,
+        amenities: List<String>?,
         rooms: Int?,
         maxGuests: Int?
     ) {
@@ -319,39 +325,46 @@ class ApartmentRepository(
             query = query.whereEqualTo("typeOfHome", typeOfHome)
         }
 
-        if (petsAllowed == true) {
-            query = query.whereEqualTo("petsAllowed", true)
+        //apply amenity filters
+        if (amenities != null) {
+            if (amenities.contains("Pets Allowed")) {
+                query = query.whereEqualTo("petsAllowed", true)
+            }
+
+            if (amenities.contains("Home Office")) {
+                query = query.whereEqualTo("homeOffice", true)
+            }
+            if (amenities.contains("Has Wifi")) {
+                query = query.whereEqualTo("hasWifi", true)
+            }
         }
 
-        if (homeOffice == true) {
-            query = query.whereEqualTo("homeOffice", true)
+        if (rooms != null && rooms > 0) {
+            query = query.whereGreaterThanOrEqualTo("rooms", rooms)
         }
 
-        if (hasWifi == true) {
-            query = query.whereEqualTo("hasWifi", true)
-        }
-
-        if (rooms != null && rooms != 0) {
-            query = query.whereEqualTo("rooms", rooms)
-        }
-
-        if (maxGuests != null && maxGuests != 0) {
-            query = query.whereEqualTo("maxGuests", maxGuests)
+        if (maxGuests != null && maxGuests > 0) {
+            query = query.whereGreaterThanOrEqualTo("maxGuests", maxGuests)
         }
 
         query.get()
-            .addOnSuccessListener { querySnapshot ->
-                val apartments = querySnapshot.toObjects(Apartment::class.java)
-                Log.d(TAG, "Apartments fetched: ${apartments.size}")
-                val filteredApartments = filterByDate(apartments, startDate, endDate)
-                Log.d(TAG, "Filtered Apartments: ${filteredApartments.size}")
-                _apartmentsBySearch.postValue(filteredApartments)
-            }
-            .addOnFailureListener { exception ->
-                Log.e(TAG, "Error searching apartments: ${exception.message}")
-                _apartmentsBySearch.postValue(emptyList())
-            }
 
+        _loadingApartments.postValue(true)
+
+        try {
+            val querySnapshot = query.get().await()
+            val apartments = querySnapshot.toObjects(Apartment::class.java)
+            Log.d(TAG, "Apartments fetched: ${apartments.size}")
+            val filteredApartments = filterByDate(apartments, startDate, endDate)
+            Log.d(TAG, "Filtered Apartments: ${filteredApartments.size}")
+            _apartmentsBySearch.value = filteredApartments
+        } catch (exception: Exception) {
+            Log.e(TAG, "Error searching apartments: ${exception.message}")
+            _apartmentsBySearch.value = emptyList()
+        } finally {
+            _loadingApartments.value = false
+            _searchCompletedEvent.emit(Unit)
+        }
     }
 
     private fun filterByDate(
@@ -386,6 +399,5 @@ class ApartmentRepository(
             false
         }
     }
-
 
 }
