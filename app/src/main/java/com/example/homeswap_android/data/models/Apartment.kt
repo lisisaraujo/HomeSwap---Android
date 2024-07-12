@@ -1,7 +1,7 @@
 package com.example.homeswap_android.data.models
 
 
-data class Apartment (
+data class Apartment(
     var apartmentID: String = "",
     val userID: String = "",
     val title: String = "",
@@ -16,10 +16,10 @@ data class Apartment (
     var coverPicture: String = "",
     var liked: Boolean = false,
     var petsAllowed: Boolean = false,
-    var rooms: Int = 0,
-    var maxGuests: Int = 0,
+    var rooms: Int? = null,
+    var maxGuests: Int? = null,
     var typeOfHome: String = "",
     var homeOffice: Boolean = false,
-    var rating: Double = 0.0,
+    var rating: Double? = null,
     var hasWifi: Boolean = false
 )

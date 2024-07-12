@@ -36,18 +36,22 @@ class SearchFragment : Fragment() {
     private var startDate: String? = null
     private var endDate: String? = null
     private var destination: String? = null
-    private var filters: Map<String, Any>? = null
+    private var filters: MutableMap<String, Any?> = mutableMapOf()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentSearchBinding.inflate(inflater, container, false)
 
-        apartmentViewModel.clearSearch()
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            apartmentViewModel.clearSearch()
+        }
+
 
         return binding.root
     }
+
 
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -55,9 +59,19 @@ class SearchFragment : Fragment() {
 
         setupSliders()
         setupAdditionalFiltersToggle()
+        setupPlacesAutocomplete()
+        setupDateRangePicker()
+        setupSearchButton()
+        setupClearSearchButton()
+        observeSearchCompletion()
 
+        binding.searchApartmentBackBTN.setOnClickListener {
+            findNavController().navigateUp()
+        }
+    }
+
+    private fun setupPlacesAutocomplete() {
         placesClient = Places.createClient(requireContext())
-
         Utils.setupAutoCompleteTextView(
             requireContext(),
             binding.destinationInput,
@@ -66,7 +80,9 @@ class SearchFragment : Fragment() {
             destination = selectedPlace.split(",").firstOrNull()?.trim()
             binding.destinationInput.setText(selectedPlace)
         }
+    }
 
+    private fun setupDateRangePicker() {
         binding.etDateRange.setOnClickListener {
             Utils.showDateRangePicker(parentFragmentManager) { start, end ->
                 startDate = start
@@ -74,7 +90,24 @@ class SearchFragment : Fragment() {
                 binding.selectedDateRange.hint = "$start - $end"
             }
         }
+    }
 
+    private fun setupSearchButton() {
+        binding.searchButton.setOnClickListener {
+            updateFilters()
+            viewLifecycleOwner.lifecycleScope.launch {
+                apartmentViewModel.searchApartments(filters)
+            }
+        }
+    }
+
+    private fun setupClearSearchButton() {
+        binding.clearSearchButton.setOnClickListener {
+            clearSearch()
+        }
+    }
+
+    private fun observeSearchCompletion() {
         viewLifecycleOwner.lifecycleScope.launch {
             apartmentViewModel.searchCompletedEvent.collectLatest {
                 findNavController().navigate(
@@ -87,38 +120,8 @@ class SearchFragment : Fragment() {
                 )
             }
         }
-
-        binding.searchButton.setOnClickListener {
-            collectFilters()
-            filters = collectFilters()
-
-            apartmentViewModel.searchApartments(
-                city = destination.takeIf { !it.isNullOrBlank() },
-                startDate = startDate.takeIf { it.isNullOrEmpty() },
-                endDate = endDate.takeIf { it.isNullOrEmpty() },
-                typeOfHome = filters!!["typeOfHome"] as? String,
-                amenities = (filters!!["amenities"] as? List<String>) ?: emptyList(),
-                rooms = (filters!!["rooms"] as? Int),
-                maxGuests = (filters!!["maxGuests"] as? Int)
-            )
-        }
-
-        binding.searchApartmentBackBTN.setOnClickListener {
-            findNavController().navigateUp()
-        }
-
-        binding.clearSearchButton.setOnClickListener {
-            clearSearch()
-        }
-
     }
 
-//    private fun setupTypeOfHomeDropdown() {
-//        val items = listOf("Apartment", "House", "Studio", "Villa", "Cottage")
-//        val adapter = ArrayAdapter(requireContext(), R.layout.list_item, items)
-//        (binding.typeOfHomeAutoComplete as? AutoCompleteTextView)?.setAdapter(adapter)
-//    }
-//
     private fun setupSliders() {
         binding.roomsSlider.addOnChangeListener { _, value, _ ->
             binding.roomsLabel.text = "Number of Rooms: ${value.toInt()}"
@@ -128,7 +131,7 @@ class SearchFragment : Fragment() {
             binding.maxGuestsLabel.text = "Max Guests: ${value.toInt()}"
         }
     }
-//
+
     private fun setupAdditionalFiltersToggle() {
         binding.additionalFiltersHeader.setOnClickListener {
             val isVisible = binding.additionalFiltersContent.visibility == View.VISIBLE
@@ -139,53 +142,57 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun collectFilters(): Map<String, Any> {
-        val typeOfHome = binding.typeOfHomeChipGroup.findViewById<Chip>(binding.typeOfHomeChipGroup.checkedChipId)?.text.toString()
+    private fun updateFilters() {
+        filters["city"] = destination?.takeIf { it.isNotBlank() }
+        filters["startDate"] = startDate?.takeIf { it.isNotEmpty() }
+        filters["endDate"] = endDate?.takeIf { it.isNotEmpty() }
+
+        val selectedTypeOfHome = binding.typeOfHomeChipGroup.findViewById<Chip>(binding.typeOfHomeChipGroup.checkedChipId)?.text?.toString()
+        if (!selectedTypeOfHome.isNullOrBlank()) {
+            filters["typeOfHome"] = selectedTypeOfHome
+        } else {
+            filters.remove("typeOfHome")
+        }
+
         val amenities = binding.amenitiesChipGroup.checkedChipIds.map {
             binding.amenitiesChipGroup.findViewById<Chip>(it).text.toString()
         }
+        if (amenities.isNotEmpty()) {
+            filters["amenities"] = amenities
+        } else {
+            filters.remove("amenities")
+        }
 
-        return mapOf(
-            "location" to binding.destinationInput.text.toString(),
-            "dateRange" to "${startDate ?: ""} - ${endDate ?: ""}",
-            "typeOfHome" to typeOfHome,
-            "rooms" to binding.roomsSlider.value.toInt(),
-            "maxGuests" to binding.maxGuestsSlider.value.toInt(),
-            "amenities" to amenities
-        )
+        if (binding.roomsSlider.value > binding.roomsSlider.valueFrom) {
+            filters["rooms"] = binding.roomsSlider.value.toInt()
+        } else {
+            filters.remove("rooms")
+        }
+
+        if (binding.maxGuestsSlider.value > binding.maxGuestsSlider.valueFrom) {
+            filters["maxGuests"] = binding.maxGuestsSlider.value.toInt()
+        } else {
+            filters.remove("maxGuests")
+        }
     }
 
-//    private fun showFilterBottomSheet() {
-//        val filterBottomSheet = FilterBottomSheetFragment.newInstance()
-//        filterBottomSheet.show(childFragmentManager, FilterBottomSheetFragment.TAG)
-//    }
-
     private fun clearSearch() {
-        // Clear destination input
         binding.destinationInput.text?.clear()
-
-        // Clear date range
         binding.etDateRange.text?.clear()
         binding.selectedDateRange.hint = "Select Dates"
         startDate = null
         endDate = null
-
-        // Uncheck all chips in type of home
         binding.typeOfHomeChipGroup.clearCheck()
-
-        // Reset sliders
         binding.roomsSlider.value = binding.roomsSlider.valueFrom
         binding.maxGuestsSlider.value = binding.maxGuestsSlider.valueFrom
-
-        // Uncheck all amenity chips
         binding.amenitiesChipGroup.clearCheck()
 
-        // Clear search in ViewModel
+        filters.clear()
         viewLifecycleOwner.lifecycleScope.launch {
             apartmentViewModel.clearSearch()
         }
 
-        // Optionally, you can show a message to the user
+
         Toast.makeText(context, "Search cleared", Toast.LENGTH_SHORT).show()
     }
 }

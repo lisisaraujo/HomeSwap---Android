@@ -1,6 +1,7 @@
 package com.example.homeswap_android.viewModels
 
 import android.net.Uri
+import android.system.Os.remove
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -13,6 +14,9 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 
@@ -33,12 +37,13 @@ class FirebaseApartmentsViewModel : ViewModel() {
     val searchCompletedEvent = apartmentRepository.searchCompletedEvent
     val loadingApartments = apartmentRepository.loadingApartments
 
+    private val _currentFilters = MutableStateFlow<Map<String, Any?>>(emptyMap())
+    val currentFilters: StateFlow<Map<String, Any?>> = _currentFilters
 
     init {
         getApartments()
         loadLikedApartments()
     }
-
 
     fun getApartmentDocumentReference(apartmentId: String): DocumentReference {
         return apartmentRepository.getApartmentDocumentReference(apartmentId)
@@ -109,21 +114,53 @@ class FirebaseApartmentsViewModel : ViewModel() {
         apartmentRepository.getLikedApartments()
     }
 
-    fun clearSearch() {
+
+    suspend fun clearSearch() {
+        _currentFilters.value = emptyMap()
         apartmentRepository.clearSearch()
     }
 
-    fun searchApartments(
-        city: String? = null,
-        startDate: String? = null,
-        endDate: String? = null,
-        typeOfHome: String? = null,
-        amenities: List<String>? = null,
-        rooms: Int? = null,
-        maxGuests: Int? = null
-    )  {
+    suspend fun searchApartments(filters: Map<String, Any?>) {
+        _currentFilters.value = filters
+        performSearch()
+    }
+
+    fun removeFilter(filterKey: String) {
+        _currentFilters.update { currentFilters ->
+            currentFilters.toMutableMap().apply { remove(filterKey) }
+        }
         viewModelScope.launch {
-            apartmentRepository.searchApartments(city, startDate, endDate, typeOfHome, amenities, rooms, maxGuests)
+            performSearch()
         }
     }
+
+    fun removeAmenity(amenity: String) {
+        _currentFilters.update { currentFilters ->
+            val updatedAmenities = (currentFilters["amenities"] as? List<String>)?.filter { it != amenity }
+            currentFilters.toMutableMap().apply {
+                if (updatedAmenities.isNullOrEmpty()) {
+                    remove("amenities")
+                } else {
+                    put("amenities", updatedAmenities)
+                }
+            }
+        }
+        viewModelScope.launch {
+            performSearch()
+        }
+    }
+
+    private suspend fun performSearch() {
+        Log.d("ViewModel", "Performing search with filters: ${_currentFilters.value}")
+        apartmentRepository.searchApartments(
+            city = _currentFilters.value["city"] as? String,
+            startDate = _currentFilters.value["startDate"] as? String,
+            endDate = _currentFilters.value["endDate"] as? String,
+            typeOfHome = _currentFilters.value["typeOfHome"] as? String,
+            amenities = _currentFilters.value["amenities"] as? List<String>,
+            rooms = _currentFilters.value["rooms"] as? Int,
+            maxGuests = _currentFilters.value["maxGuests"] as? Int
+        )
+    }
+
 }

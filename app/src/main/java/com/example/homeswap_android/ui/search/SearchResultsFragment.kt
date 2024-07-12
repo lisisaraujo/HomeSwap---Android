@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.homeswap_android.R
@@ -18,6 +19,7 @@ import com.example.homeswap_android.databinding.FragmentSearchResultsBinding
 import com.example.homeswap_android.viewModels.FiltersViewModel
 import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
 import com.google.android.material.chip.Chip
+import kotlinx.coroutines.launch
 
 class SearchResultsFragment : Fragment() {
 
@@ -40,9 +42,17 @@ class SearchResultsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val filters = args.filters
 
-        if(!filters.isNullOrEmpty()){
+
+        val filters = parseFilters(args.filters!!)
+
+        // Launch a coroutine to call the suspend function
+        viewLifecycleOwner.lifecycleScope.launch {
+            apartmentsViewModel.searchApartments(filters)
+        }
+
+
+        if (filters.isNotEmpty()) {
             displaySelectedFilters(filters)
         }
 
@@ -52,6 +62,11 @@ class SearchResultsFragment : Fragment() {
         bundle.putString("departureDate", args.departureDate)
         bundle.putString("returnDate", args.returnDate)
 
+        viewLifecycleOwner.lifecycleScope.launch {
+            apartmentsViewModel.currentFilters.collect { filters ->
+                updateFilterChips(filters)
+            }
+        }
 
 
         apartmentsViewModel.getApartments()
@@ -75,15 +90,17 @@ class SearchResultsFragment : Fragment() {
         )
         binding.searchResultRV.adapter = apartmentAdapter
 
-        apartmentsViewModel.apartmentsBySearch.observe(viewLifecycleOwner) { apartmentsBySearch ->
-            Log.d(TAG ,apartmentsBySearch.toString())
-            if (!apartmentsBySearch.isNullOrEmpty()) {
-                apartmentAdapter.updateApartments(apartmentsBySearch)
-                updateLoadingState(false)
-                binding.searchResultsInfoTV.text =
-                    "Found ${apartmentsBySearch.size} results for your search"
-            } else {
-                Toast.makeText(context, "No apartments found", Toast.LENGTH_SHORT).show()
+        viewLifecycleOwner.lifecycleScope.launch {
+            apartmentsViewModel.apartmentsBySearch.collect { apartmentsBySearch ->
+                Log.d(TAG, "Apartments updated: ${apartmentsBySearch.size}")
+                if (apartmentsBySearch.isNotEmpty()) {
+                    apartmentAdapter.updateApartments(apartmentsBySearch)
+                    updateLoadingState(false)
+                    binding.searchResultsInfoTV.text =
+                        "Found ${apartmentsBySearch.size} results for your search"
+                } else {
+                    Toast.makeText(context, "No apartments found", Toast.LENGTH_SHORT).show()
+                }
             }
         }
 
@@ -100,42 +117,48 @@ class SearchResultsFragment : Fragment() {
         }
 
     }
-
-    private fun displaySelectedFilters(filtersString: String) {
-        val filters = filtersString.removeSurrounding("{", "}")
+    private fun parseFilters(filtersString: String): Map<String, Any?> {
+        return filtersString.removeSurrounding("{", "}")
             .split(", ")
             .mapNotNull {
                 val parts = it.split("=", limit = 2)
                 if (parts.size == 2) {
-                    parts[0] to parts[1]
+                    val key = parts[0]
+                    val value = when {
+                        parts[1].startsWith("[") && parts[1].endsWith("]") -> {
+                            parts[1].removeSurrounding("[", "]").split(", ").map { it.trim('"') }
+                        }
+                        parts[1].toIntOrNull() != null -> parts[1].toInt()
+                        else -> parts[1]
+                    }
+                    key to value
                 } else {
                     null
                 }
             }.toMap()
+    }
 
+    private fun displaySelectedFilters(filters: Map<String, Any?>) {
         filters.forEach { (key, value) ->
             when (key) {
-                "typeOfHome", "rooms", "maxGuests" -> addFilterChip("$key: $value")
-                "amenities" -> {
-                    val amenities = value.removeSurrounding("[", "]").split(", ")
-                    amenities.forEach { amenity ->
-                        if (amenity.isNotBlank()) {
-                            addFilterChip(amenity.trim('"')) //remove quotes if present
-                        }
-                    }
-                }
+                "typeOfHome", "rooms", "maxGuests" -> addFilterChip(key, value.toString())
+                "amenities" -> (value as? List<String>)?.forEach { amenity -> addFilterChip(amenity, amenity) }
             }
         }
     }
 
-    private fun addFilterChip(text: String) {
+    private fun addFilterChip(key: String, value: String) {
         val chip = Chip(requireContext()).apply {
-            this.text = text
+            text = if (key == value) value else "$key: $value"
             isCloseIconVisible = true
             setOnCloseIconClickListener {
-                // Handle removing the filter
                 binding.selectedFiltersChipGroup.removeView(this)
-                // You might want to update the search results here
+                if (key == value) {
+                    // This is an amenity
+                    apartmentsViewModel.removeAmenity(value)
+                } else {
+                    apartmentsViewModel.removeFilter(key)
+                }
             }
         }
         binding.selectedFiltersChipGroup.addView(chip)
@@ -143,5 +166,16 @@ class SearchResultsFragment : Fragment() {
 
     private fun updateLoadingState(isLoading: Boolean) {
         binding.loadingSpinner.visibility = if (isLoading) View.VISIBLE else View.GONE
+    }
+
+
+    private fun updateFilterChips(filters: Map<String, Any?>) {
+        binding.selectedFiltersChipGroup.removeAllViews()
+        filters.forEach { (key, value) ->
+            when (key) {
+                "typeOfHome", "rooms", "maxGuests" -> addFilterChip(key, value.toString())
+                "amenities" -> (value as? List<String>)?.forEach { amenity -> addFilterChip(amenity, amenity) }
+            }
+        }
     }
 }

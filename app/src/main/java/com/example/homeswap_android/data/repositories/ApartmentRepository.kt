@@ -16,7 +16,9 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.component1
 import com.google.firebase.storage.component2
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.tasks.await
 import java.text.ParseException
 
@@ -43,8 +45,8 @@ class ApartmentRepository(
     private val _likedApartments = MutableLiveData<List<Apartment>>()
     val likedApartments: LiveData<List<Apartment>> = _likedApartments
 
-    private val _apartmentsBySearch = MutableLiveData<List<Apartment>>()
-    val apartmentsBySearch: LiveData<List<Apartment>> = _apartmentsBySearch
+    private val _apartmentsBySearch = MutableStateFlow<List<Apartment>>(emptyList())
+    val apartmentsBySearch: StateFlow<List<Apartment>> = _apartmentsBySearch
 
     private val _searchCompletedEvent = MutableSharedFlow<Unit>()
     val searchCompletedEvent: SharedFlow<Unit> = _searchCompletedEvent
@@ -298,8 +300,8 @@ class ApartmentRepository(
             }
     }
 
-    fun clearSearch() {
-        _apartmentsBySearch.postValue(emptyList())
+    suspend fun clearSearch() {
+        _apartmentsBySearch.emit(emptyList())
     }
 
     fun resetNewAddedApartment() {
@@ -315,55 +317,90 @@ class ApartmentRepository(
         rooms: Int?,
         maxGuests: Int?
     ) {
-        var query: Query = apartmentsCollectionReference
-
-        if (!city.isNullOrBlank()) {
-            query = query.whereEqualTo("cityLower", city.lowercase())
-        }
-
-        if (!typeOfHome.isNullOrBlank()) {
-            query = query.whereEqualTo("typeOfHome", typeOfHome)
-        }
-
-        //apply amenity filters
-        if (amenities != null) {
-            if (amenities.contains("Pets Allowed")) {
-                query = query.whereEqualTo("petsAllowed", true)
-            }
-
-            if (amenities.contains("Home Office")) {
-                query = query.whereEqualTo("homeOffice", true)
-            }
-            if (amenities.contains("Has Wifi")) {
-                query = query.whereEqualTo("hasWifi", true)
-            }
-        }
-
-        if (rooms != null && rooms > 0) {
-            query = query.whereGreaterThanOrEqualTo("rooms", rooms)
-        }
-
-        if (maxGuests != null && maxGuests > 0) {
-            query = query.whereGreaterThanOrEqualTo("maxGuests", maxGuests)
-        }
-
-        query.get()
-
-        _loadingApartments.postValue(true)
+        _loadingApartments.value = true
 
         try {
+            var query: Query = apartmentsCollectionReference
+
+            if (!city.isNullOrBlank()) {
+                query = filterByCity(query, city)
+            }
+            if (!typeOfHome.isNullOrBlank()) {
+                query = filterByTypeOfHome(query, typeOfHome)
+            }
+            if (!amenities.isNullOrEmpty()) {
+                query = filterByAmenities(query, amenities)
+            }
+            if (rooms != null && rooms > 0) {
+                query = filterByRooms(query, rooms)
+            }
+            if (maxGuests != null && maxGuests > 0) {
+                query = filterByMaxGuests(query, maxGuests)
+            }
+
             val querySnapshot = query.get().await()
-            val apartments = querySnapshot.toObjects(Apartment::class.java)
-            Log.d(TAG, "Apartments fetched: ${apartments.size}")
-            val filteredApartments = filterByDate(apartments, startDate, endDate)
-            Log.d(TAG, "Filtered Apartments: ${filteredApartments.size}")
-            _apartmentsBySearch.value = filteredApartments
+            var apartments = querySnapshot.toObjects(Apartment::class.java)
+
+            if (!startDate.isNullOrBlank() && !endDate.isNullOrBlank()) {
+                apartments = filterByDate(apartments, startDate, endDate)
+            }
+
+            Log.d(TAG, "Filtered Apartments: ${apartments.size}")
+            _apartmentsBySearch.value = apartments
         } catch (exception: Exception) {
             Log.e(TAG, "Error searching apartments: ${exception.message}")
             _apartmentsBySearch.value = emptyList()
         } finally {
             _loadingApartments.value = false
             _searchCompletedEvent.emit(Unit)
+        }
+    }
+
+    private fun filterByCity(query: Query, city: String?): Query {
+        return if (!city.isNullOrBlank()) {
+            query.whereEqualTo("cityLower", city.lowercase())
+        } else {
+            query
+        }
+    }
+
+    private fun filterByTypeOfHome(query: Query, typeOfHome: String?): Query {
+        return if (!typeOfHome.isNullOrBlank()) {
+            query.whereEqualTo("typeOfHome", typeOfHome)
+        } else {
+            query
+        }
+    }
+
+    private fun filterByAmenities(query: Query, amenities: List<String>?): Query {
+        var updatedQuery = query
+        if (amenities != null) {
+            if (amenities.contains("Pets Allowed")) {
+                updatedQuery = updatedQuery.whereEqualTo("petsAllowed", true)
+            }
+            if (amenities.contains("Home Office")) {
+                updatedQuery = updatedQuery.whereEqualTo("homeOffice", true)
+            }
+            if (amenities.contains("Has Wifi")) {
+                updatedQuery = updatedQuery.whereEqualTo("hasWifi", true)
+            }
+        }
+        return updatedQuery
+    }
+
+    private fun filterByRooms(query: Query, rooms: Int?): Query {
+        return if (rooms != null && rooms > 0) {
+            query.whereGreaterThanOrEqualTo("rooms", rooms)
+        } else {
+            query
+        }
+    }
+
+    private fun filterByMaxGuests(query: Query, maxGuests: Int?): Query {
+        return if (maxGuests != null && maxGuests > 0) {
+            query.whereGreaterThanOrEqualTo("maxGuests", maxGuests)
+        } else {
+            query
         }
     }
 
