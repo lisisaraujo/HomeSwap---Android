@@ -14,8 +14,10 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -115,51 +117,61 @@ class FirebaseApartmentsViewModel : ViewModel() {
     }
 
 
-    suspend fun clearSearch() {
-        _currentFilters.value = emptyMap()
-        apartmentRepository.clearSearch()
+    fun clearSearch() {
+        viewModelScope.launch {
+            _currentFilters.value = emptyMap()
+            apartmentRepository.clearSearch()
+        }
     }
 
-    suspend fun searchApartments(filters: Map<String, Any?>) {
-        _currentFilters.value = filters
-        performSearch()
+    fun searchApartments(filters: Map<String, Any?>) {
+        viewModelScope.launch {
+            _currentFilters.value = filters
+            performSearch()
+        }
     }
 
     fun removeFilter(filterKey: String) {
-        _currentFilters.update { currentFilters ->
-            currentFilters.toMutableMap().apply { remove(filterKey) }
-        }
         viewModelScope.launch {
+            val updatedFilters = _currentFilters.value.toMutableMap().apply {
+                remove(filterKey)
+            }.filterValues { it != null }
+            _currentFilters.value = updatedFilters
             performSearch()
         }
     }
 
     fun removeAmenity(amenity: String) {
-        _currentFilters.update { currentFilters ->
-            val updatedAmenities = (currentFilters["amenities"] as? List<String>)?.filter { it != amenity }
-            currentFilters.toMutableMap().apply {
-                if (updatedAmenities.isNullOrEmpty()) {
-                    remove("amenities")
-                } else {
-                    put("amenities", updatedAmenities)
-                }
-            }
-        }
         viewModelScope.launch {
+            val updatedFilters = _currentFilters.value.toMutableMap()
+            val updatedAmenities = (updatedFilters["amenities"] as? List<String>)?.filter { it != amenity }
+            if (updatedAmenities.isNullOrEmpty()) {
+                updatedFilters.remove("amenities")
+            } else {
+                updatedFilters["amenities"] = updatedAmenities
+            }
+            _currentFilters.value = updatedFilters
             performSearch()
         }
     }
 
     private suspend fun performSearch() {
-        Log.d("ViewModel", "Performing search with filters: ${_currentFilters.value}")
+        val city = _currentFilters.value["city"] as? String
+        val startDate = _currentFilters.value["startDate"] as? String
+        val endDate = _currentFilters.value["endDate"] as? String
+        val typeOfHome = _currentFilters.value["typeOfHome"] as? String
+        val amenities = _currentFilters.value["amenities"] as? List<String>
+        val rooms = _currentFilters.value["rooms"] as? Int
+        val maxGuests = _currentFilters.value["maxGuests"] as? Int
+
         apartmentRepository.searchApartments(
-            city = _currentFilters.value["city"] as? String,
-            startDate = _currentFilters.value["startDate"] as? String,
-            endDate = _currentFilters.value["endDate"] as? String,
-            typeOfHome = _currentFilters.value["typeOfHome"] as? String,
-            amenities = _currentFilters.value["amenities"] as? List<String>,
-            rooms = _currentFilters.value["rooms"] as? Int,
-            maxGuests = _currentFilters.value["maxGuests"] as? Int
+            city = city,
+            startDate = startDate,
+            endDate = endDate,
+            typeOfHome = typeOfHome,
+            amenities = amenities,
+            rooms = rooms,
+            maxGuests = maxGuests
         )
     }
 

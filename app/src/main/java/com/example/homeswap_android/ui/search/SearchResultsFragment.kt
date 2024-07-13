@@ -19,6 +19,7 @@ import com.example.homeswap_android.databinding.FragmentSearchResultsBinding
 import com.example.homeswap_android.viewModels.FiltersViewModel
 import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
 import com.google.android.material.chip.Chip
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class SearchResultsFragment : Fragment() {
@@ -42,35 +43,7 @@ class SearchResultsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-
-        val filters = parseFilters(args.filters!!)
-
-        // Launch a coroutine to call the suspend function
-        viewLifecycleOwner.lifecycleScope.launch {
-            apartmentsViewModel.searchApartments(filters)
-        }
-
-
-        if (filters.isNotEmpty()) {
-            displaySelectedFilters(filters)
-        }
-
-        // Create a bundle
-        val bundle = Bundle()
-        bundle.putString("destination", args.destination)
-        bundle.putString("departureDate", args.departureDate)
-        bundle.putString("returnDate", args.returnDate)
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            apartmentsViewModel.currentFilters.collect { filters ->
-                updateFilterChips(filters)
-            }
-        }
-
-
-        apartmentsViewModel.getApartments()
-
+        // go to clicked apartment
         val itemClickedCallback: (Apartment) -> Unit = { apartment ->
             findNavController().navigate(
                 SearchResultsFragmentDirections.actionSearchResultsFragmentToApartmentDetailsFragment(
@@ -90,19 +63,38 @@ class SearchResultsFragment : Fragment() {
         )
         binding.searchResultRV.adapter = apartmentAdapter
 
+
+        val filters = parseFilters(args.filters!!)
+
+        if (filters.isNotEmpty()) {
+            displaySelectedFilters(filters)
+        }
+
+        // Create a bundle
+        val bundle = Bundle()
+        bundle.putString("destination", args.destination)
+        bundle.putString("departureDate", args.departureDate)
+        bundle.putString("returnDate", args.returnDate)
+
         viewLifecycleOwner.lifecycleScope.launch {
-            apartmentsViewModel.apartmentsBySearch.collect { apartmentsBySearch ->
-                Log.d(TAG, "Apartments updated: ${apartmentsBySearch.size}")
-                if (apartmentsBySearch.isNotEmpty()) {
-                    apartmentAdapter.updateApartments(apartmentsBySearch)
-                    updateLoadingState(false)
-                    binding.searchResultsInfoTV.text =
-                        "Found ${apartmentsBySearch.size} results for your search"
-                } else {
-                    Toast.makeText(context, "No apartments found", Toast.LENGTH_SHORT).show()
+            launch {
+                apartmentsViewModel.currentFilters.collectLatest { filters ->
+                    updateFilterChips(filters)
+                }
+            }
+
+            launch {
+                apartmentsViewModel.apartmentsBySearch.collectLatest { apartmentsBySearch ->
+                    if (apartmentsBySearch.isNotEmpty()) {
+                        apartmentAdapter.updateApartments(apartmentsBySearch)
+                        updateLoadingState(false)
+                        binding.searchResultsInfoTV.text =
+                            "Found ${apartmentsBySearch.size} results for your search"
+                    }
                 }
             }
         }
+
 
         binding.toolbar.setNavigationOnClickListener {
             findNavController().navigateUp()
@@ -154,7 +146,7 @@ class SearchResultsFragment : Fragment() {
             setOnCloseIconClickListener {
                 binding.selectedFiltersChipGroup.removeView(this)
                 if (key == value) {
-                    // This is an amenity
+                    //this is an amenity
                     apartmentsViewModel.removeAmenity(value)
                 } else {
                     apartmentsViewModel.removeFilter(key)

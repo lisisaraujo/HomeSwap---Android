@@ -17,6 +17,8 @@ class ApartmentAdapter(
     private val onLikeClickListener: (Apartment) -> Unit,
 ) : RecyclerView.Adapter<ApartmentAdapter.MyViewHolder>() {
 
+    val TAG = "ApartmentAdapter"
+
     class MyViewHolder(val binding: ApartmentListItemBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
