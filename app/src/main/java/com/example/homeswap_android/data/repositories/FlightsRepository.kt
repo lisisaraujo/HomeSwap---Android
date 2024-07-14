@@ -9,6 +9,7 @@ import com.example.homeswap_android.data.models.apiData.FlightResponse
 import com.example.homeswap_android.data.models.apiData.Price
 import com.example.homeswap_android.data.remote.FlightsApi
 import com.example.homeswap_android.utils.Utils.toApiFormat
+import kotlinx.coroutines.delay
 import java.util.Date
 
 class FlightsRepository {
@@ -54,7 +55,12 @@ class FlightsRepository {
         }
     }
 
-    suspend fun searchFlightsByCity(originCity: String, destinationCity: String, departureDate: String, adults: Int = 1): FlightResponse {
+    suspend fun searchFlightsByCity(
+        originCity: String,
+        destinationCity: String,
+        departureDate: String,
+        adults: Int = 1
+    ): FlightResponse {
         val originIata = getIataCode(originCity)
         val destinationIata = getIataCode(destinationCity)
 
@@ -67,16 +73,61 @@ class FlightsRepository {
             ?: throw IllegalArgumentException("No IATA code found for $cityName")
     }
 
-    suspend fun searchRoundTripFlights(originCity: String, destinationCity: String, departureDate: Date, returnDate: Date, adults: Int = 1) {
+
+
+    suspend fun searchOneWayFlights(
+        originCity: String,
+        destinationCity: String,
+        departureDate: Date,
+        adults: Int = 1
+    ) {
+        try {
+            Log.d(TAG, "Searching for oneWayflights")
+            _isLoading.postValue(true)
+            val response = searchFlights(originCity, destinationCity, departureDate, null, adults)
+            val oneWayFlights = response.data.filter { it.oneWay || it.itineraries.size == 1 }
+            _flightResponse.postValue(FlightResponse(data = oneWayFlights, dictionaries = response.dictionaries))
+            _flights.postValue(oneWayFlights)
+        } catch (e: Exception) {
+            _errorMessage.postValue("Failed to search one-way flights: ${e.localizedMessage}")
+        } finally {
+            _isLoading.postValue(false)
+        }
+    }
+
+    suspend fun searchRoundTripFlights(
+        originCity: String,
+        destinationCity: String,
+        departureDate: Date,
+        returnDate: Date,
+        adults: Int = 1
+    ) {
         try {
             _isLoading.postValue(true)
             val formattedDepartureDate = departureDate.toApiFormat()
             val formattedReturnDate = returnDate.toApiFormat()
 
             val outboundResponse = searchFlightsByCity(originCity, destinationCity, formattedDepartureDate, adults)
-            val inboundResponse = searchFlightsByCity(destinationCity, originCity, formattedReturnDate, adults)
+            Log.d(TAG, "Outbound flights: ${outboundResponse.data.size}")
 
-            val combinedFlights = outboundResponse.data.zip(inboundResponse.data) { outbound, inbound ->
+            val inboundResponse = searchFlightsByCity(destinationCity, originCity, formattedReturnDate, adults)
+            Log.d(TAG, "Inbound flights: ${inboundResponse.data.size}")
+
+            val combinedFlights = combineFlights(outboundResponse.data, inboundResponse.data)
+            Log.d(TAG, "Combined round-trip flights: ${combinedFlights.size}")
+
+            _flightResponse.postValue(FlightResponse(data = combinedFlights, dictionaries = outboundResponse.dictionaries))
+            _flights.postValue(combinedFlights)
+        } catch (e: Exception) {
+            _errorMessage.postValue("Failed to search round-trip flights: ${e.localizedMessage}")
+        } finally {
+            _isLoading.postValue(false)
+        }
+    }
+
+    private fun combineFlights(outboundFlights: List<FlightOffer>, inboundFlights: List<FlightOffer>): List<FlightOffer> {
+        return outboundFlights.flatMap { outbound ->
+            inboundFlights.map { inbound ->
                 FlightOffer(
                     type = "round-trip",
                     id = "${outbound.id}-${inbound.id}",
@@ -92,35 +143,48 @@ class FlightsRepository {
                     )
                 )
             }
-
-            val combinedResponse = FlightResponse(
-                data = combinedFlights,
-                dictionaries = outboundResponse.dictionaries
-            )
-
-            _flightResponse.postValue(combinedResponse)
-            _flights.postValue(combinedFlights)
-        } catch (e: Exception) {
-            Log.e(TAG, "Error searching round-trip flights", e)
-            _errorMessage.postValue("Failed to search round-trip flights: ${e.localizedMessage}")
-        } finally {
-            _isLoading.postValue(false)
         }
     }
 
+    private suspend fun searchFlights(
+        originCity: String,
+        destinationCity: String,
+        departureDate: Date,
+        returnDate: Date? = null,
+        adults: Int = 1
+    ): FlightResponse {
+        val formattedDepartureDate = departureDate.toApiFormat()
+        val outboundResponse = searchFlightsByCity(originCity, destinationCity, formattedDepartureDate, adults)
+
+        return if (returnDate != null) {
+            delay(1000) // Delay for round-trip searches
+            val formattedReturnDate = returnDate.toApiFormat()
+            val inboundResponse = searchFlightsByCity(destinationCity, originCity, formattedReturnDate, adults)
+            val combinedFlights = combineFlights(outboundResponse.data, inboundResponse.data)
+            FlightResponse(data = combinedFlights, dictionaries = outboundResponse.dictionaries)
+        } else {
+            outboundResponse
+        }
+    }
+
+
     fun clearFlightsSearch() {
         _flights.postValue(emptyList())
-        _flightResponse.postValue(FlightResponse(
-            data = emptyList(),
-            dictionaries = Dictionaries(
-                carriers = emptyMap(),
-                aircraft = emptyMap(),
-                currencies = emptyMap(),
-                locations = emptyMap()
+        _flightResponse.postValue(
+            FlightResponse(
+                data = emptyList(),
+                dictionaries = Dictionaries(
+                    carriers = emptyMap(),
+                    aircraft = emptyMap(),
+                    currencies = emptyMap(),
+                    locations = emptyMap()
+                )
             )
-        ))
+        )
         _isLoading.postValue(false)
         _errorMessage.postValue(null)
         _clearSearch.postValue(true)
     }
+
+
 }

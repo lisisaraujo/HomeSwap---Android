@@ -34,15 +34,16 @@ class FlightAdapter(
         //outbound flight
         bindFlightDetails(binding, flight.itineraries[0], isOutbound = true)
 
-        //return flight
         if (flight.itineraries.size > 1) {
+            //return flight for round trip
+            binding.returnFlightGroup.visibility = View.VISIBLE
             bindFlightDetails(binding, flight.itineraries[1], isOutbound = false)
         } else {
-            // Hide return flight views if it's a one-way trip
+            //hide return flight views if it's a one way trip
             binding.returnFlightGroup.visibility = View.GONE
         }
 
-        // total price
+        //total price
         val formattedPrice = String.format("%.2f", flight.price.total.toDouble())
         binding.totalPriceTV.text = "${flight.price.currency} $formattedPrice"
     }

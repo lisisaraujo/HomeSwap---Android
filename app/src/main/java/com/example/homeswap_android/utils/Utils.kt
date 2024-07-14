@@ -90,5 +90,17 @@ object Utils {
         }
     }
 
+    fun showDatePicker(fragmentManager: FragmentManager, onDateSelected: (String) -> Unit) {
+        val startDate = MaterialDatePicker.todayInUtcMilliseconds()
+        val builder = MaterialDatePicker.Builder.datePicker()
+            .setTitleText("Select date")
+            .setSelection(startDate)
 
+        val picker = builder.build()
+        picker.addOnPositiveButtonClickListener { selectedDate ->
+            val formattedDate = dateFormat.format(Date(selectedDate))
+            onDateSelected(formattedDate)
+        }
+        picker.show(fragmentManager, picker.toString())
+    }
 }

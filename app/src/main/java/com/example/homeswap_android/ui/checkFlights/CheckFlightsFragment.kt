@@ -1,6 +1,7 @@
 package com.example.homeswap_android.ui.checkFlights
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +19,8 @@ import com.google.android.libraries.places.api.net.PlacesClient
 import java.util.Date
 
 class CheckFlightsFragment : Fragment() {
+
+    val TAG = "CheckFlightsFragment"
 
     private lateinit var binding: FragmentCheckFlightsBinding
     private val flightViewModel: FlightsViewModel by activityViewModels()
@@ -37,17 +40,31 @@ class CheckFlightsFragment : Fragment() {
     private var hasBundleData = false
     private var initialSearchDone = false
 
+    private var isOneWayTrip = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentCheckFlightsBinding.inflate(inflater, container, false)
+
+
+        binding.toggleTripType.addOnButtonCheckedListener { group, checkedId, isChecked ->
+            if (isChecked) {
+                isOneWayTrip = checkedId == R.id.btnOneWay
+                updateUIForTripType()
+            }
+        }
+
+        // Set initial UI state
+        updateUIForTripType()
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // google places API setup
+        //google places API setup
         placesClient = Places.createClient(requireContext())
 
         Utils.setupAutoCompleteTextView(requireContext(), binding.etOrigin, placesClient) { selectedPlace ->
@@ -68,36 +85,84 @@ class CheckFlightsFragment : Fragment() {
             }
         }
 
-        binding.btnSearchFlights.setOnClickListener {
-            performManualSearch()
+        Log.d(TAG, initialSearchDone.toString())
+
+        binding.toggleTripType.addOnButtonCheckedListener { group, checkedId, isChecked ->
+            if (isChecked) {
+                isOneWayTrip = checkedId == R.id.btnOneWay
+                updateUIForTripType()
+            }
         }
+
+        binding.etDateRange.setOnClickListener {
+            if (isOneWayTrip) {
+                Utils.showDatePicker(parentFragmentManager) { date ->
+                    selectedStartDate = Utils.dateFormat.parse(date)
+                    selectedEndDate = null
+                    updateDateDisplay()
+                }
+            } else {
+                Utils.showDateRangePicker(parentFragmentManager) { start, end ->
+                    selectedStartDate = Utils.dateFormat.parse(start)
+                    selectedEndDate = Utils.dateFormat.parse(end)
+                    updateDateDisplay()
+                }
+            }
+        }
+
+        binding.btnSearchFlights.setOnClickListener {
+            performSearch()
+        }
+
 
         observeViewModels()
         handleBundleArgs()
     }
 
     private fun observeViewModels() {
-        //observe the data from logged in user to set search origin based on users location when navigating with bundle
         userViewModel.loggedInUserData.observe(viewLifecycleOwner) { user ->
             userOrigin = user?.city
-            prefillFromApartmentSearch()
             if (hasBundleData && !initialSearchDone) {
+                prefillFromApartmentSearch()
                 performSearchWithBundle()
                 initialSearchDone = true
             }
         }
 
         flightViewModel.flightResponse.observe(viewLifecycleOwner) { response ->
-            binding.rvFlightsList.adapter = FlightAdapter(response.data, response.dictionaries)
+            Log.d(TAG, "Received flight response: ${response?.data?.size} flights")
             updateLoadingState(false)
+            if (response != null && response.data.isNotEmpty()) {
+                val adapter = binding.rvFlightsList.adapter as? FlightAdapter
+                if (adapter == null) {
+                    Log.d(TAG, "Creating new adapter")
+                    binding.rvFlightsList.adapter = FlightAdapter(response.data, response.dictionaries)
+                } else {
+                    Log.d(TAG, "Updating existing adapter")
+                    adapter.updateFlights(response.data, response.dictionaries)
+                }
+                binding.rvFlightsList.visibility = View.VISIBLE
+                binding.noResultsTV.visibility = View.GONE
+            } else {
+                Log.d(TAG, "No flights found or null response")
+                binding.rvFlightsList.visibility = View.GONE
+                binding.noResultsTV.visibility = View.VISIBLE
+                binding.noResultsTV.text = "No flights found"
+            }
         }
+
 
         flightViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             updateLoadingState(isLoading)
+            if (isLoading) {
+                binding.rvFlightsList.visibility = View.GONE
+                binding.noResultsTV.visibility = View.GONE
+            }
         }
 
         flightViewModel.errorMessage.observe(viewLifecycleOwner) { error ->
             error?.let {
+                Log.e(TAG, "Error received: $it")
                 showError(it)
             }
         }
@@ -118,7 +183,6 @@ class CheckFlightsFragment : Fragment() {
             }
         }
     }
-
     private fun performSearchWithBundle() {
         destination = argsDestination
         departureDate = argsDepartureDateString?.let { Utils.dateFormat.parse(it) }
@@ -128,37 +192,96 @@ class CheckFlightsFragment : Fragment() {
         binding.etDestination.setText(destination)
         binding.etDateRange.setText(getString(R.string.date_range, argsDepartureDateString, argsReturnDateString))
 
-        // clear previous search data
+        selectedStartDate = departureDate
+        selectedEndDate = returnDate
+
+        //set to round trip for bundle search
+        isOneWayTrip = false
+        binding.toggleTripType.check(R.id.btnRoundTrip)
+        updateUIForTripType()
+
         flightViewModel.clearSearch()
-        performFlightSearch()
+        performSearch()
     }
 
-    private fun performManualSearch() {
-        if (origin.isNullOrEmpty() || destination.isNullOrEmpty() || selectedStartDate == null || selectedEndDate == null) {
+
+    private fun updateUIForTripType() {
+        if (isOneWayTrip) {
+            binding.toggleTripType.check(R.id.btnOneWay)
+            binding.etDateRange.hint = getString(R.string.departure_date)
+            selectedEndDate = null
+        } else {
+            binding.toggleTripType.check(R.id.btnRoundTrip)
+            binding.etDateRange.hint = getString(R.string.select_dates)
+        }
+        updateDateRangeDisplay()
+    }
+
+    private fun updateDateDisplay() {
+        if (isOneWayTrip) {
+            val formattedStartDate = selectedStartDate?.let { Utils.dateFormat.format(it) }
+            binding.etDateRange.setText(formattedStartDate)
+        } else {
+            val formattedStartDate = selectedStartDate?.let { Utils.dateFormat.format(it) }
+            val formattedEndDate = selectedEndDate?.let { Utils.dateFormat.format(it) }
+            binding.etDateRange.setText(getString(R.string.date_range, formattedStartDate, formattedEndDate))
+        }
+    }
+
+    private fun performSearch() {
+        if (origin.isNullOrEmpty() || destination.isNullOrEmpty() || selectedStartDate == null) {
             showError("Please fill in all the fields.")
             return
         }
 
-        departureDate = selectedStartDate
-        returnDate = selectedEndDate
-
+        //clear existing flights
         flightViewModel.clearSearch()
-        performFlightSearch()
-    }
 
-    private fun performFlightSearch() {
-        flightViewModel.searchRoundTripFlights(
-            originCity = origin!!,
-            destinationCity = destination!!,
-            departureDate = departureDate!!,
-            returnDate = returnDate!!
-        )
+        //hide RV and "No results" TextView
+        binding.rvFlightsList.visibility = View.GONE
+        binding.noResultsTV.visibility = View.GONE
+
+        if (isOneWayTrip) {
+            Log.d(TAG, "Performing one-way search")
+            flightViewModel.searchOneWayFlights(
+                originCity = origin!!,
+                destinationCity = destination!!,
+                departureDate = selectedStartDate!!
+            )
+        } else {
+            if (selectedEndDate == null) {
+                showError("Please select a return date for round-trip.")
+                return
+            }
+            Log.d(TAG, "Performing round-trip search")
+            flightViewModel.searchRoundTripFlights(
+                originCity = origin!!,
+                destinationCity = destination!!,
+                departureDate = selectedStartDate!!,
+                returnDate = selectedEndDate!!
+            )
+        }
     }
 
     private fun updateDateRangeDisplay() {
-        val formattedStartDate = selectedStartDate?.let { Utils.dateFormat.format(it) }
-        val formattedEndDate = selectedEndDate?.let { Utils.dateFormat.format(it) }
-        binding.etDateRange.setText(getString(R.string.date_range, formattedStartDate, formattedEndDate))
+        when {
+            selectedStartDate != null && selectedEndDate != null -> {
+                val formattedStartDate = Utils.dateFormat.format(selectedStartDate!!)
+                val formattedEndDate = Utils.dateFormat.format(selectedEndDate!!)
+                binding.etDateRange.setText(getString(R.string.date_range, formattedStartDate, formattedEndDate))
+            }
+            selectedStartDate != null -> {
+                val formattedStartDate = Utils.dateFormat.format(selectedStartDate!!)
+                if (isOneWayTrip) {
+                    binding.etDateRange.setText(formattedStartDate)
+                } else {
+                    binding.etDateRange.setText(getString(R.string.date_range_start_only, formattedStartDate))
+                }
+            }
+            else -> {
+                binding.etDateRange.setText("")
+            }
+        }
     }
 
     private fun updateLoadingState(isLoading: Boolean) {
@@ -168,5 +291,7 @@ class CheckFlightsFragment : Fragment() {
     private fun showError(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_LONG).show()
     }
+
+
 }
 
