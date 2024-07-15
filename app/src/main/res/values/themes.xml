@@ -3,12 +3,35 @@
     <style name="Base.Theme.HomeSwapAndroid" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your theme here -->
         <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryVariant">@color/secondary</item>
         <item name="colorAccent">@color/accent</item>
         <item name="colorSecondary">@color/secondary</item>
-        <item name="colorContainer">@color/background</item>
-        <item name="colorOnBackground">@color/text</item>
+
+        <!-- Set background color for fragments -->
+        <item name="android:windowBackground">@color/background</item>
+        <item name="android:colorBackground">@color/background</item>
+
+        <!-- Set default text color -->
+        <item name="android:textColor">@color/text</item>
+
+        <!-- Set card background color -->
+        <item name="cardBackgroundColor">@color/background_card</item>
+
+        <!-- Additional color attributes -->
+        <item name="colorSurface">@color/background</item>
+        <item name="colorOnSurface">@color/text</item>
+        <item name="colorOnPrimary">@color/background</item>
+        <item name="colorOnSecondary">@color/background</item>
+
+        <!-- Status bar and navigation bar colors -->
+        <item name="android:statusBarColor">@color/primary</item>
+        <item name="android:navigationBarColor">@color/background</item>
+
+        <!-- Button styles -->
+        <item name="buttonStyle">@style/Widget.AppCompat.Button.Colored</item>
+        <item name="colorButtonNormal">@color/primary</item>
+        <item name="android:textColorPrimary">@color/background</item>
     </style>
+
     <style name="Theme.HomeSwapAndroid" parent="Base.Theme.HomeSwapAndroid" />
-
-
 </resources>

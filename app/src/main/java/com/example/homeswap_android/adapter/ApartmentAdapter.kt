@@ -33,6 +33,8 @@ class ApartmentAdapter(
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+
+
         val apartment = apartments[position]
         val binding = holder.binding
         binding.apartmentTitleTV.text = apartment.title
@@ -41,7 +43,6 @@ class ApartmentAdapter(
         apartment.coverPicture.let {
             binding.apartmentImageIV.load(apartment.coverPicture)
         }
-
 
         binding.apartmentListCV.setOnClickListener {
             itemClickedCallback(apartment)

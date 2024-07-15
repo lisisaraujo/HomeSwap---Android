@@ -1,7 +1,41 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.HomeSwapAndroid" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+    <!-- Base night mode application theme. -->
+    <style name="Base.Theme.HomeSwapAndroid.Night" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your night theme here -->
+        <item name="colorPrimary">@color/night_primary</item>
+        <item name="colorPrimaryVariant">@color/night_secondary</item>
+        <item name="colorAccent">@color/night_accent</item>
+        <item name="colorSecondary">@color/night_secondary</item>
+
+        <!-- Set background color for fragments -->
+        <item name="android:windowBackground">@color/night_background</item>
+        <item name="android:colorBackground">@color/night_background</item>
+
+        <!-- Set default text color -->
+        <item name="android:textColor">@color/night_text</item>
+
+        <!-- Set card background color -->
+        <item name="cardBackgroundColor">@color/night_background_card</item>
+
+        <!-- Additional color attributes -->
+        <item name="colorSurface">@color/night_background_card</item>
+        <item name="colorOnSurface">@color/night_text</item>
+        <item name="colorOnPrimary">@color/night_background</item>
+        <item name="colorOnSecondary">@color/night_background</item>
+
+        <!-- Status bar and navigation bar colors -->
+        <item name="android:statusBarColor">@color/night_primary</item>
+        <item name="android:navigationBarColor">@color/night_background</item>
+
+        <!-- Button styles -->
+        <item name="buttonStyle">@style/Widget.AppCompat.Button.Colored</item>
+        <item name="colorButtonNormal">@color/night_primary</item>
+        <item name="android:textColorPrimary">@color/night_background</item>
+
+        <!-- Error color -->
+        <item name="colorError">@color/night_error_messages</item>
     </style>
+
+    <!-- Apply night mode theme -->
+    <style name="Theme.HomeSwapAndroid" parent="Base.Theme.HomeSwapAndroid.Night" />
 </resources>
