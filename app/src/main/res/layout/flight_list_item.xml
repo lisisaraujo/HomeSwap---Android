@@ -6,33 +6,31 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="4dp"
-    app:strokeColor="@color/background"
-    app:strokeWidth="1dp">
+    app:cardCornerRadius="24dp"
+    app:cardElevation="0dp"
+    app:cardBackgroundColor="@color/card_background">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:padding="20dp">
 
         <TextView
             android:id="@+id/totalPriceTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?attr/textAppearanceHeadline6"
-            android:textColor="@color/black"
+            android:textAppearance="?attr/textAppearanceHeadline5"
+            android:textColor="?attr/colorPrimary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="$299.99" />
 
-        <!-- Outbound Flight Details -->
         <TextView
             android:id="@+id/outboundAirlineTV"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textAppearance="?attr/textAppearanceHeadline6"
-            android:textColor="@color/black"
+            android:textAppearance="?attr/textAppearanceSubtitle1"
+            android:textColor="?attr/colorOnSurface"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toStartOf="@id/totalPriceTV"
@@ -42,17 +40,19 @@
             android:id="@+id/outboundDepartureTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:textAppearance="?attr/textAppearanceBody1"
+            android:textColor="?attr/colorOnSurface"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/outboundAirlineTV"
             tools:text="BER 10:00" />
 
         <ImageView
             android:id="@+id/outboundFlightArrowIV"
-            android:layout_width="24dp"
+            android:layout_width="48dp"
             android:layout_height="24dp"
             android:src="@drawable/connecting_airports_48px"
+            app:tint="?attr/colorPrimary"
             app:layout_constraintStart_toEndOf="@id/outboundDepartureTV"
             app:layout_constraintEnd_toStartOf="@id/outboundArrivalTV"
             app:layout_constraintTop_toTopOf="@id/outboundDepartureTV"
@@ -63,6 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?attr/textAppearanceBody1"
+            android:textColor="?attr/colorOnSurface"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/outboundDepartureTV"
             tools:text="LON 12:30" />
@@ -71,20 +72,21 @@
             android:id="@+id/outboundDurationTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textAppearance="?attr/textAppearanceBody2"
+            android:layout_marginTop="8dp"
+            android:textAppearance="?attr/textAppearanceCaption"
+            android:textColor="?attr/colorOnSurfaceVariant"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/outboundDepartureTV"
             tools:text="Duration: 2h 30m" />
 
-        <TextView
+        <com.google.android.material.chip.Chip
             android:id="@+id/outboundStopsTV"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textAppearance="?attr/textAppearanceBody2"
+            android:layout_marginTop="8dp"
+            app:chipBackgroundColor="?attr/colorSurfaceVariant"
+            app:chipStrokeWidth="0dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/outboundDurationTV"
             tools:text="1 stop: FRA" />
 
@@ -99,9 +101,9 @@
             android:id="@+id/returnAirlineTV"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:textAppearance="?attr/textAppearanceHeadline6"
-            android:textColor="@color/black"
+            android:layout_marginTop="24dp"
+            android:textAppearance="?attr/textAppearanceSubtitle1"
+            android:textColor="?attr/colorOnSurface"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/outboundStopsTV"
             app:layout_constraintEnd_toEndOf="parent"
@@ -111,17 +113,19 @@
             android:id="@+id/returnDepartureTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:textAppearance="?attr/textAppearanceBody1"
+            android:textColor="?attr/colorOnSurface"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/returnAirlineTV"
             tools:text="LON 10:00" />
 
         <ImageView
             android:id="@+id/returnFlightArrowIV"
-            android:layout_width="24dp"
+            android:layout_width="48dp"
             android:layout_height="24dp"
             android:src="@drawable/connecting_airports_48px"
+            app:tint="?attr/colorPrimary"
             app:layout_constraintStart_toEndOf="@id/returnDepartureTV"
             app:layout_constraintEnd_toStartOf="@id/returnArrivalTV"
             app:layout_constraintTop_toTopOf="@id/returnDepartureTV"
@@ -132,6 +136,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?attr/textAppearanceBody1"
+            android:textColor="?attr/colorOnSurface"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/returnDepartureTV"
             tools:text="BER 12:30" />
@@ -140,20 +145,21 @@
             android:id="@+id/returnDurationTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textAppearance="?attr/textAppearanceBody2"
+            android:layout_marginTop="8dp"
+            android:textAppearance="?attr/textAppearanceCaption"
+            android:textColor="?attr/colorOnSurfaceVariant"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/returnDepartureTV"
             tools:text="Duration: 2h 30m" />
 
-        <TextView
+        <com.google.android.material.chip.Chip
             android:id="@+id/returnStopsTV"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textAppearance="?attr/textAppearanceBody2"
+            android:layout_marginTop="8dp"
+            app:chipBackgroundColor="?attr/colorSurfaceVariant"
+            app:chipStrokeWidth="0dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/returnDurationTV"
             tools:text="1 stop: FRA" />
 

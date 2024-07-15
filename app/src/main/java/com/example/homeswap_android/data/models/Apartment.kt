@@ -13,6 +13,8 @@ data class Apartment(
     var startDate: String = "",
     var endDate: String = "",
     var reviews: MutableList<Review> = mutableListOf(),
+    var reviewsCount: Int? = 0,
+    var rating: Float? = 0F,
     var coverPicture: String = "",
     var liked: Boolean = false,
     var petsAllowed: Boolean = false,
@@ -20,6 +22,5 @@ data class Apartment(
     var maxGuests: Int? = null,
     var typeOfHome: String = "",
     var homeOffice: Boolean = false,
-    var rating: Double? = null,
     var hasWifi: Boolean = false
 )

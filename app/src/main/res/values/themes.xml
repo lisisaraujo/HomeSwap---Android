@@ -8,13 +8,7 @@
         <item name="colorContainer">@color/background</item>
         <item name="colorOnBackground">@color/text</item>
     </style>
-
-
-<!--    <style name="ThemeMaterialCalendar" parent="ThemeOverlay.MaterialComponents.MaterialCalendar">-->
-<!--        <item name="android:windowFullscreen">false</item>-->
-<!--    </style>-->
-
     <style name="Theme.HomeSwapAndroid" parent="Base.Theme.HomeSwapAndroid" />
-    
+
 
 </resources>

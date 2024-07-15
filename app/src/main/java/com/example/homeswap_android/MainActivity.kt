@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.WindowManager
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -12,11 +13,13 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.example.homeswap_android.databinding.ActivityMainBinding
 import com.example.homeswap_android.utils.Utils.googlePlacesApiKey
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 import com.google.android.libraries.places.api.Places
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
 import com.google.firebase.appcheck.FirebaseAppCheck
@@ -48,6 +51,11 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
         val navController = navHostFragment.navController
 
+
+// fix elements position when keyboard appears:
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+
+
         //Listener der bei jeder Navigation ausgeführt
         navController.addOnDestinationChangedListener { navController: NavController, navDestination: NavDestination, bundle: Bundle? ->
 
@@ -60,6 +68,7 @@ class MainActivity : AppCompatActivity() {
                     //update the selected item in bottom navigation
                     binding.bottomNavView.menu.findItem(navDestination.id)?.isChecked = true
                 }
+
                 else -> binding.bottomNavView.visibility = View.GONE
             }
 

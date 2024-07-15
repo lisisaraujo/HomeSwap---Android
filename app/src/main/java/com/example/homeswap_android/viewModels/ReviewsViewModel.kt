@@ -15,8 +15,16 @@ class ReviewsViewModel : ViewModel() {
     private val auth = FirebaseAuth.getInstance()
     private val firestore = FirebaseFirestore.getInstance()
     private val reviewsCollectionReference = firestore.collection("reviews")
+    private val apartmentsCollectionReference = firestore.collection("apartments")
+    private val usersCollectionReference = firestore.collection("users")
+
     private val reviewsRepository =
-        ReviewsRepository(auth, reviewsCollectionReference)
+        ReviewsRepository(
+            auth,
+            reviewsCollectionReference,
+            apartmentsCollectionReference,
+            usersCollectionReference
+        )
 
     fun getUserReviews(userID: String): Query {
         return reviewsRepository.getUserReviews(userID)
@@ -28,5 +36,6 @@ class ReviewsViewModel : ViewModel() {
 
     fun addReview(review: Review, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
         reviewsRepository.addReview(review, onSuccess, onFailure)
+        reviewsRepository.updateRating(review.destinationID, review.reviewType)
     }
 }

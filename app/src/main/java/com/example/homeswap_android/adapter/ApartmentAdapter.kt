@@ -1,7 +1,9 @@
+import android.content.res.ColorStateList
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageButton
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.RecyclerView
@@ -10,6 +12,7 @@ import com.example.homeswap_android.R
 import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.databinding.ApartmentListItemBinding
 import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
+import com.google.android.material.button.MaterialButton
 
 class ApartmentAdapter(
     private var apartments: List<Apartment>,
@@ -31,23 +34,30 @@ class ApartmentAdapter(
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val apartment = apartments[position]
-        holder.binding.apartmentTitleTV.text = apartment.title
-        holder.binding.apartmentCityTV.text = apartment.city
+        val binding = holder.binding
+        binding.apartmentTitleTV.text = apartment.title
+        binding.apartmentCityTV.text = apartment.city
 
         apartment.coverPicture.let {
-            holder.binding.apartmentImageIV.load(apartment.coverPicture)
+            binding.apartmentImageIV.load(apartment.coverPicture)
         }
 
 
-        holder.binding.apartmentListCV.setOnClickListener {
+        binding.apartmentListCV.setOnClickListener {
             itemClickedCallback(apartment)
         }
 
-        updateLikeButton(holder.binding.favoriteBTN, apartment.liked)
+        updateLikeButton(binding.favoriteBTN, apartment.liked)
 
-        holder.binding.favoriteBTN.setOnClickListener {
+        binding.favoriteBTN.setOnClickListener {
             onLikeClickListener(apartment)
         }
+
+        apartment.rating.let {
+            binding.apartmentRatingBar.rating = apartment.rating!!
+        }
+
+       binding.apartmentRatingTV.text = "${apartment.rating} (${apartment.reviewsCount} reviews)"
     }
 
     override fun getItemCount(): Int {
@@ -59,11 +69,22 @@ class ApartmentAdapter(
         notifyDataSetChanged()
     }
 
-    private fun updateLikeButton(button: ImageButton, liked: Boolean) {
-        if (liked) {
-            button.setImageResource(R.drawable.baseline_favorite_24)
+    private fun updateLikeButton(button: MaterialButton, liked: Boolean) {
+        val iconRes = if (liked) R.drawable.baseline_favorite_24 else R.drawable.favorite_48px
+        button.setIconResource(iconRes)
+
+        val backgroundTintList = if (liked) {
+            ColorStateList.valueOf(ContextCompat.getColor(button.context, R.color.liked_background_color))
         } else {
-            button.setImageResource(R.drawable.favorite_48px)
+            ColorStateList.valueOf(ContextCompat.getColor(button.context, R.color.unliked_background_color))
         }
+        button.backgroundTintList = backgroundTintList
+
+        val iconTint = if (liked) {
+            ColorStateList.valueOf(ContextCompat.getColor(button.context, R.color.liked_icon_color))
+        } else {
+            ColorStateList.valueOf(ContextCompat.getColor(button.context, R.color.unliked_icon_color))
+        }
+        button.iconTint = iconTint
     }
 }

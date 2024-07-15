@@ -12,4 +12,6 @@
     <string name="departure_date">Departure Date</string>
     <string name="select_dates">Select Dates</string>
     <string name="date_range_start_only">%1$s - Select return</string>
+
+    <string name="search_hint">Search...</string>
 </resources>

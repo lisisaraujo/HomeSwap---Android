@@ -26,14 +26,16 @@ class UserAdapter(
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val user = users[position]
+        val binding = holder.binding
+
+        binding.userListNameTV.text = user.name
+        binding.userListLocationTV.text = "${user.city}, ${user.country}"
+        binding.ratingNumberTV.text = String.format("%.1f", user.rating)
+        binding.userListSwapsTV.text = "${user.swaps} swaps"
+        binding.userListProfilePicIV.load(user.profilePic)
 
 
-        holder.binding.userListNameTV.text = user.name
-        holder.binding.userListEmailTV.text = user.email
-        holder.binding.userListReviewsTV.text = user.reviews.size.toString()
-        holder.binding.userListProfilePicIV.load(user.profilePic)
-
-        holder.binding.userListCV.setOnClickListener {
+        binding.userListCV.setOnClickListener {
             Log.d("ClickedUser", user.name)
             itemClickedCallback(user)
         }
