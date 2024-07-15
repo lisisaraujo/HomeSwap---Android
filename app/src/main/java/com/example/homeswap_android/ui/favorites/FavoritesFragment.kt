@@ -33,7 +33,11 @@ class FavoritesFragment : Fragment() {
         apartmentsViewModel.loadLikedApartments()
 
         val itemClickedCallback: (Apartment) -> Unit = { apartment ->
-            findNavController().navigate(FavoritesFragmentDirections.actionFavoritesFragmentToApartmentDetailsFragment(apartment.apartmentID))
+            findNavController().navigate(
+                FavoritesFragmentDirections.actionFavoritesFragmentToApartmentDetailsFragment(
+                    apartment.apartmentID
+                )
+            )
         }
 
         val onLikeClickListener: (Apartment) -> Unit = { apartment ->
@@ -48,7 +52,9 @@ class FavoritesFragment : Fragment() {
             Log.d("FavoritesFragment", "Received ${likedApartments.size} liked apartments")
             apartmentAdapter.updateApartments(likedApartments)
         }
-
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
     }
 
 }

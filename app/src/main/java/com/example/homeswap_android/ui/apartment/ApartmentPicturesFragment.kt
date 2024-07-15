@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.homeswap_android.adapter.PhotoAdapter
 import com.example.homeswap_android.databinding.FragmentApartmentPicturesBinding
@@ -50,6 +51,10 @@ class ApartmentPicturesFragment : Fragment() {
             } else {
                 Log.d("ApartmentPictures", "No pictures found for this apartment")
             }
+        }
+
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
         }
     }
 }

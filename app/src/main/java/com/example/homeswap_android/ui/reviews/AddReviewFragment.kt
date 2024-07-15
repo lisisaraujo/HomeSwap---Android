@@ -90,5 +90,11 @@ class AddReviewFragment : Fragment() {
                 }
             )
         }
+
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
     }
+
+
 }
