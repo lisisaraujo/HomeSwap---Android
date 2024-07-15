@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import coil.load
 import com.example.homeswap_android.data.models.Review
 import com.example.homeswap_android.databinding.FragmentAddReviewBinding
 import com.example.homeswap_android.utils.Utils.dateFormat
@@ -94,6 +95,11 @@ class AddReviewFragment : Fragment() {
         binding.toolbar.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
+
+        usersViewModel.loggedInUserData.observe(viewLifecycleOwner){user ->
+            binding.reviewProfilePicIV.load(user?.profilePic)
+        }
+
     }
 
 
