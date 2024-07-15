@@ -82,6 +82,7 @@ class ApartmentRepository(
                 if (documentSnapshot.exists()) {
                     val apartment = documentSnapshot.toObject(Apartment::class.java)
                     resultLiveData.postValue(apartment)
+                    _currentApartment.postValue(apartment)
                 } else {
                     Log.d(TAG, "Apartment document does not exist for ID: $apartmentID")
                     resultLiveData.postValue(null)
@@ -139,7 +140,7 @@ class ApartmentRepository(
                 if (index == 0) {
                     imageRef.downloadUrl.addOnSuccessListener { url ->
                         apartmentsCollectionReference.document(apartmentID)
-                            .update("coverPicture", url.toString())
+                            .update("coverPicture", url)
                     }
                 }
             }
@@ -282,6 +283,7 @@ class ApartmentRepository(
         apartmentsCollectionReference.document(apartment.apartmentID).set(apartment)
             .addOnSuccessListener {
                 Log.d(TAG, "Apartment updated successfully")
+                _currentApartment.value = apartment
             }
             .addOnFailureListener { exception ->
                 Log.e(TAG, "Error updating apartment: ${exception.message}")

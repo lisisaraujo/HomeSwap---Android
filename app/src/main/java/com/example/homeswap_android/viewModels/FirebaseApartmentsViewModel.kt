@@ -17,8 +17,6 @@ import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 
@@ -106,8 +104,12 @@ class FirebaseApartmentsViewModel : ViewModel() {
     }
 
     fun updateApartment(apartment: Apartment) {
-        apartment.let {
-            apartmentRepository.updateApartment(apartment)
+        viewModelScope.launch {
+            try {
+                apartmentRepository.updateApartment(apartment)
+            } catch (e: Exception) {
+               Log.d(TAG, e.toString())
+            }
         }
     }
 

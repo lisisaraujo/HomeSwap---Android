@@ -25,7 +25,7 @@ import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 
 class EditApartmentFragment : Fragment() {
 
-    val TAG = "ApartmentDetailsFragment"
+    val TAG = "EditApartmentFragment"
 
     private lateinit var binding: FragmentEditApartmentBinding
     private val apartmentViewModel: FirebaseApartmentsViewModel by activityViewModels()
@@ -60,12 +60,9 @@ class EditApartmentFragment : Fragment() {
         val apartmentID = args.apartmentID
         var userID = ""
 
-        apartmentViewModel.getApartment(apartmentID)
-
-        apartmentViewModel.currentApartment.observe(viewLifecycleOwner) { apartment ->
-         if(apartment != null) updateUI(apartment)
+        apartmentViewModel.getApartment(apartmentID).observe(viewLifecycleOwner) {
+            updateUI(it)
         }
-
 
         binding.editButton.setOnClickListener {
             toggleEditMode(true)
@@ -77,7 +74,6 @@ class EditApartmentFragment : Fragment() {
 
         binding.submitChangesBTN.setOnClickListener {
             saveChanges()
-            findNavController().navigateUp()
         }
 
         binding.apartmentDetailsBackBTN.setOnClickListener {
@@ -96,6 +92,7 @@ class EditApartmentFragment : Fragment() {
                 }
             }
         }
+
 
         binding.deleteApartmentBTN.setOnClickListener {
             showDeleteApartmentConfirmationDialog(apartmentID, userID)
@@ -140,22 +137,53 @@ class EditApartmentFragment : Fragment() {
     }
 
     private fun saveChanges() {
+        Log.d(TAG, "saveChanges called")
         val newTitle = binding.apartmentTitleET.text.toString()
         val newCountry = binding.countryET.text.toString()
         val newCity = binding.cityET.text.toString()
 
-        apartmentViewModel.currentApartment.value?.let { apartment ->
-            val updatedApartment = apartment.copy(
-                title = newTitle,
-                country = newCountry,
-                city = newCity
-            )
-            apartmentViewModel.updateApartment(updatedApartment)
+        Log.d(TAG, "New values - Title: $newTitle, Country: $newCountry, City: $newCity")
+
+        val currentApartment = apartmentViewModel.currentApartment.value
+        if (currentApartment == null) {
+            Log.e(TAG, "Current apartment is null")
+            Toast.makeText(context, "Error: Unable to update apartment", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val updatedApartment = currentApartment.copy(
+            title = newTitle,
+            country = newCountry,
+            city = newCity
+        )
+        Log.d(TAG, "Updating apartment: $updatedApartment")
+
+        apartmentViewModel.updateApartment(
+            updatedApartment
+        )
+        try {
+            Log.d(TAG, "Apartment updated successfully")
             if (selectedImageUris.isNotEmpty()) {
-                apartmentViewModel.uploadApartmentImages(selectedImageUris, apartment.apartmentID)
+                Log.d(TAG, "Uploading ${selectedImageUris.size} images")
+                apartmentViewModel.uploadApartmentImages(
+                    selectedImageUris,
+                    currentApartment.apartmentID
+                )
+            } else {
+                Log.d(TAG, "No new images to upload")
             }
+            Toast.makeText(context, "Changes saved successfully", Toast.LENGTH_SHORT).show()
+            findNavController().navigateUp()
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to update apartment", e)
+            Toast.makeText(
+                context,
+                "Failed to save changes: ${e.message}",
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
+
 
     private fun showDeleteApartmentConfirmationDialog(apartmentID: String, userID: String) {
         AlertDialog.Builder(requireContext())
@@ -167,11 +195,19 @@ class EditApartmentFragment : Fragment() {
                     apartmentID,
                     userID,
                     onSuccess = {
-                        Toast.makeText(context, "Apartment deleted successfully", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            context,
+                            "Apartment deleted successfully",
+                            Toast.LENGTH_SHORT
+                        ).show()
                         findNavController().navigateUp()
                     },
                     onFailure = { exception ->
-                        Toast.makeText(context, "Failed to delete apartment: ${exception.message}", Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            context,
+                            "Failed to delete apartment: ${exception.message}",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
                 )
             }
