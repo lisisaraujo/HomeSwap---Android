@@ -43,17 +43,16 @@ class MyProfileFragment : Fragment() {
 
                     val user = value?.toObject<UserData>()
                     user?.let {
-                        binding.userProfileNameTV.text = it.name
-                        binding.userProfileEmailTV.text = it.email
-                        binding.userProfileReviewsTV.text = it.reviews?.size.toString()
-                        binding.userProfileIV.load(it.profilePic)
+                        binding.userNameTV.text = it.name
+                        binding.userReviewsTV.text = it.reviewsCount?.toString()
+                        binding.userProfilePicIV.load(it.profilePic)
                     }
                 }
             }
 
         }
 
-        binding.menuButton.setOnClickListener {
+        binding.toolbar.setNavigationOnClickListener {
             findNavController().navigate(R.id.settingsFragment)
         }
 

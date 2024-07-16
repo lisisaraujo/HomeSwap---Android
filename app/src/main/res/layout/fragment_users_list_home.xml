@@ -5,7 +5,7 @@
     android:id="@+id/rv_users_list"
     android:layout_width="match_parent"
     app:spanCount="2"
-    android:clipToPadding="true"
+    android:clipToPadding="false"
     android:paddingBottom="120dp"
     android:layout_height="match_parent"
     android:background="@color/cardview_light_background"

@@ -70,11 +70,13 @@ class RegisterProfileDetailsFragment : Fragment() {
                 binding.continueBTN.setOnClickListener {
                     val city = binding.etCity.text.toString().trim()
                     val country = binding.etCountry.text.toString().trim()
+                    val bioDescription = binding.bioDescriptionET.text.toString()
 
                     if (city.isNotEmpty() && country.isNotEmpty()) {
                         usersViewModel.updateUserData(userID, mapOf(
                             "city" to city,
-                            "country" to country
+                            "country" to country,
+                            "bioDescription" to bioDescription
                         ))
                         findNavController().navigate(R.id.homeFragment)
                     } else {

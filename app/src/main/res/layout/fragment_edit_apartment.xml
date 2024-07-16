@@ -9,19 +9,19 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="16dp">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/apartmentDetailsCV"
             android:layout_width="match_parent"
             android:layout_height="250dp"
-            android:backgroundTint="@color/background_card"
-            app:cardCornerRadius="30dp"
-            app:cardElevation="4dp"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:strokeColor="@color/background"
-            app:strokeWidth="1dp">
+            app:layout_constraintEnd_toEndOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -32,11 +32,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
-                    app:cardCornerRadius="50dp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -51,47 +50,41 @@
 
                 <ImageButton
                     android:id="@+id/apartmentDetailsBackBTN"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:background="@drawable/rounded_btn_background"
-                    android:backgroundTint="@color/background_like_btn"
-                    android:padding="10dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="8dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/baseline_arrow_back_ios_new_24"
-                    app:tint="@color/background_card" />
-
+                    app:tint="@color/background" />
             </androidx.constraintlayout.widget.ConstraintLayout>
-
         </com.google.android.material.card.MaterialCardView>
 
         <HorizontalScrollView
             android:id="@+id/horizontalScrollView"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_marginTop="16dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/apartmentDetailsCV">
-
 
             <LinearLayout
                 android:id="@+id/selectedImagesContainer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal" />
-
+                android:orientation="horizontal"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp" />
         </HorizontalScrollView>
 
         <TextView
             android:id="@+id/apartmentTitleTV"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:layout_marginTop="16dp"
-            android:textSize="20sp"
+            android:layout_marginEnd="8dp"
+            android:textAppearance="?attr/textAppearanceHeadline6"
             app:layout_constraintEnd_toStartOf="@+id/editButton"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView"
@@ -101,8 +94,8 @@
             android:id="@+id/countryTV"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:textSize="20sp"
+            android:layout_marginTop="8dp"
+            android:textAppearance="?attr/textAppearanceBody1"
             app:layout_constraintEnd_toStartOf="@+id/editButton"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/apartmentTitleTV"
@@ -112,18 +105,23 @@
             android:id="@+id/cityTV"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:textSize="20sp"
+            android:layout_marginTop="8dp"
+            android:textAppearance="?attr/textAppearanceBody1"
             app:layout_constraintEnd_toStartOf="@+id/editButton"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/countryTV"
             tools:text="City" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/editButton"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:text="Edit"
+            app:icon="@drawable/edit_48px"
+            app:iconPadding="8dp"
             app:layout_constraintBottom_toBottomOf="@+id/apartmentTitleTV"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/apartmentTitleTV" />
@@ -132,7 +130,7 @@
             android:id="@+id/apartmentTitleTIL"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_marginBottom="16dp"
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@+id/apartmentDetailsCV">
 
@@ -142,15 +140,14 @@
                 android:layout_height="wrap_content"
                 android:hint="Apartment Title"
                 android:inputType="text"
-                android:textSize="20sp" />
-
+                android:textSize="16sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/countryTIL"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_marginBottom="16dp"
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@+id/apartmentTitleTIL">
 
@@ -160,15 +157,14 @@
                 android:layout_height="wrap_content"
                 android:hint="Country"
                 android:inputType="text"
-                android:textSize="20sp" />
-
+                android:textSize="16sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/cityTIL"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_marginBottom="16dp"
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@+id/countryTIL">
 
@@ -178,15 +174,16 @@
                 android:layout_height="wrap_content"
                 android:hint="City"
                 android:inputType="text"
-                android:textSize="20sp" />
-
+                android:textSize="16sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/saveChangesBTN"
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             android:text="Save Changes"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
@@ -198,12 +195,11 @@
             style="@style/Widget.MaterialComponents.Button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:text="Submit Changes"
-            android:textColor="@color/background_card"
             app:cornerRadius="24dp"
             app:layout_constraintBottom_toTopOf="@+id/deleteApartmentBTN"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cityTV" />
 
@@ -212,17 +208,12 @@
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
             android:text="Delete Apartment"
             android:textColor="@color/design_default_color_error"
             app:cornerRadius="24dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:strokeColor="@color/design_default_color_error" />
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </androidx.core.widget.NestedScrollView>

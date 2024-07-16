@@ -10,5 +10,6 @@ data class UserData (
    val reviews: MutableList<Review> = mutableListOf(),
    var reviewsCount: Int? = 0,
    var rating: Float? = 0F,
-   var swaps: Int = 0
+   var swaps: Int = 0,
+   val bioDescription: String = ""
 )
