@@ -1,5 +1,6 @@
 package com.example.homeswap_android.ui.personal
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -29,6 +30,7 @@ class MyProfileFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -44,8 +46,10 @@ class MyProfileFragment : Fragment() {
                     val user = value?.toObject<UserData>()
                     user?.let {
                         binding.userNameTV.text = it.name
-                        binding.userReviewsTV.text = it.reviewsCount?.toString()
+                        binding.userReviewsTV.text = "${it.reviewsCount} reviews"
                         binding.userProfilePicIV.load(it.profilePic)
+                        binding.userRatingTV.text = it.rating.toString()
+                        binding.userLocationTV.text = "${it.city}, ${it.country} "
                     }
                 }
             }

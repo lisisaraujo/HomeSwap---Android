@@ -3,14 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:context=".ui.personal.MyProfileFragment">
+    >
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
-        app:elevation="0dp">
+        app:elevation="0dp"
+        tools:ignore="MissingConstraints">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
@@ -123,7 +126,7 @@
                     android:layout_height="16dp"
                     android:layout_marginStart="4dp"
                     android:src="@drawable/star_rate_24px__1_"
-                    android:tint="@color/accent" />
+                    app:tint="@color/accent" />
 
             </LinearLayout>
 
@@ -135,7 +138,6 @@
                 android:layout_marginEnd="16dp"
                 android:textAppearance="?attr/textAppearanceBodySmall"
                 android:textColor="?attr/colorOnSurfaceVariant"
-                app:layout_constraintBottom_toBottomOf="@+id/userListLocationTV"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout"
                 tools:text="reviews" />

@@ -78,7 +78,7 @@
                 android:layout_height="16dp"
                 android:layout_marginStart="4dp"
                 android:src="@drawable/star_rate_24px__1_"
-                android:tint="@color/accent" />
+                app:tint="@color/accent" />
 
         </LinearLayout>
 
