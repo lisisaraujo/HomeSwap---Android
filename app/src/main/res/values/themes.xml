@@ -30,7 +30,7 @@
         <!-- Button styles -->
         <item name="buttonStyle">@style/Widget.AppCompat.Button.Colored</item>
         <item name="colorButtonNormal">@color/primary</item>
-        <item name="android:textColorPrimary">@color/background</item>
+        <item name="android:textColorPrimary">@color/text</item>
     </style>
 
     <style name="Theme.HomeSwapAndroid" parent="Base.Theme.HomeSwapAndroid" />

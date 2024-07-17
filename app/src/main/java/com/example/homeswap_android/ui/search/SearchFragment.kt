@@ -2,13 +2,9 @@ package com.example.homeswap_android.ui.search
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -17,14 +13,12 @@ import androidx.navigation.fragment.findNavController
 import com.example.homeswap_android.R
 import com.example.homeswap_android.databinding.FragmentSearchBinding
 import com.example.homeswap_android.utils.Utils
-import com.example.homeswap_android.viewModels.FiltersViewModel
 import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.material.chip.Chip
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlin.math.max
 
 class SearchFragment : Fragment() {
     val TAG = "SearchFragment"

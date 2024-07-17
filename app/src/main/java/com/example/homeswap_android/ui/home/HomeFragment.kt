@@ -31,7 +31,7 @@ class HomeFragment : Fragment() {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         // check if user is logged in before going to homepage
-        userViewModel.currentUser.observe(viewLifecycleOwner) { user ->
+        userViewModel.loggedInUser.observe(viewLifecycleOwner) { user ->
             Log.d(TAG, user?.email.toString())
             if (user == null) {
                 findNavController().navigate(R.id.loginFragment)

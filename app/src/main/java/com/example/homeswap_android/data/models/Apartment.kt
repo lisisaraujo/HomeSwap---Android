@@ -5,7 +5,6 @@ data class Apartment(
     var apartmentID: String = "",
     val userID: String = "",
     val title: String = "",
-    val country: String = "",
     val countryLower: String = "",
     val city: String = "",
     val cityLower: String = "",
@@ -22,5 +21,8 @@ data class Apartment(
     var maxGuests: Int? = null,
     var typeOfHome: String = "",
     var homeOffice: Boolean = false,
-    var hasWifi: Boolean = false
+    var hasWifi: Boolean = false,
+    val registrationDate: String = "",
+    val description: String? = ""
+
 )

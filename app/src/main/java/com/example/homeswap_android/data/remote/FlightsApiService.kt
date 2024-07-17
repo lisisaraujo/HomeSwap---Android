@@ -1,12 +1,11 @@
 package com.example.homeswap_android.data.remote
 
+import com.example.homeswap_android.BuildConfig
 import com.example.homeswap_android.amadeusAPI.amadeusToken.AmadeusAccessTokenProvider
 import com.example.homeswap_android.amadeusAPI.amadeusToken.AccessTokenAuthenticator
 import com.example.homeswap_android.amadeusAPI.amadeusToken.AccessTokenInterceptor
 import com.example.homeswap_android.data.models.apiData.AirportSearchResponse
 import com.example.homeswap_android.data.models.apiData.FlightResponse
-import com.example.homeswap_android.utils.Utils.amadeusClientID
-import com.example.homeswap_android.utils.Utils.amadeusClientSecret
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.OkHttpClient
@@ -17,6 +16,11 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 const val BASE_URL = "https://test.api.amadeus.com/"
+
+private const val amadeusClientID = BuildConfig.amadeusClientID
+private const val amadeusClientSecret = BuildConfig.amadeusClientSecret
+
+
 
 val tokenProvider = AmadeusAccessTokenProvider(
     clientId = amadeusClientID,

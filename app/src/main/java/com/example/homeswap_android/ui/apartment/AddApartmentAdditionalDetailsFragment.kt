@@ -12,7 +12,6 @@ import com.example.homeswap_android.R
 import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.databinding.FragmentAddApartmentAdditionalDetailsBinding
 import com.example.homeswap_android.viewModels.AddApartmentViewModel
-import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 
 class AddApartmentAdditionalDetailsFragment : Fragment() {

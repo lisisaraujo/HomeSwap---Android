@@ -27,6 +27,9 @@ class MyProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentMyProfileBinding.inflate(inflater, container, false)
+        usersViewModel.loggedInUser.observe(viewLifecycleOwner) { user ->
+            if (user == null) findNavController().navigate(R.id.loginFragment)
+        }
         return binding.root
     }
 
@@ -45,11 +48,12 @@ class MyProfileFragment : Fragment() {
 
                     val user = value?.toObject<UserData>()
                     user?.let {
-                        binding.userNameTV.text = it.name
+                        binding.profileName.text = it.name
                         binding.userReviewsTV.text = "${it.reviewsCount} reviews"
-                        binding.userProfilePicIV.load(it.profilePic)
-                        binding.userRatingTV.text = it.rating.toString()
-                        binding.userLocationTV.text = "${it.city}, ${it.country} "
+                        binding.profileImage.load(it.profilePic)
+                        binding.rating.text = it.rating.toString()
+                        binding.locationTV.text = it.city
+                        binding.profileDescription.text = it.bioDescription
                     }
                 }
             }
@@ -58,6 +62,10 @@ class MyProfileFragment : Fragment() {
 
         binding.toolbar.setNavigationOnClickListener {
             findNavController().navigate(R.id.settingsFragment)
+        }
+
+        binding.editProfileTV.setOnClickListener {
+            findNavController().navigate(R.id.editProfileFragment)
         }
 
     }

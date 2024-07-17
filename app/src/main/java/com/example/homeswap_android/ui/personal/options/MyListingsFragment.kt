@@ -21,7 +21,6 @@ class MyListingsFragment : Fragment() {
     private lateinit var binding: FragmentMyListingsBinding
     private val apartmentViewModel: FirebaseApartmentsViewModel by activityViewModels()
     private val userViewModel: FirebaseUsersViewModel by activityViewModels()
-    private val args: UserDetailsFragmentArgs by navArgs()
 
     private lateinit var editApartmentAdapter: EditApartmentAdapter
 

@@ -63,7 +63,7 @@ class ApartmentDetailsFragment : Fragment() {
                     homeOfficeTV.text =
                         if (apartment.homeOffice) "Home Office" else "No Home Office"
                     hasWifiTV.text = if (apartment.hasWifi) "Wifi" else "No Wifi"
-                    ratingTV.text = "Rating: ${apartment.rating}"
+                    apartmentDetailsRatingsTV.text = "Rating: ${apartment.rating}"
                     availabilityTV.text =
                         "Available: ${apartment.startDate} to ${apartment.endDate}"
 
@@ -93,8 +93,8 @@ class ApartmentDetailsFragment : Fragment() {
 
             userViewModel.loggedInUserData.observe(viewLifecycleOwner) { user ->
                 if (user != null) {
-                    binding.userNameTV.text = user.name
-                    binding.userProfilePicIV.load(user.profilePic)
+                    binding.profileName.text = user.name
+                    binding.profileImage.load(user.profilePic)
                 }
 
                 binding.userDetailsCV.setOnClickListener {
@@ -106,7 +106,7 @@ class ApartmentDetailsFragment : Fragment() {
                 }
             }
 
-            binding.apartmentDetailsBackBTN.setOnClickListener {
+            binding.toolbar.setNavigationOnClickListener {
                 findNavController().navigate(
                     ApartmentDetailsFragmentDirections.actionApartmentDetailsFragmentToHomeFragment(
                         isApartments = true

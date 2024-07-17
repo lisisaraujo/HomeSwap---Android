@@ -45,7 +45,7 @@ class UserDetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         reviewsAdapter = ReviewAdapter()
-        binding.userReviewsRV.adapter = reviewsAdapter
+        binding.userDetailsReviewsRV.adapter = reviewsAdapter
 
         val userID = args.userID!!
 
@@ -54,9 +54,12 @@ class UserDetailsFragment : Fragment() {
 
         userViewModel.loggedInUserData.observe(viewLifecycleOwner) { user ->
             if (user != null) {
-                binding.userProfileNameTV.text = user.name
-                binding.userProfileIV.load(user.profilePic)
-                binding.userProfileEmailTV.text = user.email
+                binding.profileName.text = user.name
+                binding.profileImage.load(user.profilePic)
+                binding.locationTV.text = user.city
+                binding.rating.text = user.rating.toString()
+                binding.swapsCount.text = "${user.swaps} swaps"
+                binding.profileDescription.text = user.bioDescription
             }
         }
 
@@ -71,14 +74,14 @@ class UserDetailsFragment : Fragment() {
         }
 
         apartmentAdapter = ApartmentAdapter(emptyList(), itemClickedCallback, onLikeClickListener)
-        binding.userApartmentsRV.adapter = apartmentAdapter
+        binding.userDetailsApartmentsListRV.adapter = apartmentAdapter
 
         apartmentViewModel.getUserApartments(userID).addSnapshotListener{ userApartments, _ ->
             Log.d(TAG, userApartments.toString())
             apartmentAdapter.updateApartments(userApartments!!.toObjects(Apartment::class.java))
         }
 
-        binding.backBTN.setOnClickListener {
+        binding.toolbar.setNavigationOnClickListener {
             findNavController().navigate(UserDetailsFragmentDirections.actionUserDetailsFragmentToHomeFragment(isUsers = true))
         }
 

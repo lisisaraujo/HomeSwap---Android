@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -5,6 +7,11 @@ plugins {
     id("androidx.navigation.safeargs.kotlin")
     alias(libs.plugins.google.gms.google.services)
 }
+
+// api keys
+val amadeusClientID: String = gradleLocalProperties(rootDir, providers).getProperty("amadeusClientID")
+val amadeusClientSecret: String = gradleLocalProperties(rootDir, providers).getProperty("amadeusClientSecret")
+val googlePlacesApiKey: String = gradleLocalProperties(rootDir, providers).getProperty("googlePlacesApiKey")
 
 android {
     namespace = "com.example.homeswap_android"
@@ -27,11 +34,21 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "amadeusClientID", amadeusClientID)
+            buildConfigField("String", "amadeusClientSecret", amadeusClientSecret)
+            buildConfigField("String", "googlePlacesApiKey", googlePlacesApiKey)
+
+        }
+        debug {
+            buildConfigField("String", "amadeusClientID", amadeusClientID)
+            buildConfigField("String", "amadeusClientSecret", amadeusClientSecret)
+            buildConfigField("String", "googlePlacesApiKey", googlePlacesApiKey)
         }
     }
 
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 
     compileOptions {
@@ -105,10 +122,6 @@ dependencies {
     implementation ("com.google.android.libraries.places:places:3.1.0")
 
     implementation ("com.google.android.material:material:1.9.0")
-
-
-
-
-
-
 }
+
+

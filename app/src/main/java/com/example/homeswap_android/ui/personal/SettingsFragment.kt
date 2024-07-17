@@ -63,6 +63,7 @@ class SettingsFragment : Fragment() {
         binding.settingsBackBTN.setOnClickListener {
             findNavController().navigate(R.id.homeFragment)
         }
+
     }
 
     private fun showEmailVerificationDialog() {
@@ -95,7 +96,6 @@ class SettingsFragment : Fragment() {
             .setMessage("Are you sure you want to delete your account? This is a permanent action and all data related to your account will be permanently deleted.")
             .setPositiveButton("Delete") { _, _ ->
                 userViewModel.deleteUser()
-                findNavController().navigate(R.id.loginFragment)
             }
             .setNegativeButton("Cancel", null)
             .setIcon(android.R.drawable.ic_dialog_alert)

@@ -1,6 +1,7 @@
 package com.example.homeswap_android.viewModels
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.homeswap_android.data.models.UserData
 import com.example.homeswap_android.data.repositories.UserRepository
@@ -75,9 +76,15 @@ class FirebaseUsersViewModel : ViewModel() {
         userRepository.checkEmailVerificationStatus(onComplete)
     }
 
-    fun updateUserData(userId: String, updates: Map<String, Any>) {
-        userRepository.updateUserData(userId, updates)
+    fun updateUserData(userId: String, updates: Map<String, Any>, onComplete: (Boolean) -> Unit) {
+        userRepository.updateUserData(userId, updates, onComplete)
     }
+
+    fun updateProfilePicture(uri: Uri, onComplete: (Boolean) -> Unit) {
+        userRepository.updateProfilePicture(uri, onComplete)
+    }
+
+
 
     fun refreshLoggedInUserData() {
         userRepository.refreshLoggedInUserData()

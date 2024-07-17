@@ -101,23 +101,19 @@ class EditApartmentFragment : Fragment() {
 
     private fun updateUI(apartment: Apartment) {
         binding.apartmentTitleTV.text = apartment.title
-        binding.countryTV.text = apartment.country
         binding.cityTV.text = apartment.city
         binding.apartmentImageIV.load(apartment.coverPicture)
 
         binding.apartmentTitleET.setText(apartment.title)
-        binding.countryET.setText(apartment.country)
         binding.cityET.setText(apartment.city)
     }
 
     private fun toggleEditMode(isEditing: Boolean) {
         binding.apartmentTitleTV.visibility = if (isEditing) View.GONE else View.VISIBLE
-        binding.countryTV.visibility = if (isEditing) View.GONE else View.VISIBLE
         binding.cityTV.visibility = if (isEditing) View.GONE else View.VISIBLE
         binding.editButton.visibility = if (isEditing) View.GONE else View.VISIBLE
 
         binding.apartmentTitleTIL.visibility = if (isEditing) View.VISIBLE else View.GONE
-        binding.countryTIL.visibility = if (isEditing) View.VISIBLE else View.GONE
         binding.cityTIL.visibility = if (isEditing) View.VISIBLE else View.GONE
         binding.saveChangesBTN.visibility = if (isEditing) View.VISIBLE else View.GONE
     }
@@ -139,10 +135,9 @@ class EditApartmentFragment : Fragment() {
     private fun saveChanges() {
         Log.d(TAG, "saveChanges called")
         val newTitle = binding.apartmentTitleET.text.toString()
-        val newCountry = binding.countryET.text.toString()
         val newCity = binding.cityET.text.toString()
 
-        Log.d(TAG, "New values - Title: $newTitle, Country: $newCountry, City: $newCity")
+        Log.d(TAG, "New values - Title: $newTitle, City: $newCity")
 
         val currentApartment = apartmentViewModel.currentApartment.value
         if (currentApartment == null) {
@@ -153,7 +148,6 @@ class EditApartmentFragment : Fragment() {
 
         val updatedApartment = currentApartment.copy(
             title = newTitle,
-            country = newCountry,
             city = newCity
         )
         Log.d(TAG, "Updating apartment: $updatedApartment")

@@ -23,6 +23,7 @@ import com.example.homeswap_android.utils.Utils.dateFormat
 import com.example.homeswap_android.viewModels.AddApartmentViewModel
 import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
 import com.google.android.material.datepicker.MaterialDatePicker
+import java.util.Date
 
 class AddApartmentBasicDetailsFragment : Fragment() {
 
@@ -35,7 +36,7 @@ class AddApartmentBasicDetailsFragment : Fragment() {
 
     // Define the photo picker launcher for multiple images
     private val pickMultipleMedia =
-        registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(5)) { uris ->
+        registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(15)) { uris ->
             if (uris.isNotEmpty()) {
                 Log.d("PhotoPicker", "Number of items selected: ${uris.size}")
                 selectedImageUris = uris
@@ -57,22 +58,22 @@ class AddApartmentBasicDetailsFragment : Fragment() {
 
         binding.submitApartmentBTN.setOnClickListener {
             val title = binding.titleET.text.toString()
-            val country = binding.countryET.text.toString()
             val city = binding.cityET.text.toString()
             val address = binding.addressET.text.toString()
             val startDate = selectedStartDate
             val endDate = selectedEndDate
 
+            val currentDate = dateFormat.format(Date())
+
 
             val newApartment = Apartment(
                 title = title,
-                country = country,
-                countryLower = country.lowercase(),
                 city = city,
                 cityLower = city.lowercase(),
                 address = address,
                 startDate = startDate,
                 endDate = endDate,
+                registrationDate = currentDate
             )
 
             addApartmentViewModel.addApartment(newApartment)

@@ -84,36 +84,17 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_country"
-                style="@style/CustomTextInputLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:hint="Country"
-                app:layout_constraintTop_toBottomOf="@+id/profilePictureContainer"
-                tools:layout_editor_absoluteX="24dp">
-
-                <AutoCompleteTextView
-                    android:id="@+id/et_country"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@color/background_card"
-                    android:inputType="none"
-                    android:paddingLeft="16dp"
-                    android:paddingTop="24dp"
-                    android:paddingBottom="16dp" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_city"
                 style="@style/CustomTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:hint="City"
-                app:layout_constraintTop_toBottomOf="@id/til_country">
+                android:hint="Location"
+                app:layout_constraintTop_toBottomOf="@+id/profilePictureContainer"
+                >
 
-                <com.google.android.material.textfield.TextInputEditText
+                <AutoCompleteTextView
+                    android:textColor="@color/text"
                     android:id="@+id/et_city"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

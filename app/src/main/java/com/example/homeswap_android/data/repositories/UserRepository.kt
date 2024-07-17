@@ -11,6 +11,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 
@@ -60,7 +61,7 @@ class UserRepository(
 
         auth.currentUser?.let { setupUserEnv() }
 
-            refreshLoggedInUserData()
+        refreshLoggedInUserData()
 
     }
 
@@ -213,9 +214,9 @@ class UserRepository(
     fun deleteUser() {
         val currentUser = auth.currentUser ?: return
         val userId = currentUser.uid
-
         deleteUserApartments(userId)
     }
+
 
     private fun deleteUserApartments(userId: String) {
         firestore.collection("apartments").whereEqualTo("userID", userId).get()
@@ -227,7 +228,6 @@ class UserRepository(
                     deleteUserProfilePicture(userId)
                     return@addOnSuccessListener
                 }
-
                 for (document in querySnapshot.documents) {
                     val apartment = document.toObject(Apartment::class.java)
                     apartment?.let {
@@ -244,6 +244,7 @@ class UserRepository(
                 Log.e(TAG, "Error fetching user's apartments: $exception")
             }
     }
+
 
     private fun deleteApartmentAndPictures(
         apartmentID: String,
@@ -285,6 +286,7 @@ class UserRepository(
             }
     }
 
+
     private fun deleteApartmentDocument(apartmentID: String, onDeleted: () -> Unit) {
         firestore.collection("apartments").document(apartmentID).delete()
             .addOnSuccessListener {
@@ -296,6 +298,7 @@ class UserRepository(
                 onDeleted()
             }
     }
+
 
     private fun deleteUserProfilePicture(userId: String) {
         val profilePicRef = storage.reference.child("images/$userId/profilePic")
@@ -310,6 +313,7 @@ class UserRepository(
             }
     }
 
+
     private fun deleteUserDocument(userId: String) {
         usersCollectionReference.document(userId).delete()
             .addOnSuccessListener {
@@ -322,6 +326,7 @@ class UserRepository(
             }
     }
 
+
     private fun deleteAuthUser(currentUser: FirebaseUser) {
         currentUser.delete()
             .addOnSuccessListener {
@@ -332,7 +337,6 @@ class UserRepository(
                 Log.e(TAG, "Error deleting user from Authentication: $exception")
             }
     }
-
 
     fun checkEmailVerificationStatus(onComplete: (Boolean) -> Unit) {
         val user = auth.currentUser
@@ -346,13 +350,22 @@ class UserRepository(
         }
     }
 
-    fun updateUserData(userId: String, updates: Map<String, Any>) {
+    fun updateUserData(userId: String, updates: Map<String, Any>, onComplete: (Boolean) -> Unit) {
         try {
             getUserDocumentReference(userId).update(updates)
+                .addOnSuccessListener {
+                    onComplete(true)
+                }
+                .addOnFailureListener { exception ->
+                    Log.e(TAG, "Error updating user data", exception)
+                    onComplete(false)
+                }
         } catch (e: Exception) {
-            Log.e("FirebaseUsersViewModel", "Error updating user data", e)
+            Log.e(TAG, "Exception updating user data", e)
+            onComplete(false)
         }
     }
+
 
     fun refreshLoggedInUserData() {
         Log.d(TAG, "Refreshing logged-in user data")
@@ -361,4 +374,41 @@ class UserRepository(
             fetchUserData(user.uid)
         } ?: Log.d(TAG, "No current user")
     }
+
+    fun updateProfilePicture(uri: Uri, onComplete: (Boolean) -> Unit) {
+        val user = auth.currentUser
+        if (user != null) {
+            val imageRef = storage.reference.child("images/${user.uid}/profilePic")
+            val uploadTask = imageRef.putFile(uri)
+
+            uploadTask.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    imageRef.downloadUrl.addOnSuccessListener { downloadUri ->
+                        val imageUrl = downloadUri.toString()
+                        Log.d(TAG, "ProfilePicUrl: $imageUrl")
+                        usersCollectionReference.document(user.uid).update("profilePic", imageUrl)
+                            .addOnSuccessListener {
+                                _loggedInUserData.value?.profilePic = imageUrl
+                                onComplete(true)
+                            }
+                            .addOnFailureListener { exception ->
+                                Log.e(TAG, "Error updating profile picture: ${exception.message}")
+                                onComplete(false)
+                            }
+                    }.addOnFailureListener { exception ->
+                        Log.e(TAG, "Error getting download URL: ${exception.message}")
+                        onComplete(false)
+                    }
+                } else {
+                    Log.e(TAG, "Upload failed: ${task.exception}")
+                    onComplete(false)
+                }
+            }
+        } else {
+            Log.e(TAG, "User is not authenticated")
+            onComplete(false)
+        }
+    }
+
+
 }

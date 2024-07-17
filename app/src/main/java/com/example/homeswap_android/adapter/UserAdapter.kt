@@ -29,7 +29,7 @@ class UserAdapter(
         val binding = holder.binding
 
         binding.userListNameTV.text = user.name
-        binding.userListLocationTV.text = "${user.city}, ${user.country}"
+        binding.userListLocationTV.text = user.city
         binding.ratingNumberTV.text = String.format("%.1f", user.rating)
         binding.userListSwapsTV.text = "${user.swaps} swaps"
         binding.userListProfilePicIV.load(user.profilePic)

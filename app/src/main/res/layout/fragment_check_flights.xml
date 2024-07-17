@@ -75,6 +75,7 @@
 
                 <AutoCompleteTextView
                     android:backgroundTint="@color/background"
+                    android:textColor="@color/text"
                     android:id="@+id/et_origin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -104,6 +105,7 @@
                     android:layout_height="wrap_content"
                     android:inputType="text"
                     android:paddingTop="24dp"
+                    android:textColor="@color/text"
                     android:paddingLeft="16dp"
                     android:paddingBottom="16dp"/>
 
@@ -127,6 +129,7 @@
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/background"
                     android:clickable="true"
+                    android:textColor="@color/text"
                     android:focusable="false"
                     android:inputType="none"
                     android:paddingStart="48dp"

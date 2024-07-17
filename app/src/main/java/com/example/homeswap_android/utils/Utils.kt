@@ -20,10 +20,6 @@ import java.util.Locale
 
 object Utils {
 
-    val amadeusClientID = "5IPT3yNfOTjQbDGvr6awwyGRw0JfmrI4"
-    val amadeusClientSecret = "ncqEFgmjA21mo81c"
-    val googlePlacesApiKey = "AIzaSyBSK7IgKTs8wt9_ig1BlGd70gRwzZbNzZA"
-
     @SuppressLint("ConstantLocale")
     val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     @SuppressLint("ConstantLocale")

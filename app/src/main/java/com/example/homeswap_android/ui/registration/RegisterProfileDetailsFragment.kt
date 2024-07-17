@@ -15,11 +15,16 @@ import coil.load
 import com.example.homeswap_android.R
 import com.example.homeswap_android.data.models.UserData
 import com.example.homeswap_android.databinding.FragmentRegisterProfileDetailsBinding
+import com.example.homeswap_android.utils.Utils
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.net.PlacesClient
+import java.util.Date
 
 class RegisterProfileDetailsFragment : Fragment() {
     private lateinit var binding: FragmentRegisterProfileDetailsBinding
     private val usersViewModel: FirebaseUsersViewModel by activityViewModels()
+    private lateinit var placesClient: PlacesClient
 
     private val getContent =
         registerForActivityResult(
@@ -40,6 +45,17 @@ class RegisterProfileDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        //google places API setup
+        placesClient = Places.createClient(requireContext())
+
+        Utils.setupAutoCompleteTextView(
+            requireContext(),
+            binding.etCity,
+            placesClient
+        ) { selectedLocation ->
+            binding.etCity.setText(selectedLocation)
+        }
 
         usersViewModel.loggedInUser.observe(viewLifecycleOwner) { firebaseUser ->
             firebaseUser?.let { user ->
@@ -62,29 +78,34 @@ class RegisterProfileDetailsFragment : Fragment() {
                             }
                             //pre-fill city and country if available
                             binding.etCity.setText(profile.city)
-                            binding.etCountry.setText(profile.country)
                         }
                     }
                 }
 
                 binding.continueBTN.setOnClickListener {
                     val city = binding.etCity.text.toString().trim()
-                    val country = binding.etCountry.text.toString().trim()
                     val bioDescription = binding.bioDescriptionET.text.toString()
+                    val currentDate = Utils.dateFormat.format(Date())
 
-                    if (city.isNotEmpty() && country.isNotEmpty()) {
-                        usersViewModel.updateUserData(userID, mapOf(
-                            "city" to city,
-                            "country" to country,
-                            "bioDescription" to bioDescription
-                        ))
-                        findNavController().navigate(R.id.homeFragment)
-                    } else {
-                        Toast.makeText(context, "Fill out all data to continue", Toast.LENGTH_LONG).show()
+                    if (city.isNotEmpty()) {
+                        usersViewModel.updateUserData(
+                            userID, mapOf(
+                                "city" to city,
+                                "bioDescription" to bioDescription,
+                                "registrationDate" to currentDate
 
+                            )
+                        ) { success ->
+                            if (success) findNavController().navigate(R.id.homeFragment)
+                            else Toast.makeText(
+                                context,
+                                "Fill out all data to continue",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
                     }
                 }
-            } ?: Log.e("RegisterProfileDetailsFragment", "Current user is null")
+            }
         }
     }
 }
