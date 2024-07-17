@@ -33,6 +33,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
+            app:chipCornerRadius="30dp"
+           app:chipStrokeWidth="0dp"
+            android:backgroundTint="@color/unliked_background_color"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="City Name"/>

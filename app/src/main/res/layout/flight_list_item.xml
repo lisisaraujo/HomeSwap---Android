@@ -6,8 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    app:cardCornerRadius="24dp"
-    app:cardElevation="0dp"
+    app:cardCornerRadius="30dp"
+    app:strokeWidth="0dp"
     app:cardBackgroundColor="@color/background_card">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -31,9 +31,9 @@
             android:layout_height="wrap_content"
             android:textAppearance="?attr/textAppearanceSubtitle1"
             android:textColor="?attr/colorOnSurface"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toStartOf="@id/totalPriceTV"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/totalPriceTV"
             tools:text="Airline Name" />
 
         <TextView

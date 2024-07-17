@@ -100,7 +100,7 @@ class AddApartmentBasicDetailsFragment : Fragment() {
             showDateRangePicker()
         }
 
-        binding.addApartmentBackBTN.setOnClickListener {
+        binding.toolbar.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
     }

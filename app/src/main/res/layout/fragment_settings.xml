@@ -21,8 +21,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="4dp"
+        app:cardCornerRadius="30dp"
+        android:backgroundTint="@color/background_card"
+        app:strokeWidth="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/settingsBackBTN">
@@ -35,11 +36,11 @@
             android:padding="16dp">
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_my_profile"
+                android:id="@+id/editProfileBTN"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="My Profile"
+                android:text="Edit Profile"
                 android:textAlignment="textStart"
                 app:icon="@drawable/account_circle_48px"
                 app:iconGravity="start" />
