@@ -54,13 +54,10 @@ class MyListingsFragment : Fragment() {
             editApartmentAdapter.updateApartments(userApartments!!.toObjects(Apartment::class.java))
         }
 
-        binding.myListingsBackBTN.setOnClickListener {
-            findNavController().navigate(R.id.settingsFragment)
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
 
         }
 
-//        userViewModel.loggedInUser.observe(viewLifecycleOwner) {
-//            if (it == null) findNavController().navigate(R.id.loginFragment)
-//        }
     }
 }

@@ -14,8 +14,10 @@ import androidx.navigation.fragment.navArgs
 import coil.load
 import com.example.homeswap_android.R
 import com.example.homeswap_android.adapter.ReviewAdapter
+import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.data.models.Review
 import com.example.homeswap_android.databinding.FragmentApartmentDetailsBinding
+import com.example.homeswap_android.utils.Utils
 import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 import com.example.homeswap_android.viewModels.ReviewsViewModel
@@ -38,13 +40,16 @@ class ApartmentDetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentApartmentDetailsBinding.inflate(inflater, container, false)
+        apartmentViewModel.currentApartment.observe(viewLifecycleOwner) { apartment ->
+            if (apartment == null) findNavController().navigate(R.id.loginFragment)
+            else Utils.updateLikeButton(binding.apartmentDetailsLikeBTN, apartment.liked)
+        }
         return binding.root
     }
 
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
 
         reviewsAdapter = ReviewAdapter()
         binding.reviewsRV.adapter = reviewsAdapter
@@ -72,10 +77,9 @@ class ApartmentDetailsFragment : Fragment() {
                     Log.d(TAG, "ApartmentCoverPic: ${apartment.coverPicture}")
 
                     val userID = apartment.userID
-                    userViewModel.fetchUserData(userID)
+                    userViewModel.fetchSelectedUserData(userID)
                 }
             }
-
 
             reviewsViewModel.getApartmentReviews(apartmentID)
                 .addSnapshotListener { apartmentReviews, error ->
@@ -91,18 +95,20 @@ class ApartmentDetailsFragment : Fragment() {
                 }
 
 
-            userViewModel.loggedInUserData.observe(viewLifecycleOwner) { user ->
-                if (user != null) {
-                    binding.profileName.text = user.name
-                    binding.profileImage.load(user.profilePic)
-                }
+            viewLifecycleOwner.lifecycleScope.launch {
+                userViewModel.loggedInUserData.collect { user ->
+                    if (user != null) {
+                        binding.profileName.text = user.name
+                        binding.profileImage.load(user.profilePic)
+                    }
 
-                binding.userDetailsCV.setOnClickListener {
-                    findNavController().navigate(
-                        ApartmentDetailsFragmentDirections.actionApartmentDetailsFragmentToUserDetailsFragment(
-                            user!!.userID
+                    binding.userDetailsCV.setOnClickListener {
+                        findNavController().navigate(
+                            ApartmentDetailsFragmentDirections.actionApartmentDetailsFragmentToUserDetailsFragment(
+                                user!!.userID
+                            )
                         )
-                    )
+                    }
                 }
             }
 
@@ -112,24 +118,6 @@ class ApartmentDetailsFragment : Fragment() {
                         isApartments = true
                     )
                 )
-            }
-
-            apartmentViewModel.currentApartment.observe(viewLifecycleOwner) {
-                if (it == null) findNavController().navigate(R.id.loginFragment)
-            }
-
-            binding.apartmentDetailsLikeBTN.setOnClickListener {
-                apartmentViewModel.currentApartment.observe(viewLifecycleOwner) { currentApartment ->
-                    if (currentApartment != null) {
-                        apartmentViewModel.toggleLike(currentApartment)
-                        if (currentApartment.liked) binding.apartmentDetailsLikeBTN.setImageResource(
-                            R.drawable.baseline_favorite_24
-                        )
-                        else binding.apartmentDetailsLikeBTN.setImageResource(R.drawable.favorite_48px)
-                    }
-
-                }
-
             }
 
             binding.coverPictureIV.setOnClickListener {
@@ -148,6 +136,19 @@ class ApartmentDetailsFragment : Fragment() {
                         userID = null
                     )
                 )
+            }
+
+            binding.apartmentDetailsDescriptionTV.text = apartment.description
+            binding.locationTV.text = apartment.city
+
+        }
+
+        apartmentViewModel.currentApartment.observe(viewLifecycleOwner) { apartment ->
+            apartment.let {
+                binding.apartmentDetailsLikeBTN.setOnClickListener {
+                    apartmentViewModel.toggleLike(apartment!!)
+                    Utils.updateLikeButton(binding.apartmentDetailsLikeBTN, apartment.liked)
+                }
             }
         }
 

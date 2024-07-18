@@ -10,12 +10,14 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import coil.load
 import com.example.homeswap_android.R
 import com.example.homeswap_android.data.models.UserData
 import com.example.homeswap_android.databinding.FragmentEditProfileBinding
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
+import kotlinx.coroutines.launch
 
 
 class EditProfileFragment : Fragment() {
@@ -58,6 +60,16 @@ class EditProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
+        viewLifecycleOwner.lifecycleScope.launch {
+            userViewModel.loggedInUserData.collect { userData ->
+                userData?.let { user ->
+                    binding.fullNameET.setText(user.name)
+                    binding.locationET.setText(user.city)
+                    binding.editProfileDescriptionET.setText(user.bioDescription)
+                }
+            }
+        }
+
         userViewModel.loggedInUser.observe(viewLifecycleOwner) { firebaseUser ->
             firebaseUser?.let { user ->
                 val userRef = userViewModel.getUserDocumentReference(user.uid)
@@ -94,7 +106,12 @@ class EditProfileFragment : Fragment() {
         Log.d(TAG, "saveChanges called")
         val updatedName = binding.fullNameET.text.toString()
         val updatedLocation = binding.locationET.text.toString()
-        val updatedDescription = binding.descriptionET.text.toString()
+        val updatedDescription = binding.editProfileDescriptionET.text.toString()
+
+        Log.d(
+            TAG,
+            "Updating with: Name=$updatedName, Location=$updatedLocation, Description=$updatedDescription"
+        )
 
         val currentProfile = userViewModel.loggedInUserData.value
         if (currentProfile == null) {
@@ -110,7 +127,8 @@ class EditProfileFragment : Fragment() {
                 )
             ) { success ->
                 if (success) {
-                    Toast.makeText(context, "Profile updated successfully", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Profile updated successfully", Toast.LENGTH_SHORT)
+                        .show()
                     findNavController().navigateUp()
                 } else {
                     Toast.makeText(context, "Failed to update profile", Toast.LENGTH_SHORT).show()

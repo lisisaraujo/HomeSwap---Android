@@ -2,16 +2,19 @@ package com.example.homeswap_android.utils
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import com.example.homeswap_android.R
 import com.google.android.gms.common.api.ApiException
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.PlacesClient
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -98,5 +101,24 @@ object Utils {
             onDateSelected(formattedDate)
         }
         picker.show(fragmentManager, picker.toString())
+    }
+
+     fun updateLikeButton(button: MaterialButton, liked: Boolean) {
+        val iconRes = if (liked) R.drawable.baseline_favorite_24 else R.drawable.favorite_48px
+        button.setIconResource(iconRes)
+
+        val backgroundTintList = if (liked) {
+            ColorStateList.valueOf(ContextCompat.getColor(button.context, R.color.liked_background_color))
+        } else {
+            ColorStateList.valueOf(ContextCompat.getColor(button.context, R.color.unliked_background_color))
+        }
+        button.backgroundTintList = backgroundTintList
+
+        val iconTint = if (liked) {
+            ColorStateList.valueOf(ContextCompat.getColor(button.context, R.color.liked_icon_color))
+        } else {
+            ColorStateList.valueOf(ContextCompat.getColor(button.context, R.color.unliked_icon_color))
+        }
+        button.iconTint = iconTint
     }
 }

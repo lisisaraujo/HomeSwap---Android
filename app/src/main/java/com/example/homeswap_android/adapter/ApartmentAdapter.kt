@@ -11,6 +11,7 @@ import coil.load
 import com.example.homeswap_android.R
 import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.databinding.ApartmentListItemBinding
+import com.example.homeswap_android.utils.Utils.updateLikeButton
 import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
 import com.google.android.material.button.MaterialButton
 
@@ -70,22 +71,4 @@ class ApartmentAdapter(
         notifyDataSetChanged()
     }
 
-    private fun updateLikeButton(button: MaterialButton, liked: Boolean) {
-        val iconRes = if (liked) R.drawable.baseline_favorite_24 else R.drawable.favorite_48px
-        button.setIconResource(iconRes)
-
-        val backgroundTintList = if (liked) {
-            ColorStateList.valueOf(ContextCompat.getColor(button.context, R.color.liked_background_color))
-        } else {
-            ColorStateList.valueOf(ContextCompat.getColor(button.context, R.color.unliked_background_color))
-        }
-        button.backgroundTintList = backgroundTintList
-
-        val iconTint = if (liked) {
-            ColorStateList.valueOf(ContextCompat.getColor(button.context, R.color.liked_icon_color))
-        } else {
-            ColorStateList.valueOf(ContextCompat.getColor(button.context, R.color.unliked_icon_color))
-        }
-        button.iconTint = iconTint
-    }
 }

@@ -1,6 +1,5 @@
 package com.example.homeswap_android.data.repositories
 
-import android.content.ContentValues.TAG
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -11,9 +10,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.tasks.await
 
 class UserRepository(
     private val auth: FirebaseAuth,
@@ -32,9 +33,10 @@ class UserRepository(
     val loggedInUser: LiveData<FirebaseUser?>
         get() = _loggedInUser
 
-    private val _loggedInUserData = MutableLiveData<UserData?>()
-    val loggedInUserData: LiveData<UserData?>
+    private val _loggedInUserData = MutableStateFlow<UserData?>(null)
+    val loggedInUserData: StateFlow<UserData?>
         get() = _loggedInUserData
+
 
     private val _selectedUserData = MutableLiveData<UserData?>()
     val selectedUserData: LiveData<UserData?>
@@ -86,13 +88,13 @@ class UserRepository(
             .addOnSuccessListener { documentSnapshot ->
                 if (documentSnapshot.exists()) {
                     val userData = documentSnapshot.toObject(UserData::class.java)
-                    _loggedInUserData.postValue(userData)
+                    _loggedInUserData.value = userData
                 } else {
-                    Log.d("FirebaseUsersViewModel", "User data not found for ID: $userID")
+                    Log.d(TAG, "User data not found for ID: $userID")
                 }
             }
             .addOnFailureListener { exception ->
-                Log.e("FirebaseUsersViewModel", "Error fetching user data: $exception")
+                Log.e(TAG, "Error fetching user data: $exception")
             }
     }
 
@@ -100,7 +102,7 @@ class UserRepository(
         userDataDocumentReference.value?.set(profile)
         userDataDocumentReference.value?.update("userID", userDataDocumentReference.value?.id)
         Log.d("NewProfile", profile.userID)
-        _loggedInUserData.postValue(profile)
+        _loggedInUserData.value = profile
     }
 
     fun login(email: String, password: String) {
@@ -161,31 +163,31 @@ class UserRepository(
 
     }
 
-    fun fetchUsers() {
-        usersCollectionReference.get()
-            .addOnSuccessListener { querySnapshot ->
-                val usersList = querySnapshot.toObjects(UserData::class.java)
-                _users.postValue(usersList)
-            }
-            .addOnFailureListener { exception ->
-                Log.e("FirebaseViewModel", "Error fetching users: $exception")
-            }
+    suspend fun fetchUsers(): List<UserData> {
+        return try {
+            val querySnapshot = usersCollectionReference.get().await()
+            querySnapshot.toObjects(UserData::class.java)
+        } catch (exception: Exception) {
+            Log.e("FirebaseViewModel", "Error fetching users: $exception")
+            emptyList()
+        }
     }
 
-    fun fetchUserData(userID: String) {
+    fun fetchSelectedUserData(userID: String) {
         usersCollectionReference.document(userID).get()
             .addOnSuccessListener { documentSnapshot ->
                 if (documentSnapshot.exists()) {
                     val userData = documentSnapshot.toObject(UserData::class.java)
                     _selectedUserData.postValue(userData)
                 } else {
-                    Log.d("FirebaseUsersViewModel", "User data not found for ID: $userID")
+                    Log.d(TAG, "User data not found for ID: $userID")
                 }
             }
             .addOnFailureListener { exception ->
-                Log.e("FirebaseUsersViewModel", "Error fetching user data: $exception")
+                Log.e(TAG, "Error fetching user data: $exception")
             }
     }
+
 
     fun uploadImage(uri: Uri) {
         val user = auth.currentUser
@@ -350,19 +352,16 @@ class UserRepository(
         }
     }
 
-    fun updateUserData(userId: String, updates: Map<String, Any>, onComplete: (Boolean) -> Unit) {
-        try {
-            getUserDocumentReference(userId).update(updates)
-                .addOnSuccessListener {
-                    onComplete(true)
-                }
-                .addOnFailureListener { exception ->
-                    Log.e(TAG, "Error updating user data", exception)
-                    onComplete(false)
-                }
+    suspend fun updateUserData(userId: String, updates: Map<String, Any>): Boolean {
+        return try {
+            firestore.collection("users").document(userId)
+                .update(updates)
+                .await()
+            refreshLoggedInUserData()
+            true
         } catch (e: Exception) {
-            Log.e(TAG, "Exception updating user data", e)
-            onComplete(false)
+            Log.e(TAG, "Error updating user data", e)
+            false
         }
     }
 
@@ -371,7 +370,7 @@ class UserRepository(
         Log.d(TAG, "Refreshing logged-in user data")
         auth.currentUser?.let { user ->
             Log.d(TAG, "Current user UID: ${user.uid}")
-            fetchUserData(user.uid)
+            getLoggedInUserData(user.uid)
         } ?: Log.d(TAG, "No current user")
     }
 

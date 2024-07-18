@@ -9,8 +9,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import coil.load
 import com.example.homeswap_android.R
 import com.example.homeswap_android.adapter.ReviewAdapter
@@ -18,12 +20,11 @@ import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.data.models.Review
 import com.example.homeswap_android.data.models.UserData
 import com.example.homeswap_android.databinding.FragmentMyProfileBinding
-import com.example.homeswap_android.ui.user.UserDetailsFragmentArgs
 import com.example.homeswap_android.ui.user.UserDetailsFragmentDirections
 import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 import com.example.homeswap_android.viewModels.ReviewsViewModel
-import com.google.firebase.firestore.toObject
+import kotlinx.coroutines.launch
 
 class MyProfileFragment : Fragment() {
     private lateinit var binding: FragmentMyProfileBinding
@@ -32,7 +33,6 @@ class MyProfileFragment : Fragment() {
 
     private val apartmentViewModel: FirebaseApartmentsViewModel by activityViewModels()
     private val reviewsViewModel: ReviewsViewModel by activityViewModels()
-    private val args: UserDetailsFragmentArgs by navArgs()
 
     private lateinit var apartmentAdapter: ApartmentAdapter
     private lateinit var reviewsAdapter: ReviewAdapter
@@ -58,25 +58,21 @@ class MyProfileFragment : Fragment() {
         reviewsAdapter = ReviewAdapter()
         binding.userDetailsReviewsRV.adapter = reviewsAdapter
 
-
-        usersViewModel.fetchUserData(loggedInUserID)
+        usersViewModel.fetchSelectedUserData(loggedInUserID)
         apartmentViewModel.getUserApartments(loggedInUserID)
 
-        usersViewModel.loggedInUserData.observe(viewLifecycleOwner) { user ->
-            if (user != null) {
-                binding.profileName.text = user.name
-                binding.profileImage.load(user.profilePic)
-                binding.locationTV.text = user.city
-                binding.rating.text = user.rating.toString()
-                binding.swapsCount.text = "${user.swaps} swaps"
-                binding.profileDescription.text = user.bioDescription
+        usersViewModel.fetchSelectedUserData(loggedInUserID)
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            usersViewModel.loggedInUserData.collect { user ->
+                if (user != null) {
+                    updateUI(user)
+                }
             }
         }
 
         val itemClickedCallback: (Apartment) -> Unit = { apartment ->
-            findNavController().navigate(
-                UserDetailsFragmentDirections.actionUserDetailsFragmentToApartmentDetailsFragment(apartment.apartmentID)
-            )
+            findNavController().navigate(R.id.myListingsFragment)
         }
 
         val onLikeClickListener: (Apartment) -> Unit = { apartment ->
@@ -86,10 +82,11 @@ class MyProfileFragment : Fragment() {
         apartmentAdapter = ApartmentAdapter(emptyList(), itemClickedCallback, onLikeClickListener)
         binding.userDetailsApartmentsListRV.adapter = apartmentAdapter
 
-        apartmentViewModel.getUserApartments(loggedInUserID).addSnapshotListener{ userApartments, _ ->
-            Log.d(TAG, userApartments.toString())
-            apartmentAdapter.updateApartments(userApartments!!.toObjects(Apartment::class.java))
-        }
+        apartmentViewModel.getUserApartments(loggedInUserID)
+            .addSnapshotListener { userApartments, _ ->
+                Log.d(TAG, userApartments.toString())
+                apartmentAdapter.updateApartments(userApartments!!.toObjects(Apartment::class.java))
+            }
 
 
         reviewsViewModel.getUserReviews(loggedInUserID)
@@ -106,7 +103,12 @@ class MyProfileFragment : Fragment() {
             }
 
         binding.userReviewsTV.setOnClickListener {
-            findNavController().navigate(UserDetailsFragmentDirections.actionUserDetailsFragmentToReviewsFragment(apartmentID = null, userID = loggedInUserID))
+            findNavController().navigate(
+                MyProfileFragmentDirections.actionUserProfileFragmentToReviewsFragment(
+                    apartmentID = null,
+                    userID = loggedInUserID
+                )
+            )
         }
 
 
@@ -118,6 +120,15 @@ class MyProfileFragment : Fragment() {
             findNavController().navigate(R.id.editProfileFragment)
         }
 
+    }
+
+    private fun updateUI(user: UserData) {
+        binding.profileName.text = user.name
+        binding.profileImage.load(user.profilePic)
+        binding.locationTV.text = user.city
+        binding.rating.text = user.rating.toString()
+        binding.swapsCount.text = "${user.swaps} swaps"
+        binding.myProfileDescriptionTV.text = user.bioDescription
     }
 
 }

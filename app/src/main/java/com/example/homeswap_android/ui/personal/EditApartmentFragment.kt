@@ -64,23 +64,16 @@ class EditApartmentFragment : Fragment() {
             updateUI(it)
         }
 
-        binding.editButton.setOnClickListener {
-            toggleEditMode(true)
-        }
 
         binding.saveChangesBTN.setOnClickListener {
-            toggleEditMode(false)
-        }
-
-        binding.submitChangesBTN.setOnClickListener {
             saveChanges()
         }
 
-        binding.apartmentDetailsBackBTN.setOnClickListener {
+        binding.toolbar.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
 
-        binding.changeImageFAB.setOnClickListener {
+        binding.updatePhotosBTN.setOnClickListener {
             pickMultipleMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
         apartmentViewModel.currentApartment.observe(viewLifecycleOwner) { apartment ->
@@ -98,22 +91,10 @@ class EditApartmentFragment : Fragment() {
     }
 
     private fun updateUI(apartment: Apartment) {
-        binding.apartmentTitleTV.text = apartment.title
-        binding.cityTV.text = apartment.city
+        binding.apartmentTitleTV.setText(apartment.title)
+        binding.updatedApartmentLocationTV.setText(apartment.city)
         binding.coverPictureIV.load(apartment.coverPicture)
 
-        binding.apartmentTitleET.setText(apartment.title)
-        binding.cityET.setText(apartment.city)
-    }
-
-    private fun toggleEditMode(isEditing: Boolean) {
-        binding.apartmentTitleTV.visibility = if (isEditing) View.GONE else View.VISIBLE
-        binding.cityTV.visibility = if (isEditing) View.GONE else View.VISIBLE
-        binding.editButton.visibility = if (isEditing) View.GONE else View.VISIBLE
-
-        binding.apartmentTitleTIL.visibility = if (isEditing) View.VISIBLE else View.GONE
-        binding.cityTIL.visibility = if (isEditing) View.VISIBLE else View.GONE
-        binding.saveChangesBTN.visibility = if (isEditing) View.VISIBLE else View.GONE
     }
 
     private fun displaySelectedImages() {
@@ -132,8 +113,9 @@ class EditApartmentFragment : Fragment() {
 
     private fun saveChanges() {
         Log.d(TAG, "saveChanges called")
-        val newTitle = binding.apartmentTitleET.text.toString()
-        val newCity = binding.cityET.text.toString()
+        val newTitle = binding.apartmentTitleTV.text.toString()
+        val newCity = binding.updatedApartmentLocationTV.text.toString()
+        val newDescription = binding.updatedApartmentDescriptionET.text.toString()
 
         Log.d(TAG, "New values - Title: $newTitle, City: $newCity")
 
@@ -146,7 +128,8 @@ class EditApartmentFragment : Fragment() {
 
         val updatedApartment = currentApartment.copy(
             title = newTitle,
-            city = newCity
+            city = newCity,
+            description = newDescription
         )
         Log.d(TAG, "Updating apartment: $updatedApartment")
 

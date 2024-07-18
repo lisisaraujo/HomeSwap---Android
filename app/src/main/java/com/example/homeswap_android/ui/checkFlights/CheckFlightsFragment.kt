@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import com.example.homeswap_android.R
 import com.example.homeswap_android.adapter.FlightAdapter
 import com.example.homeswap_android.databinding.FragmentCheckFlightsBinding
@@ -16,6 +17,7 @@ import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 import com.example.homeswap_android.viewModels.FlightsViewModel
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
+import kotlinx.coroutines.launch
 import java.util.Date
 
 class CheckFlightsFragment : Fragment() {
@@ -67,12 +69,20 @@ class CheckFlightsFragment : Fragment() {
         //google places API setup
         placesClient = Places.createClient(requireContext())
 
-        Utils.setupAutoCompleteTextView(requireContext(), binding.etOrigin, placesClient) { selectedPlace ->
+        Utils.setupAutoCompleteTextView(
+            requireContext(),
+            binding.etOrigin,
+            placesClient
+        ) { selectedPlace ->
             origin = selectedPlace.split(",").firstOrNull()?.trim()
             binding.etOrigin.setText(selectedPlace)
         }
 
-        Utils.setupAutoCompleteTextView(requireContext(), binding.etDestination, placesClient) { selectedPlace ->
+        Utils.setupAutoCompleteTextView(
+            requireContext(),
+            binding.etDestination,
+            placesClient
+        ) { selectedPlace ->
             destination = selectedPlace.split(",").firstOrNull()?.trim()
             binding.etDestination.setText(selectedPlace)
         }
@@ -120,12 +130,14 @@ class CheckFlightsFragment : Fragment() {
     }
 
     private fun observeViewModels() {
-        userViewModel.loggedInUserData.observe(viewLifecycleOwner) { user ->
-            userOrigin = user?.city
-            if (hasBundleData && !initialSearchDone) {
-                prefillFromApartmentSearch()
-                performSearchWithBundle()
-                initialSearchDone = true
+        viewLifecycleOwner.lifecycleScope.launch {
+            userViewModel.loggedInUserData.collect { user ->
+                userOrigin = user?.city
+                if (hasBundleData && !initialSearchDone) {
+                    prefillFromApartmentSearch()
+                    performSearchWithBundle()
+                    initialSearchDone = true
+                }
             }
         }
 
@@ -136,7 +148,8 @@ class CheckFlightsFragment : Fragment() {
                 val adapter = binding.rvFlightsList.adapter as? FlightAdapter
                 if (adapter == null) {
                     Log.d(TAG, "Creating new adapter")
-                    binding.rvFlightsList.adapter = FlightAdapter(response.data, response.dictionaries)
+                    binding.rvFlightsList.adapter =
+                        FlightAdapter(response.data, response.dictionaries)
                 } else {
                     Log.d(TAG, "Updating existing adapter")
                     adapter.updateFlights(response.data, response.dictionaries)
@@ -183,6 +196,7 @@ class CheckFlightsFragment : Fragment() {
             }
         }
     }
+
     private fun performSearchWithBundle() {
         destination = argsDestination
         departureDate = argsDepartureDateString?.let { Utils.dateFormat.parse(it) }
@@ -190,7 +204,13 @@ class CheckFlightsFragment : Fragment() {
         origin = userOrigin
 
         binding.etDestination.setText(destination)
-        binding.etDateRange.setText(getString(R.string.date_range, argsDepartureDateString, argsReturnDateString))
+        binding.etDateRange.setText(
+            getString(
+                R.string.date_range,
+                argsDepartureDateString,
+                argsReturnDateString
+            )
+        )
 
         selectedStartDate = departureDate
         selectedEndDate = returnDate
@@ -224,7 +244,13 @@ class CheckFlightsFragment : Fragment() {
         } else {
             val formattedStartDate = selectedStartDate?.let { Utils.dateFormat.format(it) }
             val formattedEndDate = selectedEndDate?.let { Utils.dateFormat.format(it) }
-            binding.etDateRange.setText(getString(R.string.date_range, formattedStartDate, formattedEndDate))
+            binding.etDateRange.setText(
+                getString(
+                    R.string.date_range,
+                    formattedStartDate,
+                    formattedEndDate
+                )
+            )
         }
     }
 
@@ -268,16 +294,29 @@ class CheckFlightsFragment : Fragment() {
             selectedStartDate != null && selectedEndDate != null -> {
                 val formattedStartDate = Utils.dateFormat.format(selectedStartDate!!)
                 val formattedEndDate = Utils.dateFormat.format(selectedEndDate!!)
-                binding.etDateRange.setText(getString(R.string.date_range, formattedStartDate, formattedEndDate))
+                binding.etDateRange.setText(
+                    getString(
+                        R.string.date_range,
+                        formattedStartDate,
+                        formattedEndDate
+                    )
+                )
             }
+
             selectedStartDate != null -> {
                 val formattedStartDate = Utils.dateFormat.format(selectedStartDate!!)
                 if (isOneWayTrip) {
                     binding.etDateRange.setText(formattedStartDate)
                 } else {
-                    binding.etDateRange.setText(getString(R.string.date_range_start_only, formattedStartDate))
+                    binding.etDateRange.setText(
+                        getString(
+                            R.string.date_range_start_only,
+                            formattedStartDate
+                        )
+                    )
                 }
             }
+
             else -> {
                 binding.etDateRange.setText("")
             }

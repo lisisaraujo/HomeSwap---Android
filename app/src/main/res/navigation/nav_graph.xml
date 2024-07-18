@@ -14,7 +14,11 @@
         android:id="@+id/userProfileFragment"
         android:name="com.example.homeswap_android.ui.personal.MyProfileFragment"
         android:label="fragment_user_profile"
-        tools:layout="@layout/fragment_my_profile" />
+        tools:layout="@layout/fragment_my_profile" >
+        <action
+            android:id="@+id/action_userProfileFragment_to_reviewsFragment"
+            app:destination="@id/reviewsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/usersListHomeFragment"
         android:name="com.example.homeswap_android.ui.home.UsersListHomeFragment"
@@ -130,6 +134,9 @@
         <action
             android:id="@+id/action_userDetailsFragment_to_reviewsFragment"
             app:destination="@id/reviewsFragment" />
+        <action
+            android:id="@+id/action_userDetailsFragment_to_myListingsFragment"
+            app:destination="@id/myListingsFragment" />
     </fragment>
     <fragment
         android:id="@+id/myListingsFragment"

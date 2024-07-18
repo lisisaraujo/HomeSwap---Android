@@ -45,24 +45,45 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="centerCrop"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintVertical_bias="0.0"
                         tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
-                    <ImageButton
+
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/apartmentDetailsLikeBTN"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:padding="10dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        app:iconSize="24dp"
+                        android:layout_margin="12dp"
+                        app:icon="@drawable/favorite_48px"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/favorite_48px"
-                        app:tint="@color/background" />
+                        app:iconGravity="textStart"
+                        app:iconPadding="0dp"
+                        app:cornerRadius="24dp"
+                        android:insetLeft="0dp"
+                        android:insetTop="0dp"
+                        android:insetRight="0dp"
+                        android:insetBottom="0dp"
+                        style="@style/Widget.Material3.Button.IconButton.Filled" />
+
+                    <ImageButton
+                        android:id="@+id/imageGalleryBTN"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="@color/unliked_background_color"
+                        android:padding="10dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="@+id/coverPictureIV"
+                        app:srcCompat="@drawable/photo_library_24px"
+                        app:tint="@color/primary" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -294,7 +315,7 @@
                 app:strokeWidth="0dp">
 
                 <TextView
-                    android:id="@+id/profileDescription"
+                    android:id="@+id/apartmentDetailsDescriptionTV"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="16dp" />

@@ -9,10 +9,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import coil.load
-import com.example.homeswap_android.R
 import com.example.homeswap_android.adapter.ReviewAdapter
 import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.data.models.Review
@@ -20,6 +20,7 @@ import com.example.homeswap_android.databinding.FragmentUserDetailsBinding
 import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 import com.example.homeswap_android.viewModels.ReviewsViewModel
+import kotlinx.coroutines.launch
 
 class UserDetailsFragment : Fragment() {
     private lateinit var binding: FragmentUserDetailsBinding
@@ -49,23 +50,27 @@ class UserDetailsFragment : Fragment() {
 
         val userID = args.userID!!
 
-        userViewModel.fetchUserData(userID)
+        userViewModel.fetchSelectedUserData(userID)
         apartmentViewModel.getUserApartments(userID)
 
-        userViewModel.loggedInUserData.observe(viewLifecycleOwner) { user ->
-            if (user != null) {
-                binding.profileName.text = user.name
-                binding.profileImage.load(user.profilePic)
-                binding.locationTV.text = user.city
-                binding.rating.text = user.rating.toString()
-                binding.swapsCount.text = "${user.swaps} swaps"
-                binding.profileDescription.text = user.bioDescription
+        viewLifecycleOwner.lifecycleScope.launch {
+            userViewModel.loggedInUserData.collect() { user ->
+                if (user != null) {
+                    binding.profileName.text = user.name
+                    binding.profileImage.load(user.profilePic)
+                    binding.locationTV.text = user.city
+                    binding.rating.text = user.rating.toString()
+                    binding.swapsCount.text = "${user.swaps} swaps"
+                    binding.userProfileDescriptionTV.text = user.bioDescription
+                }
             }
         }
 
         val itemClickedCallback: (Apartment) -> Unit = { apartment ->
             findNavController().navigate(
-                UserDetailsFragmentDirections.actionUserDetailsFragmentToApartmentDetailsFragment(apartment.apartmentID)
+                UserDetailsFragmentDirections.actionUserDetailsFragmentToApartmentDetailsFragment(
+                    apartment.apartmentID
+                )
             )
         }
 
@@ -76,13 +81,17 @@ class UserDetailsFragment : Fragment() {
         apartmentAdapter = ApartmentAdapter(emptyList(), itemClickedCallback, onLikeClickListener)
         binding.userDetailsApartmentsListRV.adapter = apartmentAdapter
 
-        apartmentViewModel.getUserApartments(userID).addSnapshotListener{ userApartments, _ ->
+        apartmentViewModel.getUserApartments(userID).addSnapshotListener { userApartments, _ ->
             Log.d(TAG, userApartments.toString())
             apartmentAdapter.updateApartments(userApartments!!.toObjects(Apartment::class.java))
         }
 
         binding.toolbar.setNavigationOnClickListener {
-            findNavController().navigate(UserDetailsFragmentDirections.actionUserDetailsFragmentToHomeFragment(isUsers = true))
+            findNavController().navigate(
+                UserDetailsFragmentDirections.actionUserDetailsFragmentToHomeFragment(
+                    isUsers = true
+                )
+            )
         }
 
 
@@ -100,7 +109,12 @@ class UserDetailsFragment : Fragment() {
             }
 
         binding.userReviewsTV.setOnClickListener {
-            findNavController().navigate(UserDetailsFragmentDirections.actionUserDetailsFragmentToReviewsFragment(apartmentID = null, userID = userID))
+            findNavController().navigate(
+                UserDetailsFragmentDirections.actionUserDetailsFragmentToReviewsFragment(
+                    apartmentID = null,
+                    userID = userID
+                )
+            )
         }
     }
 }
