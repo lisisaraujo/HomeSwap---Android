@@ -59,7 +59,7 @@ class SearchFragment : Fragment() {
         setupClearSearchButton()
         observeSearchCompletion()
 
-        binding.searchApartmentBackBTN.setOnClickListener {
+        binding.toolbar.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
     }
@@ -68,11 +68,11 @@ class SearchFragment : Fragment() {
         placesClient = Places.createClient(requireContext())
         Utils.setupAutoCompleteTextView(
             requireContext(),
-            binding.destinationInput,
+            binding.searchLocationET,
             placesClient
         ) { selectedPlace ->
             destination = selectedPlace.split(",").firstOrNull()?.trim()
-            binding.destinationInput.setText(selectedPlace)
+            binding.searchLocationET.setText(selectedPlace)
         }
     }
 
@@ -81,7 +81,7 @@ class SearchFragment : Fragment() {
             Utils.showDateRangePicker(parentFragmentManager) { start, end ->
                 startDate = start
                 endDate = end
-                binding.selectedDateRange.hint = "$start - $end"
+                binding.searchLocationET.hint = "$start - $end"
             }
         }
     }
@@ -171,9 +171,8 @@ class SearchFragment : Fragment() {
     }
 
     private fun clearSearch() {
-        binding.destinationInput.text?.clear()
+        binding.searchLocationET.text?.clear()
         binding.etDateRange.text?.clear()
-        binding.selectedDateRange.hint = "Select Dates"
         startDate = null
         endDate = null
         binding.typeOfHomeChipGroup.clearCheck()

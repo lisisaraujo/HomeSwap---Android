@@ -85,9 +85,6 @@ class UserDetailsFragment : Fragment() {
             findNavController().navigate(UserDetailsFragmentDirections.actionUserDetailsFragmentToHomeFragment(isUsers = true))
         }
 
-//        userViewModel.loggedInUser.observe(viewLifecycleOwner) {
-//            if (it == null) findNavController().navigate(R.id.loginFragment)
-//        }
 
         reviewsViewModel.getUserReviews(userID)
             .addSnapshotListener { userReviews, error ->

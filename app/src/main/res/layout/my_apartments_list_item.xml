@@ -20,7 +20,7 @@
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/apartmentImageIV"
+            android:id="@+id/coverPictureIV"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:scaleType="centerCrop"
@@ -41,7 +41,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/editButton"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/apartmentImageIV" />
+            app:layout_constraintTop_toBottomOf="@+id/coverPictureIV" />
 
         <TextView
             android:id="@+id/apartmentCityTV"
@@ -65,7 +65,7 @@
             android:padding="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/apartmentImageIV"
+            app:layout_constraintTop_toBottomOf="@+id/coverPictureIV"
             app:srcCompat="@drawable/edit_48px" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

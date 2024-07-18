@@ -51,7 +51,6 @@ class ApartmentRepository(
     private val _searchCompletedEvent = MutableSharedFlow<Unit>()
     val searchCompletedEvent: SharedFlow<Unit> = _searchCompletedEvent
 
-
     init {
         apartmentsCollectionReference.addSnapshotListener { value, error ->
             _apartments.postValue(value!!.toObjects(Apartment::class.java))
@@ -126,70 +125,82 @@ class ApartmentRepository(
         apartmentID: String,
         onComplete: (List<String>) -> Unit
     ) {
-        val user = auth.currentUser
-        if (user == null) {
+        val user = auth.currentUser ?: run {
             Log.e(TAG, "No user logged in")
             onComplete(emptyList())
             return
         }
 
-        uris.mapIndexed { index, uri ->
-            val imageRef =
-                storage.reference.child("images/${user.uid}/apartments/$apartmentID/image_$index")
-            imageRef.putFile(uri).addOnSuccessListener {
-                if (index == 0) {
-                    imageRef.downloadUrl.addOnSuccessListener { url ->
+        val uploadedUrls = mutableListOf<String>()
+        var uploadedCount = 0
+
+        uris.forEachIndexed { index, uri ->
+            val imageRef = storage.reference.child("images/${user.uid}/apartments/$apartmentID/image_$index")
+            imageRef.putFile(uri).addOnSuccessListener { taskSnapshot ->
+                taskSnapshot.storage.downloadUrl.addOnSuccessListener { downloadUrl ->
+                    uploadedUrls.add(downloadUrl.toString())
+                    uploadedCount++
+
+                    if (index == 0) {
                         apartmentsCollectionReference.document(apartmentID)
-                            .update("coverPicture", url)
+                            .update("coverPicture", downloadUrl.toString())
+                            .addOnSuccessListener {
+                                Log.d(TAG, "Cover picture updated: $downloadUrl")
+                            }
+                            .addOnFailureListener { e ->
+                                Log.e(TAG, "Failed to update cover picture", e)
+                            }
                     }
+
+                    if (uploadedCount == uris.size) {
+                        onComplete(uploadedUrls)
+                    }
+                }
+            }.addOnFailureListener { e ->
+                Log.e(TAG, "Failed to upload image", e)
+                uploadedCount++
+                if (uploadedCount == uris.size) {
+                    onComplete(uploadedUrls)
                 }
             }
         }
     }
 
+    fun addApartment(apartment: Apartment, imageUris: List<Uri>, onComplete: (Apartment?) -> Unit) {
+        val currentUser = auth.currentUser ?: run {
+            Log.e(TAG, "No user logged in")
+            onComplete(null)
+            return
+        }
 
-    fun addApartment(apartment: Apartment, onComplete: (Apartment?) -> Unit) {
-        val currentUser = auth.currentUser
-        currentUser.let {
-            val newApartment = apartment.copy(userID = currentUser!!.uid)
-            apartmentsCollectionReference.add(newApartment)
-                .addOnSuccessListener { documentReference ->
-                    val updatedApartment = newApartment.copy(apartmentID = documentReference.id)
-                    documentReference.update("apartmentID", documentReference.id)
-                        .addOnSuccessListener {
+        val newApartment = apartment.copy(userID = currentUser.uid)
+        apartmentsCollectionReference.add(newApartment)
+            .addOnSuccessListener { documentReference ->
+                val updatedApartment = newApartment.copy(apartmentID = documentReference.id)
+                documentReference.update("apartmentID", documentReference.id)
+                    .addOnSuccessListener {
+                        if (imageUris.isNotEmpty()) {
+                            uploadApartmentImages(imageUris, updatedApartment.apartmentID) { urls ->
+                                val finalApartment = urls.firstOrNull()
+                                    ?.let { url -> updatedApartment.copy(coverPicture = url) }
+                                _newAddedApartment.postValue(finalApartment)
+                                onComplete(finalApartment)
+                            }
+                        } else {
                             _newAddedApartment.postValue(updatedApartment)
                             onComplete(updatedApartment)
                         }
-                        .addOnFailureListener { exception ->
-                            Log.e(TAG, "Error updating apartment ID: ${exception.message}")
-                            onComplete(null)
-                        }
-                }
-                .addOnFailureListener { exception ->
-                    Log.e(TAG, "Error adding apartment: ${exception.message}")
-                    onComplete(null)
-                }
-        }
-
-    }
-
-
-    fun updateApartmentImageURLs(
-        apartmentID: String,
-        imageUrls: List<String>,
-        onComplete: (Boolean) -> Unit
-    ) {
-        apartmentsCollectionReference.document(apartmentID)
-            .update("pictures", FieldValue.arrayUnion(*imageUrls.toTypedArray()))
-            .addOnSuccessListener {
-                onComplete(true)
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.e(TAG, "Error updating apartment ID: ${exception.message}")
+                        onComplete(null)
+                    }
             }
             .addOnFailureListener { exception ->
-                Log.e(TAG, "Error updating apartment pictures: ${exception.message}")
-                onComplete(false)
+                Log.e(TAG, "Error adding apartment: ${exception.message}")
+                onComplete(null)
             }
     }
-
 
     private fun deleteApartmentPictures(
         apartmentID: String,

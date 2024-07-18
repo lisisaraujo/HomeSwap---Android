@@ -51,10 +51,10 @@ class RegisterProfileDetailsFragment : Fragment() {
 
         Utils.setupAutoCompleteTextView(
             requireContext(),
-            binding.etCity,
+            binding.registerProfileLocationET,
             placesClient
         ) { selectedLocation ->
-            binding.etCity.setText(selectedLocation)
+            binding.registerProfileLocationET.setText(selectedLocation)
         }
 
         usersViewModel.loggedInUser.observe(viewLifecycleOwner) { firebaseUser ->
@@ -77,13 +77,13 @@ class RegisterProfileDetailsFragment : Fragment() {
                                 }
                             }
                             //pre-fill city and country if available
-                            binding.etCity.setText(profile.city)
+                            binding.registerProfileLocationET.setText(profile.city)
                         }
                     }
                 }
 
                 binding.continueBTN.setOnClickListener {
-                    val city = binding.etCity.text.toString().trim()
+                    val city = binding.registerProfileLocationET.text.toString().trim()
                     val bioDescription = binding.bioDescriptionET.text.toString()
                     val currentDate = Utils.dateFormat.format(Date())
 

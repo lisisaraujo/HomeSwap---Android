@@ -9,14 +9,21 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        app:elevation="0dp">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            app:layout_scrollFlags="scroll|enterAlways"
             app:navigationIcon="@drawable/menu_24px"
-            app:title="My Profile" />
+            app:title="My Profile"
+            app:titleTextColor="@color/text"
+            app:titleTextAppearance="?attr/textAppearanceHeadline6"
+            android:background="@color/background" />
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView

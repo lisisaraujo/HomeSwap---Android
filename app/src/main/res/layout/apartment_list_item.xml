@@ -18,7 +18,7 @@
         android:layout_height="wrap_content">
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/apartmentImageIV"
+            android:id="@+id/coverPictureIV"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintDimensionRatio="16:9"
@@ -65,7 +65,7 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="12dp"
             android:textAppearance="?attr/textAppearanceTitleMedium"
-            app:layout_constraintTop_toBottomOf="@id/apartmentImageIV"
+            app:layout_constraintTop_toBottomOf="@id/coverPictureIV"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             tools:text="Apartment Title"/>

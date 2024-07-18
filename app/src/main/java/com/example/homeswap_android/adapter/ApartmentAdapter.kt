@@ -41,7 +41,7 @@ class ApartmentAdapter(
         binding.apartmentCityTV.text = apartment.city
 
         apartment.coverPicture.let {
-            binding.apartmentImageIV.load(apartment.coverPicture)
+            binding.coverPictureIV.load(apartment.coverPicture)
         }
 
         binding.apartmentListCV.setOnClickListener {

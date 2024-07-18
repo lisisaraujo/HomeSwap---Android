@@ -1,255 +1,274 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.search.SearchFragment">
+    android:paddingBottom="100dp"
+    android:clipToPadding="false"
+    tools:context=".ui.favorites.FavoritesFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="24dp">
+        android:layout_marginTop="24dp"
+        android:background="@android:color/transparent"
+        app:elevation="0dp">
 
-        <ImageButton
-            android:id="@+id/searchApartmentBackBTN"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Back"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/baseline_arrow_back_ios_new_24"
-            app:tint="?attr/colorOnSurface" />
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/background"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:navigationIcon="@drawable/arrow_back_24px"
+            app:title="Search"
+            app:titleTextAppearance="?attr/textAppearanceHeadline6"
+            app:titleTextColor="@color/text" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/cityInputLayout"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-            android:layout_width="0dp"
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:hint="Enter location"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/searchApartmentBackBTN"
-            app:endIconMode="clear_text">
+            android:orientation="vertical"
+            android:padding="16dp">
 
-            <AutoCompleteTextView
-                android:id="@+id/destinationInput"
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_city"
+                style="@style/CustomTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:textColor="@color/text"
-                />
+                android:layout_marginTop="16dp"
+                android:hint="Select Location"
+                app:layout_constraintTop_toBottomOf="@+id/profilePictureContainer"
+                >
 
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/selectedDateRange"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:hint="Select Dates"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cityInputLayout"
-            app:startIconDrawable="@drawable/baseline_calendar_month_24"
-            app:endIconMode="custom">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_date_range"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="false"
-                android:inputType="none"
-                android:paddingStart="48dp"/>
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/additionalFiltersCard"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/selectedDateRange">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:id="@+id/additionalFiltersHeader"
+                <AutoCompleteTextView
+                    android:textColor="@color/text"
+                    android:id="@+id/searchLocationET"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@color/background_card"
+                    android:inputType="text"
+                    android:paddingLeft="16dp"
+                    android:paddingTop="24dp"
+                    android:paddingBottom="16dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_date_range"
+                style="@style/CustomTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:startIconDrawable="@drawable/baseline_calendar_month_24"
+                app:endIconMode="custom">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_date_range"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:backgroundTint="@color/background_card"
                     android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="16dp">
+                    android:textColor="@color/text"
+                    android:focusable="false"
+                    android:inputType="none"
+                    android:paddingStart="48dp"
+                    android:paddingTop="24dp"
+                    android:paddingBottom="16dp"
+                    android:hint="Select Dates"/>
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Additional Filters"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-                    <ImageView
-                        android:id="@+id/additionalFiltersArrow"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:contentDescription="Expand"
-                        android:src="@drawable/baseline_arrow_drop_down_24" />
-                </LinearLayout>
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/additionalFiltersCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                app:strokeWidth="1dp"
+                android:backgroundTint="@color/background_card"
+                app:cardCornerRadius="30dp"
+               >
 
                 <LinearLayout
-                    android:id="@+id/additionalFiltersContent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp"
-                    android:visibility="gone">
+                    android:backgroundTint="@color/background_card">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Type of Home"
-                        android:textStyle="bold" />
-
-                    <com.google.android.material.chip.ChipGroup
-                        android:id="@+id/typeOfHomeChipGroup"
+                    <LinearLayout
+                        android:id="@+id/additionalFiltersHeader"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        app:singleSelection="true">
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:backgroundTint="@color/background_card"
+                        android:padding="20dp">
 
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/apartmentChip"
-                            style="@style/Widget.MaterialComponents.Chip.Filter"
-                            android:layout_width="wrap_content"
+                        <TextView
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="Apartment" />
+                            android:layout_weight="1"
+                            android:text="Additional Filters"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
 
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/houseChip"
-                            style="@style/Widget.MaterialComponents.Chip.Filter"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="House" />
+                        <ImageView
+                            android:id="@+id/additionalFiltersArrow"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:contentDescription="Expand"
+                            android:src="@drawable/baseline_arrow_drop_down_24" />
+                    </LinearLayout>
 
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/studioChip"
-                            style="@style/Widget.MaterialComponents.Chip.Filter"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Studio" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/villaChip"
-                            style="@style/Widget.MaterialComponents.Chip.Filter"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Villa" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/cottageChip"
-                            style="@style/Widget.MaterialComponents.Chip.Filter"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Cottage" />
-                    </com.google.android.material.chip.ChipGroup>
-
-                    <TextView
-                        android:id="@+id/roomsLabel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:text="Number of Rooms: 1" />
-
-                    <com.google.android.material.slider.Slider
-                        android:id="@+id/roomsSlider"
+                    <LinearLayout
+                        android:id="@+id/additionalFiltersContent"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:valueFrom="0"
-                        android:valueTo="10" />
+                        android:orientation="vertical"
+                        android:padding="16dp"
+                        android:visibility="gone">
 
-                    <TextView
-                        android:id="@+id/maxGuestsLabel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:text="Max Guests: 1" />
-
-                    <com.google.android.material.slider.Slider
-                        android:id="@+id/maxGuestsSlider"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:valueFrom="0"
-                        android:valueTo="20" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:text="Amenities"
-                        android:textStyle="bold" />
-
-                    <com.google.android.material.chip.ChipGroup
-                        android:id="@+id/amenitiesChipGroup"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp">
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/petsAllowedChip"
-                            style="@style/Widget.MaterialComponents.Chip.Filter"
+                        <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Pets Allowed" />
+                            android:text="Type of Home"
+                            android:textStyle="bold" />
 
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/homeOfficeChip"
-                            style="@style/Widget.MaterialComponents.Chip.Filter"
+                        <com.google.android.material.chip.ChipGroup
+                            android:id="@+id/typeOfHomeChipGroup"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            app:singleSelection="true">
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/apartmentChip"
+                                style="@style/Widget.MaterialComponents.Chip.Filter"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Apartment" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/houseChip"
+                                style="@style/Widget.MaterialComponents.Chip.Filter"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="House" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/studioChip"
+                                style="@style/Widget.MaterialComponents.Chip.Filter"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Studio" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/villaChip"
+                                style="@style/Widget.MaterialComponents.Chip.Filter"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Villa" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/cottageChip"
+                                style="@style/Widget.MaterialComponents.Chip.Filter"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Cottage" />
+                        </com.google.android.material.chip.ChipGroup>
+
+                        <TextView
+                            android:id="@+id/roomsLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Home Office" />
+                            android:layout_marginTop="16dp"
+                            android:text="Number of Rooms: 1" />
 
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/hasWifiChip"
-                            style="@style/Widget.MaterialComponents.Chip.Filter"
+                        <com.google.android.material.slider.Slider
+                            android:id="@+id/roomsSlider"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:valueFrom="0"
+                            android:valueTo="10" />
+
+                        <TextView
+                            android:id="@+id/maxGuestsLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Has Wifi" />
-                    </com.google.android.material.chip.ChipGroup>
+                            android:layout_marginTop="16dp"
+                            android:text="Max Guests: 1" />
+
+                        <com.google.android.material.slider.Slider
+                            android:id="@+id/maxGuestsSlider"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:valueFrom="0"
+                            android:valueTo="20" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:text="Amenities"
+                            android:textStyle="bold" />
+
+                        <com.google.android.material.chip.ChipGroup
+                            android:id="@+id/amenitiesChipGroup"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp">
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/petsAllowedChip"
+                                style="@style/Widget.MaterialComponents.Chip.Filter"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Pets Allowed" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/homeOfficeChip"
+                                style="@style/Widget.MaterialComponents.Chip.Filter"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Home Office" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/hasWifiChip"
+                                style="@style/Widget.MaterialComponents.Chip.Filter"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Has Wifi" />
+                        </com.google.android.material.chip.ChipGroup>
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+            </com.google.android.material.card.MaterialCardView>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/searchButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Search"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/additionalFiltersCard" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/searchButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Search" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/clearSearchButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Clear Search"
-            android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@id/searchButton"
-            app:layout_constraintStart_toStartOf="@id/searchButton"
-            style="@style/Widget.MaterialComponents.Button.TextButton" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/clearSearchButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Clear Search"
+                style="@style/Widget.MaterialComponents.Button.TextButton" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

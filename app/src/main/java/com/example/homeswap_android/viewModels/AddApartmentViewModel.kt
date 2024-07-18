@@ -1,5 +1,6 @@
 package com.example.homeswap_android.viewModels
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -24,9 +25,9 @@ class AddApartmentViewModel : ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
 
-    fun addApartment(apartment: Apartment) {
+    fun addApartment(apartment: Apartment, imageUris: List<Uri>) {
         _isLoading.value = true
-        apartmentRepository.addApartment(apartment) { updatedApartment ->
+        apartmentRepository.addApartment(apartment, imageUris) { updatedApartment ->
             if (updatedApartment != null) {
                 _isLoading.postValue(false)
                 apartmentRepository.getApartments()

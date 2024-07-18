@@ -85,11 +85,9 @@ class EditApartmentFragment : Fragment() {
         }
         apartmentViewModel.currentApartment.observe(viewLifecycleOwner) { apartment ->
             apartment?.let {
-                Log.d("NewApartment", apartment.apartmentID)
+                Log.d("CurrentApartment", apartment.apartmentID)
                 userID = apartment.userID
-                if (selectedImageUris.isNotEmpty()) {
-                    apartmentViewModel.uploadApartmentImages(selectedImageUris, it.apartmentID)
-                }
+                updateUI(apartment)
             }
         }
 
@@ -102,7 +100,7 @@ class EditApartmentFragment : Fragment() {
     private fun updateUI(apartment: Apartment) {
         binding.apartmentTitleTV.text = apartment.title
         binding.cityTV.text = apartment.city
-        binding.apartmentImageIV.load(apartment.coverPicture)
+        binding.coverPictureIV.load(apartment.coverPicture)
 
         binding.apartmentTitleET.setText(apartment.title)
         binding.cityET.setText(apartment.city)

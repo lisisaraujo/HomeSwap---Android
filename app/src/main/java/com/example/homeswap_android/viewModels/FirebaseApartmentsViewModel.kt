@@ -73,17 +73,6 @@ class FirebaseApartmentsViewModel : ViewModel() {
         return resultLiveData
     }
 
-    private fun updateApartmentWithImageUrls(apartmentID: String, imageUrls: List<String>) {
-        apartmentRepository.updateApartmentImageURLs(apartmentID, imageUrls) { success ->
-            if (success) {
-                Log.d(TAG, "Successfully updated apartment with new image URLs")
-
-            } else {
-                Log.e(TAG, "Failed to update apartment with new image URLs")
-            }
-        }
-    }
-
     fun deleteApartment(
         apartmentID: String,
         userID: String,

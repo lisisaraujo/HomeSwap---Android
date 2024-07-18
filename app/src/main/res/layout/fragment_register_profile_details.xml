@@ -95,7 +95,7 @@
 
                 <AutoCompleteTextView
                     android:textColor="@color/text"
-                    android:id="@+id/et_city"
+                    android:id="@+id/registerProfileLocationET"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/background_card"

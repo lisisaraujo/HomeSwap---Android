@@ -68,7 +68,7 @@ class ApartmentDetailsFragment : Fragment() {
                         "Available: ${apartment.startDate} to ${apartment.endDate}"
 
                     apartmentTitleTV.text = apartment.title
-                    apartmentImageIV.load(apartment.coverPicture)
+                    coverPictureIV.load(apartment.coverPicture)
                     Log.d(TAG, "ApartmentCoverPic: ${apartment.coverPicture}")
 
                     val userID = apartment.userID
@@ -132,7 +132,7 @@ class ApartmentDetailsFragment : Fragment() {
 
             }
 
-            binding.apartmentImageIV.setOnClickListener {
+            binding.coverPictureIV.setOnClickListener {
                 findNavController().navigate(
                     ApartmentDetailsFragmentDirections.actionApartmentDetailsFragmentToApartmentPicturesFragment(
                         apartmentID

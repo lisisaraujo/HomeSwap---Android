@@ -65,7 +65,6 @@ class AddApartmentBasicDetailsFragment : Fragment() {
 
             val currentDate = dateFormat.format(Date())
 
-
             val newApartment = Apartment(
                 title = title,
                 city = city,
@@ -76,22 +75,17 @@ class AddApartmentBasicDetailsFragment : Fragment() {
                 registrationDate = currentDate
             )
 
-            addApartmentViewModel.addApartment(newApartment)
+            addApartmentViewModel.addApartment(newApartment, selectedImageUris)
         }
 
         addApartmentViewModel.newAddedApartment.observe(viewLifecycleOwner) { newApartment ->
             newApartment?.let { apartment ->
                 Log.d("NewApartment", apartment.apartmentID)
-                if (selectedImageUris.isNotEmpty()) {
-                    apartmentsViewModel.uploadApartmentImages(
-                        selectedImageUris,
-                        apartment.apartmentID
-                    )
-                }
                 findNavController().navigate(R.id.addApartmentAdditionalDetailsFragment)
             }
-
         }
+
+
         binding.selectImagesButton.setOnClickListener {
             pickMultipleMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }

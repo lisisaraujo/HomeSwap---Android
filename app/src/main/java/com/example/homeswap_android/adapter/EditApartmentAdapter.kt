@@ -39,7 +39,7 @@ class EditApartmentAdapter(
         holder.binding.apartmentTitleTV.text = apartment.title
         holder.binding.apartmentCityTV.text = apartment.city
 
-        holder.binding.apartmentImageIV.load(apartment.coverPicture)
+        holder.binding.coverPictureIV.load(apartment.coverPicture)
 
         holder.binding.myApartmentsCV.setOnClickListener {
             Log.d("ClickedApartment", apartment.title)
