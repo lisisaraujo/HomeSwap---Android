@@ -223,6 +223,9 @@
             android:name="apartmentID"
             app:argType="string"
             app:nullable="true" />
+        <action
+            android:id="@+id/action_apartmentPicturesFragment_to_apartmentSinglePictureFragment"
+            app:destination="@id/apartmentSinglePictureFragment" />
     </fragment>
     <fragment
         android:id="@+id/reviewsFragment"
@@ -260,5 +263,20 @@
         android:name="com.example.homeswap_android.ui.personal.EditProfileFragment"
         android:label="EditProfileFragment"
         tools:layout="@layout/fragment_edit_profile"/>
+    <fragment
+        android:id="@+id/apartmentSinglePictureFragment"
+        android:name="com.example.homeswap_android.ui.apartment.ApartmentSinglePictureFragment"
+        android:label="ApartmentSinglePictureFragment"
+        tools:layout="@layout/fragment_apartment_single_picture">
+        <argument
+            android:name="initialPosition"
+            app:argType="integer" />
+        <argument
+            android:name="apartmentID"
+            app:argType="string" />
+        <argument
+            android:name="userID"
+            app:argType="string" />
+    </fragment>
 
 </navigation>

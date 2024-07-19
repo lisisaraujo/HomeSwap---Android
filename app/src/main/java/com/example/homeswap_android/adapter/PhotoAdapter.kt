@@ -5,13 +5,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.homeswap_android.R
-import com.example.homeswap_android.data.models.Apartment
-
 import com.example.homeswap_android.databinding.PhotoItemBinding
-import com.google.firebase.storage.StorageReference
 
 class PhotoAdapter(
-    private var photos: List<String>
+    private var photos: List<String>,
+    private val itemClickedCallback: (Int) -> Unit,
 ) : RecyclerView.Adapter<PhotoAdapter.MyViewHolder>() {
 
     class MyViewHolder(val binding: PhotoItemBinding) : RecyclerView.ViewHolder(binding.root)
@@ -29,6 +27,10 @@ class PhotoAdapter(
         holder.binding.photoIV.load(photo) {
             placeholder(R.drawable.ic_launcher_foreground)
             error(com.google.android.material.R.drawable.mtrl_ic_error)
+        }
+
+        holder.binding.photoIV.setOnClickListener {
+            itemClickedCallback(position)
         }
     }
 

@@ -1,60 +1,82 @@
 package com.example.homeswap_android.ui.apartment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.navArgs
+import coil.load
 import com.example.homeswap_android.R
+import com.example.homeswap_android.databinding.FragmentApartmentPicturesBinding
+import com.example.homeswap_android.databinding.FragmentApartmentSinglePictureBinding
+import com.example.homeswap_android.viewModels.ApartmentPicturesViewModel
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ApartmentSinglePictureFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ApartmentSinglePictureFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private lateinit var binding: FragmentApartmentSinglePictureBinding
+    private val args: ApartmentSinglePictureFragmentArgs by navArgs()
+    private val viewModel: ApartmentPicturesViewModel by activityViewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    val TAG = "ApartmentSinglePictureFragment"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_apartment_single_picture, container, false)
+    ): View {
+        binding = FragmentApartmentSinglePictureBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ApartmentSinglePictureFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ApartmentSinglePictureFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel.loadApartmentPictures(args.apartmentID, args.userID)
+
+        viewModel.apartmentPictures.observe(viewLifecycleOwner) { pictures ->
+            if (pictures.isNotEmpty()) {
+                viewModel.loadSinglePicture(args.initialPosition)
+            } else {
+                showNoImagesMessage()
             }
+        }
+
+        viewModel.currentPicture.observe(viewLifecycleOwner) { pictureUrl ->
+            if (pictureUrl != null) {
+                binding.singlePictureIV.load(pictureUrl) {
+                    placeholder(R.drawable.ic_launcher_foreground)
+                    error(R.drawable.ic_launcher_foreground)
+                }
+                updateButtonVisibility()
+                updateImageCounter()
+            }
+        }
+
+        binding.nextButton.setOnClickListener {
+            viewModel.loadNextPicture()
+        }
+
+        binding.previousButton.setOnClickListener {
+            viewModel.loadPrevPicture()
+        }
+    }
+
+    private fun updateButtonVisibility() {
+        binding.previousButton.isEnabled = viewModel.picturePosition > 0
+        binding.nextButton.isEnabled =
+            viewModel.picturePosition < (viewModel.apartmentPictures.value?.size ?: 0) - 1
+    }
+
+    private fun updateImageCounter() {
+        val totalImages = viewModel.apartmentPictures.value?.size ?: 0
+        binding.imageCounterText.text =
+            getString(R.string.image_counter, viewModel.picturePosition + 1, totalImages)
+    }
+
+    private fun showNoImagesMessage() {
+        binding.imageCounterText.text = getString(R.string.no_images)
+        binding.previousButton.isEnabled = false
+        binding.nextButton.isEnabled = false
     }
 }

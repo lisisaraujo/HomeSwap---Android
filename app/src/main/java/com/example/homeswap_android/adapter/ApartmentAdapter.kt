@@ -1,19 +1,10 @@
-import android.content.res.ColorStateList
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageButton
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import com.example.homeswap_android.R
 import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.databinding.ApartmentListItemBinding
 import com.example.homeswap_android.utils.Utils.updateLikeButton
-import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
-import com.google.android.material.button.MaterialButton
 
 class ApartmentAdapter(
     private var apartments: List<Apartment>,
