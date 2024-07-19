@@ -22,7 +22,7 @@ import java.util.Date
 
 class CheckFlightsFragment : Fragment() {
 
-    val TAG = "CheckFlightsFragment"
+    val TAG = "c"
 
     private lateinit var binding: FragmentCheckFlightsBinding
     private val flightViewModel: FlightsViewModel by activityViewModels()
@@ -65,6 +65,9 @@ class CheckFlightsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        handleBundleArgs()
+        observeViewModels()
 
         //google places API setup
         placesClient = Places.createClient(requireContext())
@@ -124,16 +127,15 @@ class CheckFlightsFragment : Fragment() {
             performSearch()
         }
 
-
-        observeViewModels()
-        handleBundleArgs()
     }
 
     private fun observeViewModels() {
         viewLifecycleOwner.lifecycleScope.launch {
             userViewModel.loggedInUserData.collect { user ->
-                userOrigin = user?.city
+
+                userOrigin = user?.city?.split(",")?.firstOrNull()?.trim()
                 if (hasBundleData && !initialSearchDone) {
+                    Log.d(TAG, "${hasBundleData}: city: ${user?.city}")
                     prefillFromApartmentSearch()
                     performSearchWithBundle()
                     initialSearchDone = true
@@ -185,14 +187,20 @@ class CheckFlightsFragment : Fragment() {
         binding.etOrigin.setText(userOrigin)
     }
 
+
     private fun handleBundleArgs() {
         arguments?.let { bundle ->
             argsDestination = bundle.getString("destination")
             argsDepartureDateString = bundle.getString("departureDate")
             argsReturnDateString = bundle.getString("returnDate")
+            Log.d(
+                TAG,
+                "Bundle args: $argsDestination, $argsDepartureDateString, $argsReturnDateString"
+            )
 
             if (!argsDestination.isNullOrEmpty() && !argsDepartureDateString.isNullOrEmpty() && !argsReturnDateString.isNullOrEmpty()) {
                 hasBundleData = true
+                performSearchWithBundle()
             }
         }
     }
@@ -257,12 +265,6 @@ class CheckFlightsFragment : Fragment() {
     private fun performSearch() {
         if (origin.isNullOrEmpty() || destination.isNullOrEmpty() || selectedStartDate == null) {
             showError("Please fill in all the fields.")
-            return
-        }
-
-        //check if the selected start date is in the past
-        if (selectedStartDate!!.before(Date())) {
-            showError("The selected start date is invalid. Please select a future date.")
             return
         }
 

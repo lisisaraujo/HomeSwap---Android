@@ -100,14 +100,13 @@ class ApartmentDetailsFragment : Fragment() {
                     if (user != null) {
                         binding.profileName.text = user.name
                         binding.profileImage.load(user.profilePic)
-                    }
-
-                    binding.userDetailsCV.setOnClickListener {
-                        findNavController().navigate(
-                            ApartmentDetailsFragmentDirections.actionApartmentDetailsFragmentToUserDetailsFragment(
-                                user!!.userID
+                        binding.userDetailsCV.setOnClickListener {
+                            findNavController().navigate(
+                                ApartmentDetailsFragmentDirections.actionApartmentDetailsFragmentToUserDetailsFragment(
+                                    user.userID
+                                )
                             )
-                        )
+                        }
                     }
                 }
             }

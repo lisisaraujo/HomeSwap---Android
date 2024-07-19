@@ -70,12 +70,6 @@ class SearchResultsFragment : Fragment() {
             displaySelectedFilters(filters)
         }
 
-        // Create a bundle
-        val bundle = Bundle()
-        bundle.putString("destination", args.destination)
-        bundle.putString("departureDate", args.departureDate)
-        bundle.putString("returnDate", args.returnDate)
-
         viewLifecycleOwner.lifecycleScope.launch {
             launch {
                 apartmentsViewModel.currentFilters.collectLatest { filters ->
@@ -100,9 +94,18 @@ class SearchResultsFragment : Fragment() {
             findNavController().navigateUp()
         }
 
+        // In SearchResultsFragment
+
         binding.flightSearchChip.setOnClickListener {
+
+            val bundle = Bundle().apply {
+                putString("destination", args.destination)
+                putString("departureDate", args.departureDate)
+                putString("returnDate", args.returnDate)
+            }
             findNavController().navigate(R.id.checkFlightsFragment, bundle)
         }
+
 
         apartmentsViewModel.loadingApartments.observe(viewLifecycleOwner) { isLoading ->
             updateLoadingState(isLoading)
