@@ -1,5 +1,6 @@
 package com.example.homeswap_android
 
+import InboxDialogFragment
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
@@ -59,10 +60,8 @@ class MainActivity : AppCompatActivity() {
             when (navDestination.id) {
                 R.id.homeFragment, R.id.checkFlightsFragment, R.id.userProfileFragment, R.id.favoritesFragment -> {
                     binding.bottomNavView.visibility = View.VISIBLE
-                    //update the selected item in bottom navigation
                     binding.bottomNavView.menu.findItem(navDestination.id)?.isChecked = true
                 }
-
                 else -> binding.bottomNavView.visibility = View.GONE
             }
 
@@ -72,16 +71,22 @@ class MainActivity : AppCompatActivity() {
             navController.navigate(R.id.loginFragment)
         }
 
-        //Listener der bei BottomNavigation Klick ausgeführt
         binding.bottomNavView.setOnItemSelectedListener { menuItem ->
-
-            //Rufe die Funktion auf die standardmäßig für die bottom navigation zuständig ist.
-            if (navController.currentDestination?.id != menuItem.itemId) {
-                navController.navigate(menuItem.itemId)
+            when (menuItem.itemId) {
+                R.id.inbox -> {
+                    showInboxDialog()
+                    false
+                }
+                else -> {
+                    if (navController.currentDestination?.id != menuItem.itemId) {
+                        navController.navigate(menuItem.itemId)
+                    }
+                    navController.popBackStack(menuItem.itemId, false)
+                    true
+                }
             }
-            navController.popBackStack(menuItem.itemId, false)
-            true
         }
+
 
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
@@ -107,7 +112,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-
     //Test Code, Warnungen können ignoriert werden da der Code vor Release entfernt wird
     @SuppressLint("RestrictedApi")
     fun logBackStack(navController: NavController) {
@@ -122,4 +126,10 @@ class MainActivity : AppCompatActivity() {
         }
         Log.d("Backstack", backStackString.toString())
     }
+
+    private fun showInboxDialog() {
+        val dialog = InboxDialogFragment()
+        dialog.show(supportFragmentManager, "InboxDialogFragment")
+    }
+
 }

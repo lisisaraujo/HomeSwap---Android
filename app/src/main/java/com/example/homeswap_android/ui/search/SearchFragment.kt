@@ -76,12 +76,13 @@ class SearchFragment : Fragment() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupDateRangePicker() {
         binding.etDateRange.setOnClickListener {
             Utils.showDateRangePicker(parentFragmentManager) { start, end ->
                 startDate = start
                 endDate = end
-                binding.searchLocationET.hint = "$start - $end"
+                binding.etDateRange.setText("$start - $end")
             }
         }
     }

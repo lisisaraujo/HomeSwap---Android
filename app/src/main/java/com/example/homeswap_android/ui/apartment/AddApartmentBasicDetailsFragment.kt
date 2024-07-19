@@ -115,7 +115,7 @@ class AddApartmentBasicDetailsFragment : Fragment() {
 
     private fun showDateRangePicker() {
         val picker =
-            MaterialDatePicker.Builder.dateRangePicker().setTheme(R.style.ThemeMaterialCalendar)
+            MaterialDatePicker.Builder.dateRangePicker()
                 .setTitleText("Select Dates").build()
 
         picker.show(parentFragmentManager, "dateRangePicker")

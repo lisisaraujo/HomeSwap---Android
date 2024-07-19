@@ -14,7 +14,7 @@
         android:icon="@drawable/connecting_airports_48px"
         android:title="flights" />
     <item
-        android:id="@+id/navigation_inbox"
+        android:id="@+id/inbox"
         android:icon="@drawable/mail_48px"
         android:title="inbox" />
     <item

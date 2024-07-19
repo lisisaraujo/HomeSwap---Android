@@ -260,10 +260,16 @@ class CheckFlightsFragment : Fragment() {
             return
         }
 
-        //clear existing flights
+        //check if the selected start date is in the past
+        if (selectedStartDate!!.before(Date())) {
+            showError("The selected start date is invalid. Please select a future date.")
+            return
+        }
+
+        // Clear existing flights
         flightViewModel.clearSearch()
 
-        //hide RV and "No results" TextView
+        // Hide RV and "No results" TextView
         binding.rvFlightsList.visibility = View.GONE
         binding.noResultsTV.visibility = View.GONE
 
@@ -288,6 +294,7 @@ class CheckFlightsFragment : Fragment() {
             )
         }
     }
+
 
     private fun updateDateRangeDisplay() {
         when {

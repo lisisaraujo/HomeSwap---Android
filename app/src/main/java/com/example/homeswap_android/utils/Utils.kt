@@ -15,6 +15,8 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -76,9 +78,17 @@ object Utils {
         fragmentManager: FragmentManager,
         onDateSelected: (String, String) -> Unit
     ) {
+        val today = MaterialDatePicker.todayInUtcMilliseconds()
+
+        val constraintsBuilder = CalendarConstraints.Builder()
+            .setStart(today)
+            .setValidator(DateValidatorPointForward.now())
+
         val picker = MaterialDatePicker.Builder.dateRangePicker()
-            .setTheme(R.style.ThemeMaterialCalendar)
             .setTitleText("Select Dates")
+            .setCalendarConstraints(constraintsBuilder.build())
+            .setTheme(R.style.ThemeMaterialCalendar)
+            .setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR)
             .build()
 
         picker.show(fragmentManager, "dateRangePicker")
@@ -89,11 +99,20 @@ object Utils {
         }
     }
 
+
+
     fun showDatePicker(fragmentManager: FragmentManager, onDateSelected: (String) -> Unit) {
-        val startDate = MaterialDatePicker.todayInUtcMilliseconds()
+        val today = MaterialDatePicker.todayInUtcMilliseconds()
+
+        // Create a CalendarConstraints.Builder to set the minimum date
+        val constraintsBuilder = CalendarConstraints.Builder()
+            .setValidator(DateValidatorPointForward.now()) // Disable past dates
+
         val builder = MaterialDatePicker.Builder.datePicker()
-            .setTitleText("Select date")
-            .setSelection(startDate)
+            .setSelection(today) //set today's date as the default selection
+            .setCalendarConstraints(constraintsBuilder.build())
+            .setTheme(R.style.ThemeMaterialCalendar)
+
 
         val picker = builder.build()
         picker.addOnPositiveButtonClickListener { selectedDate ->
@@ -102,6 +121,7 @@ object Utils {
         }
         picker.show(fragmentManager, picker.toString())
     }
+
 
      fun updateLikeButton(button: MaterialButton, liked: Boolean) {
         val iconRes = if (liked) R.drawable.baseline_favorite_24 else R.drawable.favorite_48px

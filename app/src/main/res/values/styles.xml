@@ -6,9 +6,34 @@
         <item name="boxStrokeWidth">2dp</item>
     </style>
 
-    <style name="ThemeMaterialCalendar" parent="ThemeOverlay.MaterialComponents.MaterialCalendar">
-        <item name="colorPrimary">@color/primary</item>
-    </style>
+
+        <!-- Base theme for the Material Calendar -->
+        <style name="ThemeMaterialCalendar" parent="ThemeOverlay.MaterialComponents.MaterialCalendar">
+            <item name="colorPrimary">@color/primary</item>
+            <item name="materialCalendarStyle">@style/CustomMaterialCalendar</item>
+            <item name="materialCalendarFullscreenTheme">@style/CustomMaterialCalendarFullscreen</item>
+        </style>
+
+        <!-- Custom Material Calendar Style -->
+        <style name="CustomMaterialCalendar" parent="Widget.MaterialComponents.MaterialCalendar">
+<!--            <item name="android:background">@drawable/rounded_calendar_background</item>-->
+            <item name="android:textColorPrimary">@color/text</item>
+            <item name="android:textColorSecondary">@color/text</item>
+            <item name="shapeAppearance">@style/ShapeAppearance.App.MediumComponent</item>
+        </style>
+
+        <!-- Custom Material Calendar Fullscreen Style -->
+        <style name="CustomMaterialCalendarFullscreen" parent="ThemeOverlay.MaterialComponents.MaterialCalendar.Fullscreen">
+<!--            <item name="android:background">@drawable/rounded_calendar_background</item>-->
+            <item name="android:textColorPrimary">@color/text</item>
+            <item name="android:textColorSecondary">@color/text</item>
+            <item name="shapeAppearance">@style/ShapeAppearance.App.MediumComponent</item>
+        </style>
+
+        <!-- Shape Appearance for rounded corners -->
+        <style name="ShapeAppearance.App.MediumComponent" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+            <item name="cornerSize">50dp</item>
+        </style>
 
     <style name="ShapeAppearanceOverlay.App.CornerSize10Percent" parent="">
         <item name="cornerSize">10%</item>
