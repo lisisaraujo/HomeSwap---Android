@@ -134,8 +134,7 @@
                     android:inputType="none"
                     android:paddingStart="48dp"
                     android:paddingTop="24dp"
-                    android:paddingBottom="16dp"
-                    android:hint="Select Dates"/>
+                    android:paddingBottom="16dp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 

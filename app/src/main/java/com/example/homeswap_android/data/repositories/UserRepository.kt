@@ -38,8 +38,8 @@ class UserRepository(
         get() = _loggedInUserData
 
 
-    private val _selectedUserData = MutableLiveData<UserData?>()
-    val selectedUserData: LiveData<UserData?>
+    private val _selectedUserData = MutableStateFlow<UserData?>(null)
+    val selectedUserData: StateFlow<UserData?>
         get() = _selectedUserData
 
     private val _users = MutableLiveData<List<UserData>>()
@@ -178,7 +178,7 @@ class UserRepository(
             .addOnSuccessListener { documentSnapshot ->
                 if (documentSnapshot.exists()) {
                     val userData = documentSnapshot.toObject(UserData::class.java)
-                    _selectedUserData.postValue(userData)
+                    _selectedUserData.value = userData
                 } else {
                     Log.d(TAG, "User data not found for ID: $userID")
                 }

@@ -96,7 +96,7 @@ class ApartmentDetailsFragment : Fragment() {
 
 
             viewLifecycleOwner.lifecycleScope.launch {
-                userViewModel.loggedInUserData.collect { user ->
+                userViewModel.selectedUserData.collect { user ->
                     if (user != null) {
                         binding.profileName.text = user.name
                         binding.profileImage.load(user.profilePic)
