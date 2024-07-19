@@ -40,18 +40,6 @@ class SettingsFragment : Fragment() {
             if (user == null) findNavController().navigate(R.id.loginFragment)
         }
 
-        binding.addApartmentBTN.setOnClickListener {
-            userViewModel.checkEmailVerificationStatus { isVerified ->
-                if (isVerified) {
-                    Log.d("SettingsFragment", "Navigating to addApartmentBasicDetailsFragment")
-                    findNavController().navigate(R.id.addApartmentBasicDetailsFragment)
-                } else {
-                    Log.d("SettingsFragment", "Showing email verification dialog")
-                    showEmailVerificationDialog()
-                }
-            }
-        }
-
         binding.deleteUserBTN.setOnClickListener {
             showDeleteAccountConfirmationDialog()
         }
@@ -60,33 +48,14 @@ class SettingsFragment : Fragment() {
             findNavController().navigate(R.id.myListingsFragment)
         }
 
-        binding.settingsBackBTN.setOnClickListener {
+        binding.toolbar.setNavigationOnClickListener {
             findNavController().navigate(R.id.homeFragment)
         }
 
-    }
+        binding.editProfileBTN.setOnClickListener {
+            findNavController().navigate(R.id.editProfileFragment)
+        }
 
-    private fun showEmailVerificationDialog() {
-        AlertDialog.Builder(requireContext())
-            .setTitle("Email Verification Required")
-            .setMessage("You need to verify your email before adding an apartment. Would you like to send a verification email?")
-            .setPositiveButton("Send Email") { _, _ ->
-                userViewModel.loggedInUser.value?.let { user ->
-                    userViewModel.sendEmailVerification(user)
-                    Toast.makeText(requireContext(), "Verification email sent", Toast.LENGTH_SHORT).show()
-                }
-            }
-            .setNegativeButton("Cancel", null)
-            .setNeutralButton("I've verified my email") { _, _ ->
-                userViewModel.checkEmailVerificationStatus { isVerified ->
-                    if (isVerified) {
-                        findNavController().navigate(R.id.addApartmentBasicDetailsFragment)
-                    } else {
-                        Toast.makeText(requireContext(), "Email not verified yet. Please try again later.", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-            .show()
     }
 
 

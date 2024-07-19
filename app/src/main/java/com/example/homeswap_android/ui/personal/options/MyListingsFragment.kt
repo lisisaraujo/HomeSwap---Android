@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -59,5 +61,40 @@ class MyListingsFragment : Fragment() {
 
         }
 
+        binding.fabAddListing.setOnClickListener {
+            userViewModel.checkEmailVerificationStatus { isVerified ->
+                if (isVerified) {
+                    Log.d("SettingsFragment", "Navigating to addApartmentBasicDetailsFragment")
+                    findNavController().navigate(R.id.addApartmentBasicDetailsFragment)
+                } else {
+                    Log.d("SettingsFragment", "Showing email verification dialog")
+                    showEmailVerificationDialog()
+                }
+            }
+        }
+
     }
+    private fun showEmailVerificationDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Email Verification Required")
+            .setMessage("You need to verify your email before adding an apartment. Would you like to send a verification email?")
+            .setPositiveButton("Send Email") { _, _ ->
+                userViewModel.loggedInUser.value?.let { user ->
+                    userViewModel.sendEmailVerification(user)
+                    Toast.makeText(requireContext(), "Verification email sent", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .setNeutralButton("I've verified my email") { _, _ ->
+                userViewModel.checkEmailVerificationStatus { isVerified ->
+                    if (isVerified) {
+                        findNavController().navigate(R.id.addApartmentBasicDetailsFragment)
+                    } else {
+                        Toast.makeText(requireContext(), "Email not verified yet. Please try again later.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            .show()
+    }
+
 }

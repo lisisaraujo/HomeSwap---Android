@@ -116,9 +116,6 @@ class MyProfileFragment : Fragment() {
             findNavController().navigate(R.id.settingsFragment)
         }
 
-        binding.editProfileTV.setOnClickListener {
-            findNavController().navigate(R.id.editProfileFragment)
-        }
 
     }
 

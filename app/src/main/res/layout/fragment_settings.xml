@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,112 +8,116 @@
     android:background="@color/background"
     tools:context=".ui.personal.SettingsFragment">
 
-    <ImageButton
-        android:id="@+id/settingsBackBTN"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/transparent"
-        android:src="@drawable/arrow_back_24px"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/optionsCardView"
+    <!-- AppBarLayout with Toolbar -->
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        app:cardCornerRadius="30dp"
-        android:backgroundTint="@color/background_card"
-        app:strokeWidth="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/settingsBackBTN">
+        android:background="@color/background">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/background"
+            app:navigationIcon="@drawable/arrow_back_24px"
+            app:title="Settings"
+            app:titleTextColor="@color/text"
+            app:titleTextAppearance="?attr/textAppearanceHeadline6" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- Content -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
-            android:id="@+id/ll_personal_options"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/editProfileBTN"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/optionsCardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Edit Profile"
-                android:textAlignment="textStart"
-                app:icon="@drawable/account_circle_48px"
-                app:iconGravity="start" />
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="30dp"
+                android:backgroundTint="@color/background_card"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:id="@+id/ll_personal_options"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/editProfileBTN"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Edit Profile"
+                        android:textAlignment="textStart"
+                        app:icon="@drawable/account_circle_48px"
+                        app:iconGravity="start" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_settings"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Settings"
+                        android:textAlignment="textStart"
+                        android:enabled="false"
+                        app:icon="@drawable/settings_48px"
+                        app:iconGravity="start" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_my_swaps"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="My Swaps"
+                        android:textAlignment="textStart"
+                        android:enabled="false"
+                        app:icon="@drawable/partner_exchange_48px"
+                        app:iconGravity="start" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_my_listings"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="My Listings"
+                        android:textAlignment="textStart"
+                        app:icon="@drawable/menu_24px"
+                        app:iconGravity="start" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_settings"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:id="@+id/logoutBTN"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Settings"
-                android:textAlignment="textStart"
-                app:icon="@drawable/settings_48px"
-                app:iconGravity="start" />
+                android:layout_marginTop="16dp"
+                android:text="Logout"
+                app:cornerRadius="24dp" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_my_swaps"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:id="@+id/deleteUserBTN"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="My Swaps"
-                android:textAlignment="textStart"
-                app:icon="@drawable/partner_exchange_48px"
-                app:iconGravity="start" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_my_listings"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="My Listings"
-                android:textAlignment="textStart"
-                app:icon="@drawable/menu_24px"
-                app:iconGravity="start" />
+                android:layout_marginTop="16dp"
+                android:text="Delete Account"
+                android:textColor="@color/design_default_color_error"
+                app:cornerRadius="24dp"
+                app:strokeColor="@color/design_default_color_error" />
 
         </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/addApartmentBTN"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="Add Apartment"
-        app:cornerRadius="24dp"
-        app:layout_constraintEnd_toEndOf="@+id/optionsCardView"
-        app:layout_constraintStart_toStartOf="@+id/optionsCardView"
-        app:layout_constraintTop_toBottomOf="@+id/optionsCardView" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/logoutBTN"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Logout"
-        app:cornerRadius="24dp"
-        app:layout_constraintEnd_toEndOf="@+id/addApartmentBTN"
-        app:layout_constraintStart_toStartOf="@+id/addApartmentBTN"
-        app:layout_constraintTop_toBottomOf="@+id/addApartmentBTN" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/deleteUserBTN"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Delete Account"
-        android:textColor="@color/design_default_color_error"
-        app:cornerRadius="24dp"
-        app:layout_constraintEnd_toEndOf="@+id/logoutBTN"
-        app:layout_constraintStart_toStartOf="@+id/logoutBTN"
-        app:layout_constraintTop_toBottomOf="@+id/logoutBTN"
-        app:strokeColor="@color/design_default_color_error" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

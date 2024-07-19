@@ -20,7 +20,6 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:layout_scrollFlags="scroll|enterAlways"
-            app:navigationIcon="@drawable/arrow_back_24px"
             app:title="Favorites"
             app:titleTextColor="@color/text"
             app:titleTextAppearance="?attr/textAppearanceHeadline6"
