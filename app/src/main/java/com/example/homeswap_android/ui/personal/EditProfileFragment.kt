@@ -21,7 +21,6 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
 import kotlinx.coroutines.launch
 
-
 class EditProfileFragment : Fragment() {
     val TAG = "EditProfileFragment"
 
@@ -29,10 +28,15 @@ class EditProfileFragment : Fragment() {
     private val userViewModel: FirebaseUsersViewModel by activityViewModels()
     private lateinit var placesClient: PlacesClient
 
-
     private val getContent =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             uri?.let {
+                Toast.makeText(
+                    context,
+                    "Loading new profile picture...",
+                    Toast.LENGTH_LONG
+                ).show()
+
                 userViewModel.updateProfilePicture(it) { success ->
                     if (success) {
                         Toast.makeText(

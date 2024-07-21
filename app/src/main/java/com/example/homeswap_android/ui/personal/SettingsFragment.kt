@@ -51,7 +51,7 @@ class SettingsFragment : Fragment() {
         }
 
         binding.toolbar.setNavigationOnClickListener {
-            findNavController().navigate(R.id.homeFragment)
+            findNavController().navigateUp()
         }
 
         binding.editProfileBTN.setOnClickListener {

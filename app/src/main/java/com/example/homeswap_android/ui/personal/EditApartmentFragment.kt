@@ -16,11 +16,11 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import coil.load
-import com.example.homeswap_android.R
 import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.databinding.FragmentEditApartmentBinding
+import com.example.homeswap_android.utils.Utils.showDateRangePicker
 import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
-import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
+
 
 
 class EditApartmentFragment : Fragment() {
@@ -85,6 +85,15 @@ class EditApartmentFragment : Fragment() {
         }
 
 
+        binding.selectDatesBTN.setOnClickListener {
+            showDateRangePicker(parentFragmentManager) { start, end ->
+                selectedStartDate = start
+                selectedEndDate = end
+                binding.selectedDateRange.setText("$start - $end")
+            }
+        }
+
+
         binding.deleteApartmentBTN.setOnClickListener {
             showDeleteApartmentConfirmationDialog(apartmentID, userID)
         }
@@ -116,6 +125,8 @@ class EditApartmentFragment : Fragment() {
         val newTitle = binding.apartmentTitleTV.text.toString()
         val newCity = binding.updatedApartmentLocationTV.text.toString()
         val newDescription = binding.updatedApartmentDescriptionET.text.toString()
+        val newStartDate = selectedStartDate
+        val newEndDate = selectedEndDate
 
         Log.d(TAG, "New values - Title: $newTitle, City: $newCity")
 
@@ -129,7 +140,9 @@ class EditApartmentFragment : Fragment() {
         val updatedApartment = currentApartment.copy(
             title = newTitle,
             city = newCity,
-            description = newDescription
+            description = newDescription,
+            startDate = newStartDate,
+            endDate = newEndDate,
         )
         Log.d(TAG, "Updating apartment: $updatedApartment")
 

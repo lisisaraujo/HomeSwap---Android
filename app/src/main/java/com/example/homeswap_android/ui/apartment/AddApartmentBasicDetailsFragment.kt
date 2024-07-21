@@ -118,7 +118,11 @@ class AddApartmentBasicDetailsFragment : Fragment() {
         }
 
         binding.selectDatesBTN.setOnClickListener {
-            showDateRangePicker()
+            Utils.showDateRangePicker(parentFragmentManager) { start, end ->
+                selectedStartDate = start
+                selectedEndDate = end
+                binding.selectedDateRange.setText("$start - $end")
+            }
         }
 
         binding.toolbar.setNavigationOnClickListener {
@@ -138,24 +142,5 @@ class AddApartmentBasicDetailsFragment : Fragment() {
             }
             binding.selectedImagesContainer.addView(imageView)
         }
-    }
-
-    private fun showDateRangePicker() {
-        val picker =
-            MaterialDatePicker.Builder.dateRangePicker()
-                .setTitleText("Select Dates").build()
-
-        picker.show(parentFragmentManager, "dateRangePicker")
-        picker.addOnPositiveButtonClickListener { selection ->
-            selectedStartDate = convertTimeToDate(selection.first)
-            selectedEndDate = convertTimeToDate(selection.second)
-            binding.selectedDateRange.text = "$selectedStartDate - $selectedEndDate"
-        }
-    }
-
-    private fun convertTimeToDate(time: Long): String {
-        val utc = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-        utc.timeInMillis = time
-        return dateFormat.format(utc.time)
     }
 }

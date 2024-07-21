@@ -136,7 +136,7 @@ class SearchResultsFragment : Fragment() {
     private fun displaySelectedFilters(filters: Map<String, Any?>) {
         filters.forEach { (key, value) ->
             when (key) {
-                "typeOfHome", "rooms", "maxGuests" -> addFilterChip(key, value.toString())
+                "typeOfHome", "rooms", "maxGuests" , "city" -> addFilterChip(key, value.toString())
                 "amenities" -> (value as? List<String>)?.forEach { amenity -> addFilterChip(amenity, amenity) }
             }
         }
@@ -168,7 +168,7 @@ class SearchResultsFragment : Fragment() {
         binding.selectedFiltersChipGroup.removeAllViews()
         filters.forEach { (key, value) ->
             when (key) {
-                "typeOfHome", "rooms", "maxGuests" -> addFilterChip(key, value.toString())
+                "typeOfHome", "rooms", "maxGuests" , "city" -> addFilterChip(key, value.toString())
                 "amenities" -> (value as? List<String>)?.forEach { amenity -> addFilterChip(amenity, amenity) }
             }
         }
