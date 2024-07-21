@@ -9,9 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import coil.load
 import com.example.homeswap_android.R
@@ -20,7 +18,6 @@ import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.data.models.Review
 import com.example.homeswap_android.data.models.UserData
 import com.example.homeswap_android.databinding.FragmentMyProfileBinding
-import com.example.homeswap_android.ui.user.UserDetailsFragmentDirections
 import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 import com.example.homeswap_android.viewModels.ReviewsViewModel
@@ -67,6 +64,10 @@ class MyProfileFragment : Fragment() {
             usersViewModel.loggedInUserData.collect { user ->
                 if (user != null) {
                     updateUI(user)
+                    val userOrigin = user.location.split(",").firstOrNull()?.trim()
+
+                    Log.d(TAG, "user origin split: $userOrigin")
+                    Log.d(TAG, "user location: ${user.location}")
                 }
             }
         }
@@ -122,7 +123,7 @@ class MyProfileFragment : Fragment() {
     private fun updateUI(user: UserData) {
         binding.profileName.text = user.name
         binding.profileImage.load(user.profilePic)
-        binding.locationTV.text = user.city
+        binding.locationTV.text = user.location
         binding.rating.text = user.rating.toString()
         binding.swapsCount.text = "${user.swaps} swaps"
         binding.myProfileDescriptionTV.text = user.bioDescription

@@ -58,6 +58,7 @@ class ApartmentDetailsFragment : Fragment() {
 
         apartmentViewModel.getApartment(apartmentID).observe(viewLifecycleOwner) { apartment ->
             if (apartment != null) {
+                Log.d(TAG, apartment.city)
                 with(binding) {
                     typeOfHomeTV.text =
                         (if (apartment.typeOfHome.isNotBlank()) apartment.typeOfHome else "-").toString()
@@ -100,6 +101,9 @@ class ApartmentDetailsFragment : Fragment() {
                     if (user != null) {
                         binding.profileName.text = user.name
                         binding.profileImage.load(user.profilePic)
+                        binding.userLocationTV.text = user.location
+                        binding.swapsCount.text = user.swaps.toString()
+                        binding.userDetailsRatingsTV.text = user.rating.toString()
                         binding.userDetailsCV.setOnClickListener {
                             findNavController().navigate(
                                 ApartmentDetailsFragmentDirections.actionApartmentDetailsFragmentToUserDetailsFragment(

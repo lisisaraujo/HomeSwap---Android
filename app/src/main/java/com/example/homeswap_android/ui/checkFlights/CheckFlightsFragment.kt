@@ -22,7 +22,7 @@ import java.util.Date
 
 class CheckFlightsFragment : Fragment() {
 
-    val TAG = "c"
+    val TAG = "CheckFlightsFragment"
 
     private lateinit var binding: FragmentCheckFlightsBinding
     private val flightViewModel: FlightsViewModel by activityViewModels()
@@ -77,7 +77,8 @@ class CheckFlightsFragment : Fragment() {
             binding.etOrigin,
             placesClient
         ) { selectedPlace ->
-            origin = selectedPlace.split(",").firstOrNull()?.trim()
+            origin = selectedPlace.split(",").firstOrNull()?.trim().toString()
+            Log.d(TAG, origin.toString())
             binding.etOrigin.setText(selectedPlace)
         }
 
@@ -133,9 +134,9 @@ class CheckFlightsFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             userViewModel.loggedInUserData.collect { user ->
 
-                userOrigin = user?.city?.split(",")?.firstOrNull()?.trim()
+                userOrigin = user?.location?.split(",")?.firstOrNull()?.trim()
                 if (hasBundleData && !initialSearchDone) {
-                    Log.d(TAG, "${hasBundleData}: city: ${user?.city}")
+                    Log.d(TAG, "${hasBundleData}: city: ${user?.location}")
                     prefillFromApartmentSearch()
                     performSearchWithBundle()
                     initialSearchDone = true
@@ -210,6 +211,7 @@ class CheckFlightsFragment : Fragment() {
         departureDate = argsDepartureDateString?.let { Utils.dateFormat.parse(it) }
         returnDate = argsReturnDateString?.let { Utils.dateFormat.parse(it) }
         origin = userOrigin
+        Log.d(TAG, "BundleSearch: $origin")
 
         binding.etDestination.setText(destination)
         binding.etDateRange.setText(
@@ -263,7 +265,7 @@ class CheckFlightsFragment : Fragment() {
     }
 
     private fun performSearch() {
-        if (origin.isNullOrEmpty() || destination.isNullOrEmpty() || selectedStartDate == null) {
+        if (!hasBundleData && origin.isNullOrEmpty() || destination.isNullOrEmpty() || selectedStartDate == null) {
             showError("Please fill in all the fields.")
             return
         }

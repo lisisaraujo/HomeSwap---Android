@@ -19,9 +19,12 @@ import coil.load
 import com.example.homeswap_android.R
 import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.databinding.FragmentAddApartmentBasicDetailsBinding
+import com.example.homeswap_android.utils.Utils
 import com.example.homeswap_android.utils.Utils.dateFormat
 import com.example.homeswap_android.viewModels.AddApartmentViewModel
 import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.util.Date
 
@@ -29,10 +32,12 @@ class AddApartmentBasicDetailsFragment : Fragment() {
 
     private lateinit var binding: FragmentAddApartmentBasicDetailsBinding
     private val addApartmentViewModel: AddApartmentViewModel by activityViewModels()
-    private val apartmentsViewModel: FirebaseApartmentsViewModel by activityViewModels()
     private var selectedImageUris: List<Uri> = emptyList()
     private var selectedStartDate: String = ""
     private var selectedEndDate: String = ""
+
+    private lateinit var placesClient: PlacesClient
+
 
     // Define the photo picker launcher for multiple images
     private val pickMultipleMedia =
@@ -56,9 +61,31 @@ class AddApartmentBasicDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        placesClient = Places.createClient(requireContext())
+
+
+        Utils.setupAutoCompleteTextView(
+            requireContext(),
+            binding.apartmentLocationET,
+            placesClient
+        ) { selectedLocation ->
+            binding.apartmentLocationET.setText(selectedLocation)
+        }
+
+        Utils.setupAutoCompleteTextView(
+            requireContext(),
+            binding.addressET,
+            placesClient
+        ) { selectedLocation ->
+            binding.addressET.setText(selectedLocation)
+        }
+
+
+
+
         binding.submitApartmentBTN.setOnClickListener {
-            val title = binding.titleET.text.toString()
-            val city = binding.cityET.text.toString()
+            val title = binding.addApartmentTitleET.text.toString()
+            val city = binding.apartmentLocationET.text.toString()
             val address = binding.addressET.text.toString()
             val startDate = selectedStartDate
             val endDate = selectedEndDate

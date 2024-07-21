@@ -17,6 +17,8 @@ import com.example.homeswap_android.R
 import com.example.homeswap_android.data.models.UserData
 import com.example.homeswap_android.databinding.FragmentEditProfileBinding
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.net.PlacesClient
 import kotlinx.coroutines.launch
 
 
@@ -25,6 +27,8 @@ class EditProfileFragment : Fragment() {
 
     private lateinit var binding: FragmentEditProfileBinding
     private val userViewModel: FirebaseUsersViewModel by activityViewModels()
+    private lateinit var placesClient: PlacesClient
+
 
     private val getContent =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
@@ -59,12 +63,14 @@ class EditProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //google places API setup
+        placesClient = Places.createClient(requireContext())
 
         viewLifecycleOwner.lifecycleScope.launch {
             userViewModel.loggedInUserData.collect { userData ->
                 userData?.let { user ->
                     binding.fullNameET.setText(user.name)
-                    binding.locationET.setText(user.city)
+                    binding.locationET.setText(user.location)
                     binding.editProfileDescriptionET.setText(user.bioDescription)
                 }
             }
@@ -122,7 +128,7 @@ class EditProfileFragment : Fragment() {
             userViewModel.updateUserData(
                 currentProfile.userID, mapOf(
                     "name" to updatedName,
-                    "city" to updatedLocation,
+                    "location" to updatedLocation,
                     "bioDescription" to updatedDescription,
                 )
             ) { success ->

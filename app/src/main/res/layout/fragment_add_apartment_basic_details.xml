@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -21,8 +20,8 @@
             android:layout_height="?attr/actionBarSize"
             app:navigationIcon="@drawable/arrow_back_24px"
             app:title="Add Apartment"
-            app:titleTextColor="@color/text"
-            app:titleCentered="true" />
+            app:titleCentered="true"
+            app:titleTextColor="@color/text" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -37,94 +36,76 @@
             android:padding="16dp">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/titleInputLayout"
-                android:layout_width="0dp"
+                android:id="@+id/addApartmentTitleTIL"
+                style="@style/CustomTextInputLayout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                app:boxBackgroundColor="@color/background_card"
-                app:boxCornerRadiusBottomEnd="30dp"
-                app:boxCornerRadiusBottomStart="30dp"
-                app:boxCornerRadiusTopEnd="30dp"
-                app:boxCornerRadiusTopStart="30dp"
-                app:boxStrokeWidth="0dp"
+                android:hint="Title"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/titleET"
+                    android:id="@+id/addApartmentTitleET"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Title" />
+                    android:backgroundTint="@color/background_card"
+                    android:inputType="text"
+                    android:paddingLeft="16dp"
+                    android:paddingTop="24dp"
+                    android:paddingBottom="16dp"
+                    android:textColor="@color/text" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/countryInputLayout"
-                android:layout_width="0dp"
+                android:id="@+id/apartmentLocationIL"
+                style="@style/CustomTextInputLayout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                app:boxBackgroundColor="@color/background_card"
-                app:boxCornerRadiusBottomEnd="30dp"
-                app:boxCornerRadiusBottomStart="30dp"
-                app:boxCornerRadiusTopEnd="30dp"
-                app:boxCornerRadiusTopStart="30dp"
-                app:boxStrokeWidth="0dp"
+                android:hint="Location"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/titleInputLayout">
+                app:layout_constraintTop_toBottomOf="@+id/addApartmentTitleTIL">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/countryET"
+                <AutoCompleteTextView
+                    android:id="@+id/apartmentLocationET"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Country" />
+                    android:backgroundTint="@color/background_card"
+                    android:inputType="text"
+                    android:paddingLeft="16dp"
+                    android:paddingTop="24dp"
+                    android:paddingBottom="16dp"
+                    android:textColor="@color/text" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/cityInputLayout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:boxBackgroundColor="@color/background_card"
-                app:boxCornerRadiusBottomEnd="30dp"
-                app:boxCornerRadiusBottomStart="30dp"
-                app:boxCornerRadiusTopEnd="30dp"
-                app:boxCornerRadiusTopStart="30dp"
-                app:boxStrokeWidth="0dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/countryInputLayout">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/cityET"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="City" />
-
-            </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/addressInputLayout"
-                android:layout_width="0dp"
+                style="@style/CustomTextInputLayout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                app:boxBackgroundColor="@color/background_card"
-                app:boxCornerRadiusBottomEnd="30dp"
-                app:boxCornerRadiusBottomStart="30dp"
-                app:boxCornerRadiusTopEnd="30dp"
-                app:boxCornerRadiusTopStart="30dp"
-                app:boxStrokeWidth="0dp"
+                android:hint="Address"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cityInputLayout">
+                app:layout_constraintTop_toBottomOf="@+id/apartmentLocationIL">
 
-                <com.google.android.material.textfield.TextInputEditText
+                <AutoCompleteTextView
                     android:id="@+id/addressET"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Address" />
+                    android:backgroundTint="@color/background_card"
+                    android:inputType="text"
+                    android:paddingLeft="16dp"
+                    android:paddingTop="24dp"
+                    android:paddingBottom="16dp"
+                    android:textColor="@color/text" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -133,12 +114,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                app:cardCornerRadius="30dp"
                 android:backgroundTint="@color/background_card"
-                app:strokeWidth="0dp"
+                app:cardCornerRadius="30dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/addressInputLayout">
+                app:layout_constraintTop_toBottomOf="@+id/addressInputLayout"
+                app:strokeWidth="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -150,9 +131,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Available Dates"
-                        android:textStyle="bold"
                         android:textAppearance="?attr/textAppearanceSubtitle1"
-                        android:textColor="?attr/colorOnSurface" />
+                        android:textColor="?attr/colorOnSurface"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/selectedDateRange"
@@ -165,13 +146,13 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/selectDatesBTN"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        app:cornerRadius="30dp"
                         android:text="Select Dates"
-                        app:icon="@drawable/baseline_calendar_month_24"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+                        app:cornerRadius="30dp"
+                        app:icon="@drawable/baseline_calendar_month_24" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -180,12 +161,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                app:cardCornerRadius="30dp"
                 android:backgroundTint="@color/background_card"
-                app:strokeWidth="0dp"
+                app:cardCornerRadius="30dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/dateRangeCard">
+                app:layout_constraintTop_toBottomOf="@+id/dateRangeCard"
+                app:strokeWidth="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -197,19 +178,19 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Apartment Images"
-                        android:textStyle="bold"
                         android:textAppearance="?attr/textAppearanceSubtitle1"
-                        android:textColor="?attr/colorOnSurface" />
+                        android:textColor="?attr/colorOnSurface"
+                        android:textStyle="bold" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/selectImagesButton"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        app:cornerRadius="30dp"
                         android:text="Select Images"
-                        app:icon="@drawable/add_a_photo_24px"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+                        app:cornerRadius="30dp"
+                        app:icon="@drawable/add_a_photo_24px" />
 
                     <HorizontalScrollView
                         android:id="@+id/imagesScrollView"

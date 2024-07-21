@@ -1,11 +1,8 @@
 package com.example.homeswap_android.data.models
 
-import java.util.Date
-
 data class UserData (
    var userID: String = "",
-//   val country: String = "",
-   val city: String = "",
+   val location: String = "",
    val name: String = "",
    val email: String = "",
    var profilePic: String = "",

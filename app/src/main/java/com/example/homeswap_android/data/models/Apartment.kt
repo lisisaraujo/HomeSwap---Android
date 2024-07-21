@@ -5,7 +5,6 @@ data class Apartment(
     var apartmentID: String = "",
     val userID: String = "",
     val title: String = "",
-    val countryLower: String = "",
     val city: String = "",
     val cityLower: String = "",
     val address: String = "",

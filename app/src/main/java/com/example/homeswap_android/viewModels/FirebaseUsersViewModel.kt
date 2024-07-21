@@ -83,8 +83,9 @@ class FirebaseUsersViewModel : ViewModel() {
         userRepository.uploadImage(uri)
     }
 
-    fun deleteUser() {
-        userRepository.deleteUser()
+
+    fun deleteUser(password: String, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
+        userRepository.deleteUser(password, onSuccess, onFailure)
     }
 
     fun checkEmailVerificationStatus(onComplete: (Boolean) -> Unit) {

@@ -56,9 +56,10 @@ class UserDetailsFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             userViewModel.selectedUserData.collect { user ->
                 if (user != null) {
+                    Log.d(TAG, user.location)
                     binding.profileName.text = user.name
                     binding.profileImage.load(user.profilePic)
-                    binding.locationTV.text = user.city
+                    binding.locationTV.text = user.location
                     binding.rating.text = user.rating.toString()
                     binding.swapsCount.text = "${user.swaps} swaps"
                     binding.userProfileDescriptionTV.text = user.bioDescription

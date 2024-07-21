@@ -77,20 +77,20 @@ class RegisterProfileDetailsFragment : Fragment() {
                                 }
                             }
                             //pre-fill city and country if available
-                            binding.registerProfileLocationET.setText(profile.city)
+                            binding.registerProfileLocationET.setText(profile.location)
                         }
                     }
                 }
 
                 binding.continueBTN.setOnClickListener {
-                    val city = binding.registerProfileLocationET.text.toString().trim()
+                    val location = binding.registerProfileLocationET.text.toString().trim()
                     val bioDescription = binding.bioDescriptionET.text.toString()
                     val currentDate = Utils.dateFormat.format(Date())
 
-                    if (city.isNotEmpty()) {
+                    if (location.isNotEmpty()) {
                         usersViewModel.updateUserData(
                             userID, mapOf(
-                                "city" to city,
+                                "location" to location,
                                 "bioDescription" to bioDescription,
                                 "registrationDate" to currentDate
 
