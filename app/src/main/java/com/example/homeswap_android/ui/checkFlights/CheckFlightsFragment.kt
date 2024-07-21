@@ -40,7 +40,7 @@ class CheckFlightsFragment : Fragment() {
     private var departureDate: Date? = null
     private var returnDate: Date? = null
     private var hasBundleData = false
-    private var initialSearchDone = false
+//    private var initialSearchDone = false
 
     private var isOneWayTrip = false
 
@@ -77,8 +77,7 @@ class CheckFlightsFragment : Fragment() {
             binding.etOrigin,
             placesClient
         ) { selectedPlace ->
-            origin = selectedPlace.split(",").firstOrNull()?.trim().toString()
-            Log.d(TAG, origin.toString())
+            origin = selectedPlace.split(",").firstOrNull()?.trim()
             binding.etOrigin.setText(selectedPlace)
         }
 
@@ -99,7 +98,6 @@ class CheckFlightsFragment : Fragment() {
             }
         }
 
-        Log.d(TAG, initialSearchDone.toString())
 
         binding.toggleTripType.addOnButtonCheckedListener { group, checkedId, isChecked ->
             if (isChecked) {
@@ -133,13 +131,13 @@ class CheckFlightsFragment : Fragment() {
     private fun observeViewModels() {
         viewLifecycleOwner.lifecycleScope.launch {
             userViewModel.loggedInUserData.collect { user ->
-
                 userOrigin = user?.location?.split(",")?.firstOrNull()?.trim()
-                if (hasBundleData && !initialSearchDone) {
-                    Log.d(TAG, "${hasBundleData}: city: ${user?.location}")
+
+                if (hasBundleData) {
+                    origin = userOrigin
+                    Log.d(TAG, "${hasBundleData}: city: $origin")
                     prefillFromApartmentSearch()
                     performSearchWithBundle()
-                    initialSearchDone = true
                 }
             }
         }
@@ -211,7 +209,6 @@ class CheckFlightsFragment : Fragment() {
         departureDate = argsDepartureDateString?.let { Utils.dateFormat.parse(it) }
         returnDate = argsReturnDateString?.let { Utils.dateFormat.parse(it) }
         origin = userOrigin
-        Log.d(TAG, "BundleSearch: $origin")
 
         binding.etDestination.setText(destination)
         binding.etDateRange.setText(
@@ -265,7 +262,7 @@ class CheckFlightsFragment : Fragment() {
     }
 
     private fun performSearch() {
-        if (!hasBundleData && origin.isNullOrEmpty() || destination.isNullOrEmpty() || selectedStartDate == null) {
+        if ((origin.isNullOrEmpty()) || destination.isNullOrEmpty() || selectedStartDate == null) {
             showError("Please fill in all the fields.")
             return
         }
