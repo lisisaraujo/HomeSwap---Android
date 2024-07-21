@@ -12,15 +12,17 @@ import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import coil.load
+import com.example.homeswap_android.R
 import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.databinding.FragmentEditApartmentBinding
+import com.example.homeswap_android.utils.Utils
 import com.example.homeswap_android.utils.Utils.showDateRangePicker
 import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
-
 
 
 class EditApartmentFragment : Fragment() {
@@ -109,7 +111,7 @@ class EditApartmentFragment : Fragment() {
     private fun displaySelectedImages() {
         binding.selectedImagesContainer.removeAllViews()
 
-        // Add new images
+        //add images
         selectedImageUris.forEach { uri ->
             val imageView = ImageView(requireContext()).apply {
                 layoutParams = ViewGroup.LayoutParams(200, 200)
@@ -121,7 +123,10 @@ class EditApartmentFragment : Fragment() {
     }
 
     private fun saveChanges() {
-        Log.d(TAG, "saveChanges called")
+        val loadingOverlay = view?.findViewById<ConstraintLayout>(R.id.loading_overlay)
+
+        Utils.showLoadingOverlay(loadingOverlay!!)
+
         val newTitle = binding.apartmentTitleTV.text.toString()
         val newCity = binding.updatedApartmentLocationTV.text.toString()
         val newDescription = binding.updatedApartmentDescriptionET.text.toString()
@@ -160,6 +165,7 @@ class EditApartmentFragment : Fragment() {
             } else {
                 Log.d(TAG, "No new images to upload")
             }
+            Utils.hideLoadingOverlay(loadingOverlay)
             Toast.makeText(context, "Changes saved successfully", Toast.LENGTH_SHORT).show()
             findNavController().navigateUp()
         } catch (e: Exception) {
@@ -174,11 +180,13 @@ class EditApartmentFragment : Fragment() {
 
 
     private fun showDeleteApartmentConfirmationDialog(apartmentID: String, userID: String) {
+        val loadingOverlay = view?.findViewById<ConstraintLayout>(R.id.loading_overlay)
+
         AlertDialog.Builder(requireContext())
             .setTitle("Delete Apartment")
             .setMessage("Are you sure you want to delete this apartment listing? This is a permanent action and all data related to this listing will be permanently deleted.")
             .setPositiveButton("Delete") { _, _ ->
-                Toast.makeText(context, "Deleting apartment...", Toast.LENGTH_SHORT).show()
+                Utils.showLoadingOverlay(loadingOverlay!!)
                 apartmentViewModel.deleteApartment(
                     apartmentID,
                     userID,
@@ -188,6 +196,7 @@ class EditApartmentFragment : Fragment() {
                             "Apartment deleted successfully",
                             Toast.LENGTH_SHORT
                         ).show()
+                        Utils.hideLoadingOverlay(loadingOverlay!!)
                         findNavController().navigateUp()
                     },
                     onFailure = { exception ->

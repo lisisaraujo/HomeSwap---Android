@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -65,7 +66,6 @@ class CheckFlightsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         handleBundleArgs()
         observeViewModels()
 
@@ -143,9 +143,8 @@ class CheckFlightsFragment : Fragment() {
         }
 
         flightViewModel.flightResponse.observe(viewLifecycleOwner) { response ->
-            Log.d(TAG, "Received flight response: ${response?.data?.size} flights")
-            updateLoadingState(false)
             if (response != null && response.data.isNotEmpty()) {
+                updateLoadingState(false)
                 val adapter = binding.rvFlightsList.adapter as? FlightAdapter
                 if (adapter == null) {
                     Log.d(TAG, "Creating new adapter")
@@ -168,10 +167,6 @@ class CheckFlightsFragment : Fragment() {
 
         flightViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             updateLoadingState(isLoading)
-            if (isLoading) {
-                binding.rvFlightsList.visibility = View.GONE
-                binding.noResultsTV.visibility = View.GONE
-            }
         }
 
         flightViewModel.errorMessage.observe(viewLifecycleOwner) { error ->
@@ -332,13 +327,14 @@ class CheckFlightsFragment : Fragment() {
     }
 
     private fun updateLoadingState(isLoading: Boolean) {
-        binding.loadingSpinner.visibility = if (isLoading) View.VISIBLE else View.GONE
+        val loadingOverlay = view?.findViewById<ConstraintLayout>(R.id.loading_overlay)
+
+        if (isLoading) Utils.showLoadingOverlay(loadingOverlay!!)
+        else Utils.hideLoadingOverlay(loadingOverlay!!)
     }
 
     private fun showError(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_LONG).show()
     }
-
-
 }
 

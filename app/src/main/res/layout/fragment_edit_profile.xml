@@ -113,4 +113,6 @@
         android:text="Save Changes"
         app:icon="@drawable/baseline_check_24"/>
 
+    <include layout="@layout/loading_overlay" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

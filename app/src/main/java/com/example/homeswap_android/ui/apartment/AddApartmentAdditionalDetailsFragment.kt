@@ -63,6 +63,7 @@ class AddApartmentAdditionalDetailsFragment : Fragment() {
 
             }
         }
+
     }
 
     private fun setupTypeOfHomeDropdown() {

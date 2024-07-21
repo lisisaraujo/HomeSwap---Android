@@ -6,8 +6,10 @@ import android.content.res.ColorStateList
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import com.example.homeswap_android.R
@@ -140,5 +142,13 @@ object Utils {
             ColorStateList.valueOf(ContextCompat.getColor(button.context, R.color.unliked_icon_color))
         }
         button.iconTint = iconTint
+    }
+
+ fun showLoadingOverlay(loadingOverlay: ConstraintLayout) {
+        loadingOverlay.visibility = View.VISIBLE
+    }
+
+fun hideLoadingOverlay(loadingOverlay: ConstraintLayout) {
+        loadingOverlay.visibility = View.GONE
     }
 }

@@ -1,5 +1,6 @@
 package com.example.homeswap_android.ui.apartment
 
+import android.annotation.SuppressLint
 import android.icu.util.Calendar
 import android.icu.util.TimeZone
 import android.net.Uri
@@ -8,10 +9,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.graphics.vector.addPathNodes
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -21,6 +24,8 @@ import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.databinding.FragmentAddApartmentBasicDetailsBinding
 import com.example.homeswap_android.utils.Utils
 import com.example.homeswap_android.utils.Utils.dateFormat
+import com.example.homeswap_android.utils.Utils.hideLoadingOverlay
+import com.example.homeswap_android.utils.Utils.showLoadingOverlay
 import com.example.homeswap_android.viewModels.AddApartmentViewModel
 import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
 import com.google.android.libraries.places.api.Places
@@ -58,10 +63,12 @@ class AddApartmentBasicDetailsFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         placesClient = Places.createClient(requireContext())
+
+        val loadingOverlay = view.findViewById<ConstraintLayout>(R.id.loading_overlay)
 
 
         Utils.setupAutoCompleteTextView(
@@ -84,6 +91,7 @@ class AddApartmentBasicDetailsFragment : Fragment() {
 
 
         binding.submitApartmentBTN.setOnClickListener {
+            showLoadingOverlay(loadingOverlay!!)
             val title = binding.addApartmentTitleET.text.toString()
             val city = binding.apartmentLocationET.text.toString()
             val address = binding.addressET.text.toString()
@@ -108,6 +116,7 @@ class AddApartmentBasicDetailsFragment : Fragment() {
         addApartmentViewModel.newAddedApartment.observe(viewLifecycleOwner) { newApartment ->
             newApartment?.let { apartment ->
                 Log.d("NewApartment", apartment.apartmentID)
+                hideLoadingOverlay(loadingOverlay!!)
                 findNavController().navigate(R.id.addApartmentAdditionalDetailsFragment)
             }
         }
@@ -143,4 +152,5 @@ class AddApartmentBasicDetailsFragment : Fragment() {
             binding.selectedImagesContainer.addView(imageView)
         }
     }
+
 }

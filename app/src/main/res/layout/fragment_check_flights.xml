@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -16,8 +15,8 @@
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
-            app:contentScrim="@color/background">
+            app:contentScrim="@color/background"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -29,144 +28,144 @@
                 app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="1.0">
 
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin"
-                app:title="Flights Search"
-                app:titleTextColor="@color/text"
-                app:titleTextAppearance="?attr/textAppearanceHeadline6"
-                android:background="@color/background" />
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@color/background"
+                    app:layout_collapseMode="pin"
+                    app:title="Flights Search"
+                    app:titleTextAppearance="?attr/textAppearanceHeadline6"
+                    app:titleTextColor="@color/text" />
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/searchCardView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:backgroundTint="@color/background_card"
-                app:cardCornerRadius="16dp"
-                app:layout_collapseMode="parallax">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp">
-
-                <com.google.android.material.button.MaterialButtonToggleGroup
-                    android:id="@+id/toggleTripType"
-                    android:layout_width="wrap_content"
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/searchCardView"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cornerRadius="50dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:selectionRequired="true"
-                    app:singleSelection="true">
+                    android:layout_margin="16dp"
+                    android:backgroundTint="@color/background_card"
+                    app:cardCornerRadius="16dp"
+                    app:layout_collapseMode="parallax">
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnRoundTrip"
-                        style="?attr/materialButtonOutlinedStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:text="Round Trip" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnOneWay"
-                        style="?attr/materialButtonOutlinedStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="One Way" />
-                </com.google.android.material.button.MaterialButtonToggleGroup>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_search_flights"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="Search Flights"
-                    app:cornerRadius="50dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/til_date_range" />
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_origin"
-                    style="@style/CustomTextInputLayout"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:hint="Origin"
-                    app:endIconMode="clear_text"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/toggleTripType">
-
-                    <AutoCompleteTextView
-                        android:id="@+id/et_origin"
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:backgroundTint="@color/background"
-                        android:inputType="text"
-                        android:paddingLeft="16dp"
-                        android:paddingTop="24dp"
-                        android:paddingBottom="16dp"
-                        android:textColor="@color/text" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:padding="16dp">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_destination"
-                    style="@style/CustomTextInputLayout"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:hint="Destination"
-                    app:endIconMode="clear_text"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/til_origin">
+                        <com.google.android.material.button.MaterialButtonToggleGroup
+                            android:id="@+id/toggleTripType"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:cornerRadius="50dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:selectionRequired="true"
+                            app:singleSelection="true">
 
-                    <AutoCompleteTextView
-                        android:id="@+id/et_destination"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="@color/background"
-                        android:inputType="text"
-                        android:paddingLeft="16dp"
-                        android:paddingTop="24dp"
-                        android:paddingBottom="16dp"
-                        android:textColor="@color/text" />
-                </com.google.android.material.textfield.TextInputLayout>
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnRoundTrip"
+                                style="?attr/materialButtonOutlinedStyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:checked="true"
+                                android:text="Round Trip" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_date_range"
-                    style="@style/CustomTextInputLayout"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    app:endIconMode="custom"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/til_destination"
-                    app:startIconDrawable="@drawable/baseline_calendar_month_24">
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnOneWay"
+                                style="?attr/materialButtonOutlinedStyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="One Way" />
+                        </com.google.android.material.button.MaterialButtonToggleGroup>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_date_range"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="@color/background"
-                        android:clickable="true"
-                        android:focusable="false"
-                        android:inputType="none"
-                        android:paddingStart="48dp"
-                        android:paddingTop="24dp"
-                        android:paddingBottom="16dp"
-                        android:textColor="@color/text" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_search_flights"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:text="Search Flights"
+                            app:cornerRadius="50dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/til_date_range" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-            </com.google.android.material.card.MaterialCardView>
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/til_origin"
+                            style="@style/CustomTextInputLayout"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:hint="Origin"
+                            app:endIconMode="clear_text"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/toggleTripType">
+
+                            <AutoCompleteTextView
+                                android:id="@+id/et_origin"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:backgroundTint="@color/background"
+                                android:inputType="text"
+                                android:paddingLeft="16dp"
+                                android:paddingTop="24dp"
+                                android:paddingBottom="16dp"
+                                android:textColor="@color/text" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/til_destination"
+                            style="@style/CustomTextInputLayout"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:hint="Destination"
+                            app:endIconMode="clear_text"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/til_origin">
+
+                            <AutoCompleteTextView
+                                android:id="@+id/et_destination"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:backgroundTint="@color/background"
+                                android:inputType="text"
+                                android:paddingLeft="16dp"
+                                android:paddingTop="24dp"
+                                android:paddingBottom="16dp"
+                                android:textColor="@color/text" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/til_date_range"
+                            style="@style/CustomTextInputLayout"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            app:endIconMode="custom"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/til_destination"
+                            app:startIconDrawable="@drawable/baseline_calendar_month_24">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/et_date_range"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:backgroundTint="@color/background"
+                                android:clickable="true"
+                                android:focusable="false"
+                                android:inputType="none"
+                                android:paddingStart="48dp"
+                                android:paddingTop="24dp"
+                                android:paddingBottom="16dp"
+                                android:textColor="@color/text" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.google.android.material.card.MaterialCardView>
 
             </LinearLayout>
         </com.google.android.material.appbar.CollapsingToolbarLayout>
@@ -195,19 +194,12 @@
                 android:id="@+id/noResultsTV"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:text="No flights available."
-                android:gravity="center"
-                android:padding="16dp" />
-
-            <ProgressBar
-                android:id="@+id/loadingSpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:visibility="gone" />
+                android:text="No flights found."
+                android:visibility="gone"/>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <include layout="@layout/loading_overlay" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

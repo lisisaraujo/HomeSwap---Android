@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -16,6 +17,7 @@ import coil.load
 import com.example.homeswap_android.R
 import com.example.homeswap_android.data.models.UserData
 import com.example.homeswap_android.databinding.FragmentEditProfileBinding
+import com.example.homeswap_android.utils.Utils
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
@@ -31,20 +33,23 @@ class EditProfileFragment : Fragment() {
     private val getContent =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             uri?.let {
-                Toast.makeText(
-                    context,
-                    "Loading new profile picture...",
-                    Toast.LENGTH_LONG
-                ).show()
+                val loadingOverlay = view?.findViewById<ConstraintLayout>(R.id.loading_overlay)
+                Utils.showLoadingOverlay(loadingOverlay!!)
+//
+//                Toast.makeText(
+//                    context,
+//                    "Loading new profile picture...",
+//                    Toast.LENGTH_SHORT
+//                ).show()
 
                 userViewModel.updateProfilePicture(it) { success ->
                     if (success) {
+                        Utils.hideLoadingOverlay(loadingOverlay)
                         Toast.makeText(
                             context,
                             "Profile picture updated successfully",
                             Toast.LENGTH_SHORT
                         ).show()
-                        binding.profileImage.load(it)
                     } else {
                         Toast.makeText(
                             context,
