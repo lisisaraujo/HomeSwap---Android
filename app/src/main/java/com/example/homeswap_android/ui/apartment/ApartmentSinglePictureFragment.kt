@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import coil.load
 import com.example.homeswap_android.R
@@ -59,6 +60,10 @@ class ApartmentSinglePictureFragment : Fragment() {
 
         binding.previousButton.setOnClickListener {
             viewModel.loadPrevPicture()
+        }
+
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
         }
     }
 

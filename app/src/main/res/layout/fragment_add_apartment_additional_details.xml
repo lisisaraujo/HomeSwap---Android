@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,136 +8,143 @@
     android:background="@color/cardview_light_background"
     tools:context=".ui.apartment.AddApartmentAdditionalDetailsFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:background="@android:color/transparent"
+        app:elevation="0dp">
 
-        <ImageButton
-            android:id="@+id/additionalDetailsBackBTN"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            app:layout_constraintBottom_toBottomOf="@+id/additionalDetailsTextView"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/arrow_back_24px"
-            app:tint="?attr/colorOnSurface" />
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/background"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:title="Additional Details"
+            app:navigationIcon="@drawable/arrow_back_24px"
+            app:titleTextAppearance="?attr/textAppearanceHeadline6"
+            app:titleTextColor="@color/text" />
+    </com.google.android.material.appbar.AppBarLayout>
 
-        <TextView
-            android:id="@+id/additionalDetailsTextView"
-            android:layout_width="0dp"
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Additional Details"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:padding="16dp">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/typeOfHomeInputLayout"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            app:boxCornerRadiusTopStart="30dp"
-            app:boxCornerRadiusTopEnd="30dp"
-            app:boxCornerRadiusBottomStart="30dp"
-            app:boxCornerRadiusBottomEnd="30dp"
-            app:boxStrokeWidth="1dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/additionalDetailsTextView">
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/typeOfHomeInputLayout"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                app:boxCornerRadiusTopStart="30dp"
+                app:boxCornerRadiusTopEnd="30dp"
+                app:boxCornerRadiusBottomStart="30dp"
+                app:boxCornerRadiusBottomEnd="30dp"
+                app:boxStrokeWidth="1dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-            <AutoCompleteTextView
-                android:textColor="@color/text"
-                android:id="@+id/typeOfHomeAutoComplete"
+                <AutoCompleteTextView
+                    android:textColor="@color/text"
+                    android:id="@+id/typeOfHomeAutoComplete"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:backgroundTint="@color/background_card"
+                    android:hint="Type of Home" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/roomsLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Number of Rooms: 1"
+                android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/typeOfHomeInputLayout" />
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/roomsSlider"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:valueFrom="1"
+                android:valueTo="10"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/roomsLabel" />
+
+            <TextView
+                android:id="@+id/maxGuestsLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Max Guests: 1"
+                android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/roomsSlider" />
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/maxGuestsSlider"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:valueFrom="1"
+                android:valueTo="20"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/maxGuestsLabel" />
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/petsAllowedSwitch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="none"
-                android:backgroundTint="@color/background_card"
-                android:hint="Type of Home" />
+                android:layout_marginTop="24dp"
+                android:text="Pets Allowed"
+                android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
+                app:layout_constraintTop_toBottomOf="@+id/maxGuestsSlider" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/homeOfficeSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Home Office"
+                android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
+                app:layout_constraintTop_toBottomOf="@+id/petsAllowedSwitch" />
 
-        <TextView
-            android:id="@+id/roomsLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Number of Rooms: 1"
-            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/typeOfHomeInputLayout" />
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/hasWifiSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Has Wifi"
+                android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
+                app:layout_constraintTop_toBottomOf="@+id/homeOfficeSwitch" />
 
-        <com.google.android.material.slider.Slider
-            android:id="@+id/roomsSlider"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:valueFrom="1"
-            android:valueTo="10"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/roomsLabel" />
+            <Button
+                android:id="@+id/submitApartmentBTN"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="Submit"
+                android:textColor="@color/background"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/hasWifiSwitch" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 
-        <TextView
-            android:id="@+id/maxGuestsLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Max Guests: 1"
-            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/roomsSlider" />
-
-        <com.google.android.material.slider.Slider
-            android:id="@+id/maxGuestsSlider"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:valueFrom="1"
-            android:valueTo="20"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/maxGuestsLabel" />
-
-        <com.google.android.material.materialswitch.MaterialSwitch
-            android:id="@+id/petsAllowedSwitch"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Pets Allowed"
-            android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
-            app:layout_constraintTop_toBottomOf="@+id/maxGuestsSlider" />
-
-        <com.google.android.material.materialswitch.MaterialSwitch
-            android:id="@+id/homeOfficeSwitch"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Home Office"
-            android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
-            app:layout_constraintTop_toBottomOf="@+id/petsAllowedSwitch" />
-
-        <com.google.android.material.materialswitch.MaterialSwitch
-            android:id="@+id/hasWifiSwitch"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Has Wifi"
-            android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
-            app:layout_constraintTop_toBottomOf="@+id/homeOfficeSwitch" />
-
-        <Button
-            android:id="@+id/submitApartmentBTN"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:text="Submit"
-            android:textColor="@color/background"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/hasWifiSwitch" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+    <include
+        layout="@layout/loading_overlay"
+        android:id="@+id/loading_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -60,8 +60,11 @@ class AddApartmentAdditionalDetailsFragment : Fragment() {
                         )
                     )
                 }
-
             }
+        }
+
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
         }
 
     }

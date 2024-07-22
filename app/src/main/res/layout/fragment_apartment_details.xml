@@ -1,40 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/background"
+        android:fitsSystemWindows="true">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:navigationIcon="@drawable/arrow_back_24px"
-            app:title="Apartment Details" />
+            android:fitsSystemWindows="true"
+            app:contentScrim="@color/background"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
-    </com.google.android.material.appbar.AppBarLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="16dp"
+                app:layout_collapseMode="parallax"
+                app:layout_collapseParallaxMultiplier="1.0">
 
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/background"
+                app:layout_collapseMode="pin"
+                app:title="Apartment Details"
+                app:navigationIcon="@drawable/arrow_back_24px"
+                app:titleTextAppearance="?attr/textAppearanceHeadline6"
+                app:titleTextColor="@color/text" />
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/apartmentDetailsCV"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="30dp">
+                app:cardBackgroundColor="@android:color/transparent"
+                app:cardUseCompatPadding="true"
+                android:background="@drawable/bottom_corners_card"
+                app:layout_collapseMode="parallax">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -47,288 +61,258 @@
                         android:scaleType="centerCrop"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.0"
                         tools:srcCompat="@tools:sample/backgrounds/scenic" />
-
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/apartmentDetailsLikeBTN"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        app:iconSize="24dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_margin="12dp"
                         app:icon="@drawable/favorite_48px"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
+                        app:iconSize="24dp"
                         app:iconGravity="textStart"
-                        app:iconPadding="0dp"
-                        app:cornerRadius="24dp"
-                        android:insetLeft="0dp"
-                        android:insetTop="0dp"
-                        android:insetRight="0dp"
-                        android:insetBottom="0dp"
                         style="@style/Widget.Material3.Button.IconButton.Filled" />
 
-                    <ImageButton
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/imageGalleryBTN"
+                        style="@style/Widget.Material3.Button.IconButton.Filled"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:background="@color/unliked_background_color"
-                        android:padding="10dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="16dp"
+                        app:icon="@drawable/photo_library_24px"
+                        app:iconGravity="textStart"
+                        app:iconSize="24dp"
+                        app:iconTint="@color/background"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="@+id/coverPictureIV"
-                        app:srcCompat="@drawable/photo_library_24px"
-                        app:tint="@color/primary" />
+                        android:backgroundTint="@color/scrim"
+                        app:layout_constraintEnd_toEndOf="@+id/coverPictureIV" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </com.google.android.material.card.MaterialCardView>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
-
-                <TextView
-                    android:id="@+id/apartmentTitleTV"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    tools:text="Simple and cosy beach house" />
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:id="@+id/apartmentDetailsRatingsTV"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="4.3"
-                        android:textAppearance="?attr/textAppearanceBody1"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent" />
-
-                    <ImageView
-                        android:id="@+id/ratingIcon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/star_rate_24px__1_"
-                        app:tint="@color/accent"
-                        app:layout_constraintEnd_toStartOf="@id/apartmentDetailsRatingsTV"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        android:layout_marginEnd="4dp" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
             </LinearLayout>
 
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/apartmentTitleTV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Cozy Downtown Apartment"
+                android:textAppearance="?attr/textAppearanceHeadline5"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+
             <TextView
+                android:id="@+id/apartmentRatingTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:text="4.8"
+                android:textAppearance="?attr/textAppearanceBody1"
+                app:layout_constraintBottom_toBottomOf="@+id/apartmentRatingStar"
+                app:layout_constraintEnd_toStartOf="@+id/apartmentRatingStar"
+                app:layout_constraintTop_toTopOf="@+id/apartmentRatingStar" />
+
+            <ImageView
+                android:id="@+id/apartmentRatingStar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/star_rate_24px__1_"
+
+                app:layout_constraintBottom_toBottomOf="@+id/apartmentTitleTV"
+                app:layout_constraintEnd_toEndOf="@+id/apartmentTitleTV"
+                app:layout_constraintTop_toTopOf="@+id/apartmentTitleTV"
+                app:tint="@color/accent" />
+
+
+
+            <!-- Location -->
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/locationTV"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="New York, USA"
+                android:text="New York, NY"
+                android:textAppearance="?attr/textAppearanceBody1"
+                android:drawableStart="@drawable/location_on_24dp_e8eaed_fill0_wght400_grad0_opsz24"
+                app:drawableTint="@color/accent"
+                android:drawablePadding="8dp"
                 android:layout_marginTop="8dp"
-                android:textAppearance="?attr/textAppearanceBody1" />
+                app:layout_constraintTop_toBottomOf="@id/apartmentTitleTV"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
-            <TextView
-                android:layout_width="wrap_content"
+            <!-- Availability -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/availabilityTV"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Apartment Details"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:text="Available: July 1 - August 31, 2024"
+                android:textAppearance="?attr/textAppearanceBody1"
+                app:drawableTint="@color/accent"
+                android:drawableStart="@drawable/event_available_24dp_e8eaed_fill0_wght400_grad0_opsz24"
+                android:drawablePadding="8dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@id/locationTV"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
+            <!-- Apartment Details Card -->
+            <!-- Apartment Details Card -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/apartmentDetailsCardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:backgroundTint="@color/background_card"
                 app:cardCornerRadius="30dp"
-                app:strokeWidth="0dp">
+                app:strokeWidth="0dp"
+                app:cardBackgroundColor="@color/night_background_card"
+                android:backgroundTint="@color/background_card"
+                app:layout_constraintTop_toBottomOf="@id/availabilityTV"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:padding="16dp">
 
-                    <GridLayout
-                        android:layout_width="match_parent"
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/typeOfHomeTV"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:alignmentMode="alignMargins"
-                        android:columnCount="3"
-                        android:useDefaultMargins="true">
+                        android:drawableStart="@drawable/home_work_24dp_e8eaed_fill0_wght400_grad0_opsz24"
+                        android:drawablePadding="8dp"
+                        app:drawableTint="@color/text"
+                        android:text="Apartment"
+                        android:textAppearance="?attr/textAppearanceBody1"
+                        app:layout_constraintEnd_toStartOf="@id/roomsTV"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintHorizontal_chainStyle="spread" />
 
-                        <!-- Row 1 -->
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_columnWeight="1"
-                            android:gravity="center"
-                            android:orientation="vertical">
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/roomsTV"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/bedroom_parent_48px"
+                        android:drawablePadding="8dp"
+                        android:text="2 Rooms"
+                        android:textAppearance="?attr/textAppearanceBody1"
+                        app:layout_constraintEnd_toStartOf="@id/maxGuestsTV"
+                        app:layout_constraintStart_toEndOf="@id/typeOfHomeTV"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                            <TextView
-                                android:id="@+id/typeOfHomeTV"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:text="Apartment"
-                                android:textAlignment="center" />
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/maxGuestsTV"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/groups_3_24dp_e8eaed_fill0_wght400_grad0_opsz24"
+                        android:drawablePadding="8dp"
+                        android:text="4 Guests"
+                        app:drawableTint="@color/text"
+                        android:textAppearance="?attr/textAppearanceBody1"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/roomsTV"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                        </LinearLayout>
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/petsAllowedTV"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/pets_48px"
+                        android:drawablePadding="8dp"
+                        android:text="Pets Allowed"
+                        android:textAppearance="?attr/textAppearanceBody1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/typeOfHomeTV"
+                        app:layout_constraintEnd_toStartOf="@id/homeOfficeTV"
+                        app:layout_constraintHorizontal_chainStyle="spread"
+                        android:layout_marginTop="16dp" />
 
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_columnWeight="1"
-                            android:gravity="center"
-                            android:orientation="vertical">
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/homeOfficeTV"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/laptop_mac_24dp_e8eaed_fill0_wght400_grad0_opsz24"
+                        android:drawablePadding="8dp"
+                        android:text="Home Office"
+                        app:drawableTint="@color/text"
+                        android:textAppearance="?attr/textAppearanceBody1"
+                        app:layout_constraintStart_toEndOf="@+id/petsAllowedTV"
+                        app:layout_constraintTop_toTopOf="@id/petsAllowedTV"
+                        app:layout_constraintEnd_toStartOf="@id/hasWifiTV" />
 
-                            <TextView
-                                android:id="@+id/roomsTV"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:text="2 Rooms"
-                                android:textAlignment="center" />
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/hasWifiTV"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/wifi_48px"
+                        android:drawablePadding="8dp"
+                        android:text="Wifi"
+                        android:textAppearance="?attr/textAppearanceBody1"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/petsAllowedTV"
+                        app:layout_constraintStart_toEndOf="@id/homeOfficeTV" />
 
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_columnWeight="1"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/maxGuestsTV"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:text="4 Guests"
-                                android:textAlignment="center" />
-
-                        </LinearLayout>
-
-                        <!-- Row 2 -->
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_columnWeight="1"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/petsAllowedTV"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:text="Pets Allowed"
-                                android:textAlignment="center" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_columnWeight="1"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/homeOfficeTV"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:text="Home Office"
-                                android:textAlignment="center" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_columnWeight="1"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/hasWifiTV"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:text="WiFi"
-                                android:textAlignment="center" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_columnWeight="1"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/availabilityTV"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:text="Available"
-                                android:textAlignment="center" />
-
-                        </LinearLayout>
-
-                    </GridLayout>
-
-                </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </com.google.android.material.card.MaterialCardView>
-
-            <TextView
-                android:layout_width="wrap_content"
+            <!-- Description Section -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/descriptionTitleTV"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="About this place"
+                android:text="Description"
                 android:textAppearance="?attr/textAppearanceSubtitle1"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@id/apartmentDetailsCardView"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/descriptionContentTV"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:backgroundTint="@color/background_card"
-                app:cardCornerRadius="30dp"
-                app:strokeWidth="0dp">
+                android:text="This cozy apartment in the heart of downtown offers a perfect blend of comfort and convenience..."
+                android:textAppearance="?attr/textAppearanceBody1"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@id/descriptionTitleTV"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
-                <TextView
-                    android:id="@+id/apartmentDetailsDescriptionTV"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp" />
-
-            </com.google.android.material.card.MaterialCardView>
-
+            <!-- Reviews Section -->
             <TextView
                 android:id="@+id/reviewsTV"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="Reviews"
-                android:textStyle="bold" />
+                android:textAppearance="?attr/textAppearanceSubtitle1"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@id/descriptionContentTV"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/reviewsRV"
@@ -338,18 +322,24 @@
                 android:background="@color/cardview_light_background"
                 android:clipToPadding="false"
                 android:orientation="horizontal"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/review_list_item" />
+                tools:listitem="@layout/review_list_item"
+                app:layout_constraintTop_toBottomOf="@id/reviewsTV"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/textView2"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="Host"
                 android:textAppearance="?attr/textAppearanceSubtitle1"
-                android:textStyle="bold" />
+                android:textColor="@color/text"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/reviewsRV" />
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/userDetailsCV"
@@ -358,18 +348,33 @@
                 android:layout_marginTop="16dp"
                 android:backgroundTint="@color/background_card"
                 app:cardCornerRadius="30dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView2"
                 app:strokeWidth="0dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:padding="16dp">
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/verticalGuideline"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.3" />
 
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/materialCardView"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
                         app:cardCornerRadius="60dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintDimensionRatio="1:1"
+                        app:layout_constraintEnd_toStartOf="@id/verticalGuideline"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
                         app:strokeWidth="0dp">
 
                         <ImageView
@@ -383,23 +388,36 @@
 
                     <TextView
                         android:id="@+id/profile_name"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:text="John Doe"
                         android:textAppearance="?attr/textAppearanceHeadline5"
-                        app:layout_constraintStart_toEndOf="@+id/materialCardView"
-                        app:layout_constraintTop_toTopOf="@+id/materialCardView" />
+                        app:layout_constraintEnd_toStartOf="@+id/userDetailsRatingsTV"
+                        app:layout_constraintStart_toEndOf="@+id/verticalGuideline"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/swaps_count"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="15 Swaps"
                         android:textAppearance="?attr/textAppearanceBody2"
+                        app:layout_constraintEnd_toEndOf="@+id/profile_name"
                         app:layout_constraintStart_toStartOf="@+id/profile_name"
                         app:layout_constraintTop_toBottomOf="@+id/profile_name" />
+
+                    <TextView
+                        android:id="@+id/userLocationTV"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="New York, USA"
+                        android:textAppearance="?attr/textAppearanceBody1"
+                        app:layout_constraintEnd_toEndOf="@+id/profile_name"
+                        app:layout_constraintStart_toStartOf="@+id/profile_name"
+                        app:layout_constraintTop_toBottomOf="@+id/swaps_count" />
 
                     <TextView
                         android:id="@+id/userDetailsRatingsTV"
@@ -408,6 +426,7 @@
                         android:layout_marginEnd="4dp"
                         android:text="4.8"
                         android:textAppearance="?attr/textAppearanceBody1"
+                        app:layout_constraintBottom_toBottomOf="@+id/profile_name"
                         app:layout_constraintEnd_toStartOf="@+id/ratingStartIV"
                         app:layout_constraintTop_toTopOf="@+id/profile_name" />
 
@@ -415,28 +434,27 @@
                         android:id="@+id/ratingStartIV"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
                         android:src="@drawable/star_rate_24px__1_"
+                        app:layout_constraintBottom_toBottomOf="@+id/profile_name"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/profile_name"
                         app:tint="@color/accent" />
 
-                    <TextView
-                        android:id="@+id/userLocationTV"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="New York, USA"
-                        android:textAppearance="?attr/textAppearanceBody1"
-                        app:layout_constraintStart_toStartOf="@+id/profile_name"
-                        app:layout_constraintTop_toBottomOf="@+id/swaps_count" />
-
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </com.google.android.material.card.MaterialCardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/contactHostButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="Contact Host"
+        android:layout_gravity="bottom|end"
+        app:icon="@drawable/mail_48px"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

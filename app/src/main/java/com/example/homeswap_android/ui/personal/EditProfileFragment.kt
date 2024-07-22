@@ -35,12 +35,6 @@ class EditProfileFragment : Fragment() {
             uri?.let {
                 val loadingOverlay = view?.findViewById<ConstraintLayout>(R.id.loading_overlay)
                 Utils.showLoadingOverlay(loadingOverlay!!)
-//
-//                Toast.makeText(
-//                    context,
-//                    "Loading new profile picture...",
-//                    Toast.LENGTH_SHORT
-//                ).show()
 
                 userViewModel.updateProfilePicture(it) { success ->
                     if (success) {
@@ -94,7 +88,6 @@ class EditProfileFragment : Fragment() {
                 }
                 userRef.addSnapshotListener { value, error ->
                     if (value != null) {
-                        Log.d("UserProfile", value.data.toString())
                         value.toObject(UserData::class.java)?.let { profile ->
                             if (profile.profilePic.isNotEmpty()) {
                                 binding.profileImage.load(profile.profilePic) {

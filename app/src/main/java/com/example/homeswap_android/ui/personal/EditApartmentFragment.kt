@@ -78,13 +78,13 @@ class EditApartmentFragment : Fragment() {
         binding.updatePhotosBTN.setOnClickListener {
             pickMultipleMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
-        apartmentViewModel.currentApartment.observe(viewLifecycleOwner) { apartment ->
-            apartment?.let {
-                Log.d("CurrentApartment", apartment.apartmentID)
-                userID = apartment.userID
-                updateUI(apartment)
-            }
-        }
+//        apartmentViewModel.currentApartment.observe(viewLifecycleOwner) { apartment ->
+//            apartment?.let {
+//                Log.d("CurrentApartment", apartment.apartmentID)
+//                userID = apartment.userID
+//                updateUI(apartment)
+//            }
+//        }
 
 
         binding.selectDatesBTN.setOnClickListener {

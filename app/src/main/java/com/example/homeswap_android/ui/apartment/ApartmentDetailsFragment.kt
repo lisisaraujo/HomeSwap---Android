@@ -69,7 +69,7 @@ class ApartmentDetailsFragment : Fragment() {
                     homeOfficeTV.text =
                         if (apartment.homeOffice) "Home Office" else "No Home Office"
                     hasWifiTV.text = if (apartment.hasWifi) "Wifi" else "No Wifi"
-                    apartmentDetailsRatingsTV.text = "Rating: ${apartment.rating}"
+                    apartmentRatingTV.text = "Rating: ${apartment.rating}"
                     availabilityTV.text =
                         "Available: ${apartment.startDate} to ${apartment.endDate}"
 
@@ -131,6 +131,14 @@ class ApartmentDetailsFragment : Fragment() {
                 )
             }
 
+            binding.imageGalleryBTN.setOnClickListener {
+                findNavController().navigate(
+                    ApartmentDetailsFragmentDirections.actionApartmentDetailsFragmentToApartmentPicturesFragment(
+                        apartmentID
+                    )
+                )
+            }
+
 
             binding.reviewsTV.setOnClickListener {
                 findNavController().navigate(
@@ -141,7 +149,7 @@ class ApartmentDetailsFragment : Fragment() {
                 )
             }
 
-            binding.apartmentDetailsDescriptionTV.text = apartment.description
+            binding.descriptionContentTV.text = apartment.description
             binding.locationTV.text = apartment.city
 
         }
