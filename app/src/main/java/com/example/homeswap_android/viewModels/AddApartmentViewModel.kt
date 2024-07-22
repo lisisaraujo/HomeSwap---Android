@@ -25,7 +25,21 @@ class AddApartmentViewModel : ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
 
-    fun addApartment(apartment: Apartment, imageUris: List<Uri>) {
+    private val _tempApartmentDetails = MutableLiveData<Apartment>()
+    val tempApartmentDetails: LiveData<Apartment> get() = _tempApartmentDetails
+
+    private val _tempImageUris = MutableLiveData<List<Uri>>()
+    val tempImageUris: LiveData<List<Uri>> get() = _tempImageUris
+
+    fun setTempApartmentDetails(apartment: Apartment) {
+        _tempApartmentDetails.value = apartment
+    }
+
+    fun setTempImageUris(uris: List<Uri>) {
+        _tempImageUris.value = uris
+    }
+
+    private fun addApartment(apartment: Apartment, imageUris: List<Uri>) {
         _isLoading.value = true
         apartmentRepository.addApartment(apartment, imageUris) { updatedApartment ->
             if (updatedApartment != null) {
@@ -46,7 +60,7 @@ class AddApartmentViewModel : ViewModel() {
         homeOffice: Boolean,
         hasWifi: Boolean
     ) {
-        newAddedApartment.value?.let { apartment ->
+        _tempApartmentDetails.value?.let { apartment ->
             val updatedApartment = apartment.copy(
                 rooms = rooms,
                 maxGuests = maxGuests,
@@ -55,9 +69,7 @@ class AddApartmentViewModel : ViewModel() {
                 homeOffice = homeOffice,
                 hasWifi = hasWifi
             )
-
-            apartmentRepository.updateApartment(updatedApartment)
-            resetNewAddedApartment()
+            addApartment(updatedApartment, _tempImageUris.value ?: emptyList())
         } ?: Log.e(TAG, "No apartment to update")
     }
 

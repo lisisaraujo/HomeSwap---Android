@@ -204,6 +204,7 @@
                         android:drawablePadding="8dp"
                         app:drawableTint="@color/text"
                         android:text="Apartment"
+                        android:visibility="visible"
                         android:textAppearance="?attr/textAppearanceBody1"
                         app:layout_constraintEnd_toStartOf="@id/roomsTV"
                         app:layout_constraintStart_toStartOf="parent"

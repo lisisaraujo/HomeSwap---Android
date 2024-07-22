@@ -60,27 +60,68 @@ class ApartmentDetailsFragment : Fragment() {
             if (apartment != null) {
                 Log.d(TAG, apartment.city)
                 with(binding) {
-                    typeOfHomeTV.text =
-                        (if (apartment.typeOfHome.isNotBlank()) apartment.typeOfHome else "-").toString()
-                    roomsTV.text = "Rooms: ${apartment.rooms}"
-                    maxGuestsTV.text = "Guests: ${apartment.maxGuests}"
-                    petsAllowedTV.text =
-                        if (apartment.petsAllowed) "Pets Allowed" else "No Pets Allowed"
-                    homeOfficeTV.text =
-                        if (apartment.homeOffice) "Home Office" else "No Home Office"
+                    //type of home
+                    if (apartment.typeOfHome.isNotBlank()) {
+                        typeOfHomeTV.text = apartment.typeOfHome
+                        typeOfHomeTV.visibility = View.VISIBLE
+                    } else {
+                        typeOfHomeTV.visibility = View.GONE
+                    }
+
+                    //rooms
+                    if (apartment.rooms != null) {
+                        roomsTV.text = "Rooms: ${apartment.rooms}"
+                        roomsTV.visibility = View.VISIBLE
+                    } else {
+                        roomsTV.visibility = View.GONE
+                    }
+
+                    //max guests
+                    if (apartment.maxGuests!= null) {
+                        maxGuestsTV.text = "Guests: ${apartment.maxGuests}"
+                        maxGuestsTV.visibility = View.VISIBLE
+                    } else {
+                        maxGuestsTV.visibility = View.GONE
+                    }
+
+                    //pets allowed
+                    petsAllowedTV.text = if (apartment.petsAllowed) "Pets Allowed" else "No Pets Allowed"
+                    petsAllowedTV.visibility = View.VISIBLE
+
+                    //home Office
+                    homeOfficeTV.text = if (apartment.homeOffice) "Home Office" else "No Home Office"
+                    homeOfficeTV.visibility = View.VISIBLE
+
+                    //wifi
                     hasWifiTV.text = if (apartment.hasWifi) "Wifi" else "No Wifi"
-                    apartmentRatingTV.text = "Rating: ${apartment.rating}"
-                    availabilityTV.text =
-                        "Available: ${apartment.startDate} to ${apartment.endDate}"
+                    hasWifiTV.visibility = View.VISIBLE
 
-                    apartmentTitleTV.text = apartment.title
-                    coverPictureIV.load(apartment.coverPicture)
-                    Log.d(TAG, "ApartmentCoverPic: ${apartment.coverPicture}")
+                    //rating
+                    if (apartment.rating != null) {
+                        apartmentRatingTV.text = "Rating: ${apartment.rating}"
+                        apartmentRatingTV.visibility = View.VISIBLE
+                    } else {
+                        apartmentRatingTV.visibility = View.GONE
+                    }
 
+                    //availability
+                        availabilityTV.text = "Available: ${apartment.startDate} to ${apartment.endDate}"
+
+                    //apartment Title
+                        apartmentTitleTV.text = apartment.title
+
+
+                    //cover Picture
+                    if (apartment.coverPicture.isNotBlank()) {
+                        coverPictureIV.load(apartment.coverPicture)
+                    }
+
+                    //user ID
                     val userID = apartment.userID
-                    userViewModel.fetchSelectedUserData(userID)
+                        userViewModel.fetchSelectedUserData(userID)
                 }
             }
+
 
             reviewsViewModel.getApartmentReviews(apartmentID)
                 .addSnapshotListener { apartmentReviews, error ->

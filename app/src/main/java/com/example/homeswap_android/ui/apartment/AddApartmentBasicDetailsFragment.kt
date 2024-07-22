@@ -100,7 +100,7 @@ class AddApartmentBasicDetailsFragment : Fragment() {
 
             if (title.isEmpty() || city.isEmpty() || address.isEmpty() || startDate.isEmpty() || endDate.isEmpty() || selectedImageUris.isEmpty()) {
                 Toast.makeText(requireContext(), "Please fill out all fields and upload at least one image.", Toast.LENGTH_SHORT).show()
-                hideLoadingOverlay(loadingOverlay!!)
+                hideLoadingOverlay(loadingOverlay)
             } else {
                 val currentDate = dateFormat.format(Date())
                 val newApartment = Apartment(
@@ -113,19 +113,10 @@ class AddApartmentBasicDetailsFragment : Fragment() {
                     registrationDate = currentDate
                 )
 
-                //observe the LiveData only after the button is clicked
-                addApartmentViewModel.newAddedApartment.observe(viewLifecycleOwner) { newApartment ->
-                    newApartment?.let { apartment ->
-                        Log.d("NewApartment", apartment.apartmentID)
-                        hideLoadingOverlay(loadingOverlay!!)
-                        findNavController().navigate(R.id.addApartmentAdditionalDetailsFragment)
-                        //remove the observer after navigation to prevent repeated navigation
-                        addApartmentViewModel.newAddedApartment.removeObservers(viewLifecycleOwner)
-                    }
-                }
-
-                //add the apartment after setting up the observer
-                addApartmentViewModel.addApartment(newApartment, selectedImageUris)
+                addApartmentViewModel.setTempApartmentDetails(newApartment)
+                addApartmentViewModel.setTempImageUris(selectedImageUris)
+                hideLoadingOverlay(loadingOverlay)
+                findNavController().navigate(R.id.addApartmentAdditionalDetailsFragment)
             }
         }
 
