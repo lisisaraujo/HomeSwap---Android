@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.example.homeswap_android.R
 import com.example.homeswap_android.databinding.FragmentAddApartmentAdditionalDetailsBinding
 import com.example.homeswap_android.viewModels.AddApartmentViewModel
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -50,9 +51,7 @@ class AddApartmentAdditionalDetailsFragment : Fragment() {
                 hasWifi
             )
             findNavController().navigate(
-                AddApartmentAdditionalDetailsFragmentDirections.actionAddApartmentAdditionalDetailsFragmentToHomeFragment(
-                    true
-                )
+                R.id.homeFragment
             )
         }
 

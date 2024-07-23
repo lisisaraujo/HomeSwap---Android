@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.viewpager2.widget.ViewPager2
 import com.example.homeswap_android.R
 import com.example.homeswap_android.adapter.ViewPagerAdapter
 import com.example.homeswap_android.databinding.FragmentHomeBinding
@@ -22,8 +23,8 @@ class HomeFragment : Fragment() {
     val TAG = "HomeFragment"
 
     private lateinit var binding: FragmentHomeBinding
-    private val args: HomeFragmentArgs by navArgs()
     private val userViewModel: FirebaseUsersViewModel by activityViewModels()
+    private var currentTabPosition = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,7 +33,6 @@ class HomeFragment : Fragment() {
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        // check if user is logged in before going to homepage
         userViewModel.loggedInUser.observe(viewLifecycleOwner) { user ->
             Log.d(TAG, user?.email.toString())
             if (user == null) {
@@ -41,44 +41,48 @@ class HomeFragment : Fragment() {
         }
 
         return binding.root
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val fragments = listOf(ApartmentsListHomeFragment(), UsersListHomeFragment())
-        val adapter =
-            ViewPagerAdapter(requireActivity().supportFragmentManager, lifecycle, fragments)
-
+        val adapter = ViewPagerAdapter(requireActivity().supportFragmentManager, lifecycle, fragments)
 
         binding.viewPager.adapter = adapter
         binding.tabLayout.addTab(binding.tabLayout.newTab().setText("Apartments"))
         binding.tabLayout.addTab(binding.tabLayout.newTab().setText("Users"))
 
+        //restore the tab position
+        currentTabPosition = savedInstanceState?.getInt("currentTabPosition") ?: 0
+
         binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                binding.viewPager.currentItem = tab?.position ?: 0
+                currentTabPosition = tab?.position ?: 0
+                binding.viewPager.currentItem = currentTabPosition
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
             override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
 
-        if (args.isUsers) {
-            binding.tabLayout.selectTab(binding.tabLayout.getTabAt(1))
-            binding.viewPager.setCurrentItem(1, false)
-        }
+        binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                currentTabPosition = position
+                binding.tabLayout.selectTab(binding.tabLayout.getTabAt(position))
+            }
+        })
 
-        if (args.isApartments) {
-            binding.tabLayout.selectTab(binding.tabLayout.getTabAt(0))
-            binding.viewPager.setCurrentItem(0, false)
-        }
+        binding.tabLayout.selectTab(binding.tabLayout.getTabAt(currentTabPosition))
+        binding.viewPager.setCurrentItem(currentTabPosition, false)
+
         binding.searchBar.setOnClickListener {
             findNavController().navigate(R.id.searchFragment)
         }
-
     }
 
-
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt("currentTabPosition", currentTabPosition)
+    }
 }

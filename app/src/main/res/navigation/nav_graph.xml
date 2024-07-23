@@ -110,14 +110,6 @@
         <action
             android:id="@+id/action_homeFragment_to_userDetailsFragment"
             app:destination="@id/userDetailsFragment" />
-        <argument
-            android:name="isApartments"
-            app:argType="boolean"
-            android:defaultValue="false" />
-        <argument
-            android:name="isUsers"
-            app:argType="boolean"
-            android:defaultValue="false" />
     </fragment>
     <fragment
         android:id="@+id/userDetailsFragment"

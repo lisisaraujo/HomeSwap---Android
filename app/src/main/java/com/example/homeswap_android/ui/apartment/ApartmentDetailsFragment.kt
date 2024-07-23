@@ -136,7 +136,7 @@ class ApartmentDetailsFragment : Fragment() {
                         apartmentReviews?.toObjects(Review::class.java)
                     Log.d(TAG, apartmentReviewsList.toString())
                     reviewsAdapter.submitList(apartmentReviewsList)
-                    binding.reviewsTV.text = "Reviews (${apartmentReviewsList!!.size})"
+                    binding.reviewsTitleTV.text = "Reviews (${apartmentReviewsList!!.size})"
                 }
 
 
@@ -146,7 +146,7 @@ class ApartmentDetailsFragment : Fragment() {
                         binding.profileName.text = user.name
                         binding.profileImage.load(user.profilePic)
                         binding.userLocationTV.text = user.location
-                        binding.reviewsTV.text = user.reviewsCount.toString()
+                        binding.hostReviewsTV.text = "Reviews (${user.reviewsCount})"
                         binding.userDetailsRatingsTV.text = user.rating.toString()
 
                         binding.userDetailsCV.setOnClickListener {
@@ -185,7 +185,7 @@ class ApartmentDetailsFragment : Fragment() {
             }
 
 
-            binding.reviewsTV.setOnClickListener {
+            binding.seeAllReviewsTV.setOnClickListener {
                 findNavController().navigate(
                     ApartmentDetailsFragmentDirections.actionApartmentDetailsFragmentToReviewsFragment(
                         apartmentID = apartmentID,

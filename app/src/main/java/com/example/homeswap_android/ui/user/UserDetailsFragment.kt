@@ -88,11 +88,8 @@ class UserDetailsFragment : Fragment() {
         }
 
         binding.toolbar.setNavigationOnClickListener {
-            findNavController().navigate(
-                UserDetailsFragmentDirections.actionUserDetailsFragmentToHomeFragment(
-                    isUsers = true
-                )
-            )
+            findNavController().navigateUp()
+
         }
 
 
