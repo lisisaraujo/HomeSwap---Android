@@ -1,14 +1,18 @@
 package com.example.homeswap_android.utils
 
 import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
 import android.content.res.ColorStateList
+import android.net.Uri
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
@@ -151,4 +155,33 @@ object Utils {
 fun hideLoadingOverlay(loadingOverlay: ConstraintLayout) {
         loadingOverlay.visibility = View.GONE
     }
+
+    fun openExternalLink(context: Context, url: String, packageName: String? = null) {
+        val intentApp = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        packageName?.let {
+            intentApp.setPackage(it)
+        }
+
+        try {
+            context.startActivity(intentApp)
+        } catch (e: ActivityNotFoundException) {
+            val intentWeb = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            context.startActivity(intentWeb)
+        }
+    }
+
+    fun showRedirectionConfirmationDialog(context: Context, url: String, packageName: String? = null) {
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle("Redirect Confirmation")
+        builder.setMessage("You will be redirected to another app. Do you want to continue?")
+        builder.setPositiveButton("Yes") { dialog, _ ->
+            openExternalLink(context, url, packageName)
+            dialog.dismiss()
+        }
+        builder.setNegativeButton("No") { dialog, _ ->
+            dialog.dismiss()
+        }
+        builder.create().show()
+    }
+
 }

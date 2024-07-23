@@ -2,6 +2,9 @@ package com.example.homeswap_android.ui.personal
 
 import ApartmentAdapter
 import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -18,6 +21,8 @@ import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.data.models.Review
 import com.example.homeswap_android.data.models.UserData
 import com.example.homeswap_android.databinding.FragmentMyProfileBinding
+import com.example.homeswap_android.utils.Utils.openExternalLink
+import com.example.homeswap_android.utils.Utils.showRedirectionConfirmationDialog
 import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 import com.example.homeswap_android.viewModels.ReviewsViewModel
@@ -122,6 +127,7 @@ class MyProfileFragment : Fragment() {
             findNavController().navigate(R.id.settingsFragment)
         }
 
+        redirectToExternalApp()
 
     }
 
@@ -132,6 +138,48 @@ class MyProfileFragment : Fragment() {
         binding.rating.text = user.rating.toString()
         binding.reviewsTitleTV.text = "Reviews (${user.reviewsCount})"
         binding.myProfileDescriptionTV.text = user.bioDescription
+    }
+    private fun redirectToExternalApp(){
+        binding.instagramIB.setOnClickListener {
+            showRedirectionConfirmationDialog(
+                requireContext(),
+                "http://instagram.com/_u/madonna",
+                "com.instagram.android"
+            )
+        }
+
+        binding.instagramIB.setOnClickListener {
+            showRedirectionConfirmationDialog(
+                requireContext(),
+                "http://instagram.com/_u/madonna",
+                "com.linkedIn.android"
+            )
+        }
+
+        binding.linkedInIB.setOnClickListener {
+            showRedirectionConfirmationDialog(
+                requireContext(),
+                "https://www.linkedin.com/in/lisisaraujo/",
+                "com.linkedin.android"
+            )
+        }
+
+        binding.facebookIB.setOnClickListener {
+            showRedirectionConfirmationDialog(
+                requireContext(),
+                "http://facebook.com/your_profile",
+                "com.facebook.katana"
+            )
+        }
+
+        binding.twitterIB.setOnClickListener {
+            showRedirectionConfirmationDialog(
+                requireContext(),
+                "http://twitter.com/your_profile",
+                "com.twitter.android"
+            )
+        }
+
     }
 
 }

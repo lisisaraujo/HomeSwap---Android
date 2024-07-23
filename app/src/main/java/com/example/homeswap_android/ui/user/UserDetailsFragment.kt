@@ -17,6 +17,7 @@ import com.example.homeswap_android.adapter.ReviewAdapter
 import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.data.models.Review
 import com.example.homeswap_android.databinding.FragmentUserDetailsBinding
+import com.example.homeswap_android.utils.Utils
 import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 import com.example.homeswap_android.viewModels.ReviewsViewModel
@@ -124,6 +125,51 @@ class UserDetailsFragment : Fragment() {
             )
         }
 
+        redirectToExternalApp()
+
+
+    }
+
+    private fun redirectToExternalApp(){
+        binding.instagramIB.setOnClickListener {
+            Utils.showRedirectionConfirmationDialog(
+                requireContext(),
+                "http://instagram.com/_u/madonna",
+                "com.instagram.android"
+            )
+        }
+
+        binding.instagramIB.setOnClickListener {
+            Utils.showRedirectionConfirmationDialog(
+                requireContext(),
+                "http://instagram.com/_u/madonna",
+                "com.linkedIn.android"
+            )
+        }
+
+        binding.linkedInIB.setOnClickListener {
+            Utils.showRedirectionConfirmationDialog(
+                requireContext(),
+                "https://www.linkedin.com/in/lisisaraujo/",
+                "com.linkedin.android"
+            )
+        }
+
+        binding.facebookIB.setOnClickListener {
+            Utils.showRedirectionConfirmationDialog(
+                requireContext(),
+                "http://facebook.com/your_profile",
+                "com.facebook.katana"
+            )
+        }
+
+        binding.twitterIB.setOnClickListener {
+            Utils.showRedirectionConfirmationDialog(
+                requireContext(),
+                "http://twitter.com/your_profile",
+                "com.twitter.android"
+            )
+        }
 
     }
 }
