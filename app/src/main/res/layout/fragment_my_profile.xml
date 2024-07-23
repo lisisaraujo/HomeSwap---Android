@@ -80,7 +80,7 @@
                     android:layout_marginTop="8dp" />
 
                 <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/swapsCard"
+                    android:id="@+id/reviewsCard"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     app:cardCornerRadius="30dp"
@@ -99,7 +99,7 @@
                         android:gravity="center">
 
                         <TextView
-                            android:id="@+id/swaps_count"
+                            android:id="@+id/userDetailsReviewsTV"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="15"
@@ -109,7 +109,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Swaps"
+                            android:text="Reviews"
                             android:textAppearance="?attr/textAppearanceBody2"
                             android:textColor="?attr/colorOnSurfaceVariant" />
                     </LinearLayout>
@@ -122,7 +122,7 @@
                     app:cardCornerRadius="30dp"
                     app:strokeWidth="0dp"
                     app:layout_constraintTop_toBottomOf="@id/locationTV"
-                    app:layout_constraintStart_toEndOf="@id/swapsCard"
+                    app:layout_constraintStart_toEndOf="@id/reviewsCard"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginTop="16dp"
                     android:layout_marginStart="8dp">
@@ -193,35 +193,90 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:text="My Apartments"
-                android:textAppearance="?attr/textAppearanceSubtitle1"
-                android:textStyle="bold" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/userDetailsApartmentsListRV"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:clipToPadding="false"
-                android:orientation="horizontal"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:scrollbars="horizontal"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/apartment_list_item" />
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="32dp">
+
+                    <TextView
+                        android:id="@+id/myListingsTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="My Listings"
+                        android:textStyle="bold"
+                        android:textAppearance="?attr/textAppearanceSubtitle1"
+                        android:textColor="@color/text"
+                        android:padding="8dp"
+                        android:background="@color/background"
+                        android:contentDescription="Go to My Listings Page" />
+
+                    <TextView
+                        android:id="@+id/seeAllListings"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/see_all"
+                        android:textColor="@color/link_color"
+                        android:textStyle="bold"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="8dp"
+                        android:background="?attr/selectableItemBackground"
+                        android:contentDescription="See all listings" />
+
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/userDetailsApartmentsListRV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:scrollbars="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/apartment_list_item" />
+
+            </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="32dp">
 
             <TextView
-                android:id="@+id/userReviewsTV"
+                android:id="@+id/reviewsTitleTV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="My Reviews"
+                android:textStyle="bold"
+                android:textAppearance="?attr/textAppearanceSubtitle1"
+                android:textColor="@color/text"
+                android:padding="8dp" />
+
+            <TextView
+                android:id="@+id/seeAllReviewsTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Reviews"
-                android:textAppearance="?attr/textAppearanceSubtitle1"
-                android:textStyle="bold" />
+                android:text="@string/see_all"
+                android:textColor="@color/link_color"
+                android:textStyle="bold"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="8dp" />
+
+        </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/userDetailsReviewsRV"

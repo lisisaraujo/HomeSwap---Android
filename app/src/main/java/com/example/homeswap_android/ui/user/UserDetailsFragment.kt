@@ -61,7 +61,7 @@ class UserDetailsFragment : Fragment() {
                     binding.profileImage.load(user.profilePic)
                     binding.locationTV.text = user.location
                     binding.rating.text = user.rating.toString()
-                    binding.swapsCount.text = "${user.swaps} swaps"
+                    binding.userDetailsReviewsTV.text = "${user.reviewsCount} reviews"
                     binding.userProfileDescriptionTV.text = user.bioDescription
                 }
             }

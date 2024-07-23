@@ -7,6 +7,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -115,12 +118,12 @@ class ApartmentDetailsFragment : Fragment() {
                     if (apartment.coverPicture.isNotBlank()) {
                         coverPictureIV.load(apartment.coverPicture)
                     }
-
-                    //user ID
-                    val userID = apartment.userID
-                        userViewModel.fetchSelectedUserData(userID)
-                }
             }
+            }
+
+            //user ID
+            val userID = apartment.userID
+            userViewModel.fetchSelectedUserData(userID)
 
 
             reviewsViewModel.getApartmentReviews(apartmentID)
@@ -143,8 +146,9 @@ class ApartmentDetailsFragment : Fragment() {
                         binding.profileName.text = user.name
                         binding.profileImage.load(user.profilePic)
                         binding.userLocationTV.text = user.location
-                        binding.swapsCount.text = user.swaps.toString()
+                        binding.reviewsTV.text = user.reviewsCount.toString()
                         binding.userDetailsRatingsTV.text = user.rating.toString()
+
                         binding.userDetailsCV.setOnClickListener {
                             findNavController().navigate(
                                 ApartmentDetailsFragmentDirections.actionApartmentDetailsFragmentToUserDetailsFragment(
@@ -152,16 +156,16 @@ class ApartmentDetailsFragment : Fragment() {
                                 )
                             )
                         }
+
+                        binding.contactHostButton.setOnClickListener {
+                            showEmailDialog(user.email)
+                        }
                     }
                 }
             }
 
             binding.toolbar.setNavigationOnClickListener {
-                findNavController().navigate(
-                    ApartmentDetailsFragmentDirections.actionApartmentDetailsFragmentToHomeFragment(
-                        isApartments = true
-                    )
-                )
+                findNavController().navigateUp()
             }
 
             binding.coverPictureIV.setOnClickListener {
@@ -203,6 +207,28 @@ class ApartmentDetailsFragment : Fragment() {
                 }
             }
         }
+    }
 
+    private fun showEmailDialog(email: String) {
+        val builder = AlertDialog.Builder(requireContext(), R.style.RoundedAlertDialog)
+        val inflater = layoutInflater
+        val dialogView = inflater.inflate(R.layout.dialog_rounded, null)
+
+        val titleTextView = dialogView.findViewById<TextView>(R.id.dialogTitle)
+        val messageTextView = dialogView.findViewById<TextView>(R.id.dialogMessage)
+        val button = dialogView.findViewById<Button>(R.id.dialogButton)
+
+        titleTextView.text = "Contact Host"
+        messageTextView.text = "Email: $email"
+
+        builder.setView(dialogView)
+
+        val dialog = builder.create()
+
+        button.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 }

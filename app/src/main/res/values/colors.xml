@@ -23,6 +23,8 @@
 
     <color name="scrim">#80000000</color>
 
+    <color name="link_color">#2196F3</color>
+
     <!-- night mode -->
     <color name="night_background">#121212</color>
     <color name="night_primary">#B388FF</color>

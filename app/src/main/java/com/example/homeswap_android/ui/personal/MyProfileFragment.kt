@@ -73,7 +73,7 @@ class MyProfileFragment : Fragment() {
         }
 
         val itemClickedCallback: (Apartment) -> Unit = { apartment ->
-            findNavController().navigate(R.id.myListingsFragment)
+            findNavController().navigate(MyProfileFragmentDirections.actionUserProfileFragmentToApartmentDetailsFragment(apartment.apartmentID))
         }
 
         val onLikeClickListener: (Apartment) -> Unit = { apartment ->
@@ -100,16 +100,21 @@ class MyProfileFragment : Fragment() {
                     userReviews?.toObjects(Review::class.java)
                 Log.d(TAG, userReviewsList.toString())
                 reviewsAdapter.submitList(userReviewsList)
-                binding.userReviewsTV.text = "Reviews (${userReviewsList!!.size})"
+                binding.userDetailsReviewsTV.text = "${userReviewsList!!.size}"
             }
 
-        binding.userReviewsTV.setOnClickListener {
+        binding.seeAllReviewsTV.setOnClickListener {
             findNavController().navigate(
                 MyProfileFragmentDirections.actionUserProfileFragmentToReviewsFragment(
                     apartmentID = null,
                     userID = loggedInUserID
                 )
             )
+        }
+
+        binding.seeAllListings.setOnClickListener {
+            findNavController().navigate(R.id.myListingsFragment
+                )
         }
 
 
@@ -125,7 +130,7 @@ class MyProfileFragment : Fragment() {
         binding.profileImage.load(user.profilePic)
         binding.locationTV.text = user.location
         binding.rating.text = user.rating.toString()
-        binding.swapsCount.text = "${user.swaps} swaps"
+        binding.userDetailsReviewsTV.text = "${user.reviewsCount} reviews"
         binding.myProfileDescriptionTV.text = user.bioDescription
     }
 

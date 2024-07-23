@@ -151,33 +151,31 @@
                 android:id="@+id/locationTV"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:drawableStart="@drawable/location_on_24dp_e8eaed_fill0_wght400_grad0_opsz24"
+                android:drawablePadding="8dp"
                 android:text="New York, NY"
                 android:textAppearance="?attr/textAppearanceBody1"
-                android:drawableStart="@drawable/location_on_24dp_e8eaed_fill0_wght400_grad0_opsz24"
                 app:drawableTint="@color/accent"
-                android:drawablePadding="8dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@id/apartmentTitleTV"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/apartmentTitleTV" />
 
             <!-- Availability -->
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/availabilityTV"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:drawableStart="@drawable/event_available_24dp_e8eaed_fill0_wght400_grad0_opsz24"
+                android:drawablePadding="8dp"
                 android:text="Available: July 1 - August 31, 2024"
                 android:textAppearance="?attr/textAppearanceBody1"
                 app:drawableTint="@color/accent"
-                android:drawableStart="@drawable/event_available_24dp_e8eaed_fill0_wght400_grad0_opsz24"
-                android:drawablePadding="8dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@id/locationTV"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/locationTV" />
 
-            <!-- Apartment Details Card -->
-            <!-- Apartment Details Card -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/apartmentDetailsCardView"
                 android:layout_width="match_parent"
@@ -200,21 +198,23 @@
                         android:id="@+id/typeOfHomeTV"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
                         android:drawableStart="@drawable/home_work_24dp_e8eaed_fill0_wght400_grad0_opsz24"
                         android:drawablePadding="8dp"
-                        app:drawableTint="@color/text"
                         android:text="Apartment"
-                        android:visibility="visible"
                         android:textAppearance="?attr/textAppearanceBody1"
+                        app:drawableTint="@color/text"
                         app:layout_constraintEnd_toStartOf="@id/roomsTV"
+                        app:layout_constraintHorizontal_chainStyle="spread"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintHorizontal_chainStyle="spread" />
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/roomsTV"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
                         android:drawableStart="@drawable/bedroom_parent_48px"
                         android:drawablePadding="8dp"
                         android:text="2 Rooms"
@@ -227,6 +227,7 @@
                         android:id="@+id/maxGuestsTV"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
                         android:drawableStart="@drawable/groups_3_24dp_e8eaed_fill0_wght400_grad0_opsz24"
                         android:drawablePadding="8dp"
                         android:text="4 Guests"
@@ -240,6 +241,7 @@
                         android:id="@+id/petsAllowedTV"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
                         android:drawableStart="@drawable/pets_48px"
                         android:drawablePadding="8dp"
                         android:text="Pets Allowed"
@@ -247,13 +249,13 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/typeOfHomeTV"
                         app:layout_constraintEnd_toStartOf="@id/homeOfficeTV"
-                        app:layout_constraintHorizontal_chainStyle="spread"
-                        android:layout_marginTop="16dp" />
+                        app:layout_constraintHorizontal_chainStyle="spread" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/homeOfficeTV"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
                         android:drawableStart="@drawable/laptop_mac_24dp_e8eaed_fill0_wght400_grad0_opsz24"
                         android:drawablePadding="8dp"
                         android:text="Home Office"
@@ -267,6 +269,7 @@
                         android:id="@+id/hasWifiTV"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
                         android:drawableStart="@drawable/wifi_48px"
                         android:drawablePadding="8dp"
                         android:text="Wifi"
@@ -277,9 +280,7 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-            </com.google.android.material.card.MaterialCardView>
-            <!-- Description Section -->
-            <com.google.android.material.textview.MaterialTextView
+            </com.google.android.material.card.MaterialCardView>            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/descriptionTitleTV"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -302,7 +303,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
 
-            <!-- Reviews Section -->
             <TextView
                 android:id="@+id/reviewsTV"
                 android:layout_width="0dp"
@@ -399,11 +399,11 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/swaps_count"
+                        android:id="@+id/hostReviewsTV"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="15 Swaps"
+                        android:text="Reviews"
                         android:textAppearance="?attr/textAppearanceBody2"
                         app:layout_constraintEnd_toEndOf="@+id/profile_name"
                         app:layout_constraintStart_toStartOf="@+id/profile_name"
@@ -418,7 +418,7 @@
                         android:textAppearance="?attr/textAppearanceBody1"
                         app:layout_constraintEnd_toEndOf="@+id/profile_name"
                         app:layout_constraintStart_toStartOf="@+id/profile_name"
-                        app:layout_constraintTop_toBottomOf="@+id/swaps_count" />
+                        app:layout_constraintTop_toBottomOf="@+id/hostReviewsTV" />
 
                     <TextView
                         android:id="@+id/userDetailsRatingsTV"

@@ -7,14 +7,19 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        app:elevation="0dp">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            app:layout_scrollFlags="scroll|enterAlways"
             app:navigationIcon="@drawable/arrow_back_24px"
-            app:title="Profile" />
+            app:title="Profile"
+            app:titleTextAppearance="?attr/textAppearanceHeadline6"
+            android:background="@color/background"/>
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -49,6 +54,7 @@
                 android:id="@+id/profile_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="16dp"
                 android:text="John Doe"
@@ -91,12 +97,12 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/swaps_count"
+                android:id="@+id/userDetailsReviewsTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="8dp"
-                android:text="15 Swaps"
+                android:text="Reviews"
                 android:textAppearance="?attr/textAppearanceBody2" />
 
             <TextView
@@ -108,25 +114,28 @@
                 android:textStyle="bold" />
 
 
-            <androidx.cardview.widget.CardView
-                android:layout_marginTop="16dp"
+            <com.google.android.material.card.MaterialCardView
+                android:layout_marginTop="30dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:cardCornerRadius="16dp"
+                app:strokeWidth="0dp"
                 android:backgroundTint="@color/background_card">
 
                 <TextView
                     android:id="@+id/userProfileDescriptionTV"
                     android:layout_margin="16dp"
+                    android:backgroundTint="@color/background_card"
+                    android:textColor="@color/text"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:cardCornerRadius="30dp"/>
-            </androidx.cardview.widget.CardView>
+                    android:layout_height="match_parent" />
+            </com.google.android.material.card.MaterialCardView>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                android:text="My Apartments"
+                android:text="Apartments"
                 android:textAppearance="?attr/textAppearanceSubtitle1"
                 android:textStyle="bold" />
 

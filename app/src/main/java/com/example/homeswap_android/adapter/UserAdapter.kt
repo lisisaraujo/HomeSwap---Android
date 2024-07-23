@@ -31,7 +31,7 @@ class UserAdapter(
         binding.userListNameTV.text = user.name
         binding.userListLocationTV.text = user.location
         binding.ratingNumberTV.text = String.format("%.1f", user.rating)
-        binding.userListSwapsTV.text = "${user.swaps} swaps"
+        binding.userListReviewsTV.text = "${user.reviewsCount} reviews"
         binding.userListProfilePicIV.load(user.profilePic)
 
 
