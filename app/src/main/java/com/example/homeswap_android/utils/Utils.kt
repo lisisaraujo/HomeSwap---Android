@@ -16,6 +16,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
+import androidx.navigation.NavOptions
 import com.example.homeswap_android.R
 import com.google.android.gms.common.api.ApiException
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
@@ -182,6 +183,28 @@ fun hideLoadingOverlay(loadingOverlay: ConstraintLayout) {
             dialog.dismiss()
         }
         builder.create().show()
+    }
+
+    // navigation animation
+
+    // Navigation animation for bottom-to-top transitions
+    fun getBottomNavOptions(): NavOptions {
+        return NavOptions.Builder()
+            .setEnterAnim(R.anim.slide_in_bottom)
+            .setExitAnim(R.anim.slide_out_bottom)
+            .setPopEnterAnim(R.anim.slide_in_bottom)
+            .setPopExitAnim(R.anim.slide_out_bottom)
+            .build()
+    }
+
+    // Navigation animation for left-to-right transitions
+    fun getLeftToRightNavOptions(): NavOptions {
+        return NavOptions.Builder()
+            .setEnterAnim(R.anim.slide_in_right)
+            .setExitAnim(R.anim.slide_out_left)
+            .setPopEnterAnim(R.anim.slide_in_left)
+            .setPopExitAnim(R.anim.slide_out_right)
+            .build()
     }
 
 }

@@ -21,6 +21,7 @@ import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.data.models.Review
 import com.example.homeswap_android.databinding.FragmentApartmentDetailsBinding
 import com.example.homeswap_android.utils.Utils
+import com.example.homeswap_android.utils.Utils.getLeftToRightNavOptions
 import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 import com.example.homeswap_android.viewModels.ReviewsViewModel
@@ -174,7 +175,8 @@ class ApartmentDetailsFragment : Fragment() {
                 findNavController().navigate(
                     ApartmentDetailsFragmentDirections.actionApartmentDetailsFragmentToApartmentPicturesFragment(
                         apartmentID
-                    )
+                    ),
+                    getLeftToRightNavOptions()
                 )
             }
 
@@ -182,7 +184,8 @@ class ApartmentDetailsFragment : Fragment() {
                 findNavController().navigate(
                     ApartmentDetailsFragmentDirections.actionApartmentDetailsFragmentToApartmentPicturesFragment(
                         apartmentID
-                    )
+                    ),
+                    getLeftToRightNavOptions()
                 )
             }
 

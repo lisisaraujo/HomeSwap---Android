@@ -2,18 +2,17 @@ package com.example.homeswap_android.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.data.models.Review
 import com.example.homeswap_android.databinding.ReviewListItemBinding
-import com.example.homeswap_android.utils.ReviewDiffUtil
 
 
 class ReviewAdapter(
-) : ListAdapter<Review, ReviewAdapter.ItemViewHolder>(ReviewDiffUtil()) {
+) : ListAdapter<Review, ReviewAdapter.ItemViewHolder>(ReviewDiffCallback()) {
 
     inner class ItemViewHolder(val binding: ReviewListItemBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -41,5 +40,19 @@ class ReviewAdapter(
         holder.binding.dateTV.text = item.date
         holder.binding.profileIV.load(item.reviewerProfilePic)
         holder.binding.ratingBar.rating = item.rating!!
+    }
+
+    class ReviewDiffCallback : DiffUtil.ItemCallback<Review>() {
+        override fun areItemsTheSame(oldItem: Review, newItem: Review): Boolean {
+            return (oldItem.reviewID == newItem.reviewID)
+        }
+
+        override fun areContentsTheSame(oldItem: Review, newItem: Review): Boolean {
+            return (oldItem.review == newItem.review &&
+                    oldItem.date == newItem.date &&
+                    oldItem.reviewerName == newItem.reviewerName &&
+                    oldItem.rating == newItem.rating &&
+                    oldItem.reviewerProfilePic == newItem.reviewerProfilePic)
+        }
     }
 }

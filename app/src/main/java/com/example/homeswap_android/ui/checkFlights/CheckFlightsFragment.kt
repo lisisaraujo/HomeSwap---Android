@@ -41,8 +41,6 @@ class CheckFlightsFragment : Fragment() {
     private var departureDate: Date? = null
     private var returnDate: Date? = null
     private var hasBundleData = false
-//    private var initialSearchDone = false
-
     private var isOneWayTrip = false
 
     override fun onCreateView(

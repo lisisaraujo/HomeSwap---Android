@@ -14,6 +14,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import com.example.homeswap_android.databinding.ActivityMainBinding
+import com.example.homeswap_android.utils.Utils.getBottomNavOptions
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 import com.google.android.libraries.places.api.Places
 import com.google.firebase.Firebase
@@ -37,23 +38,18 @@ class MainActivity : AppCompatActivity() {
             DebugAppCheckProviderFactory.getInstance(),
         )
 
-
-
-        // google places API initialization
+        // Google Places API initialization
         Places.initialize(applicationContext, googlePlacesApiKey)
 
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
         val navController = navHostFragment.navController
 
-
-// fix elements position when keyboard appears:
+        // Fix elements position when keyboard appears
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
-
-        //Listener der bei jeder Navigation ausgeführt
+        // Listener for each navigation change
         navController.addOnDestinationChangedListener { navController: NavController, navDestination: NavDestination, bundle: Bundle? ->
-
             logBackStack(navController)
             Log.d("navDestination", navDestination.label.toString())
 
@@ -64,7 +60,6 @@ class MainActivity : AppCompatActivity() {
                 }
                 else -> binding.bottomNavView.visibility = View.GONE
             }
-
         }
 
         if (!userViewModel.isUserLoggedIn()) {
@@ -79,7 +74,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 else -> {
                     if (navController.currentDestination?.id != menuItem.itemId) {
-                        navController.navigate(menuItem.itemId)
+                        navController.navigate(menuItem.itemId, null, getBottomNavOptions())
                     }
                     navController.popBackStack(menuItem.itemId, false)
                     true
@@ -87,11 +82,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-
-
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-
                 if (navController.currentDestination?.id == R.id.usersListHomeFragment) {
                     val builder = AlertDialog.Builder(this@MainActivity)
                     builder.setTitle("Please confirm")
@@ -99,30 +91,24 @@ class MainActivity : AppCompatActivity() {
                     builder.setPositiveButton("Yes") { _, _ ->
                         finish()
                     }
-                    builder.setNegativeButton("No") { _, _ ->
-                    }
+                    builder.setNegativeButton("No") { _, _ -> }
                     builder.show()
                 } else {
                     navController.navigateUp()
                 }
-
             }
-
         })
-
     }
 
-    //Test Code, Warnungen können ignoriert werden da der Code vor Release entfernt wird
+    // Test Code, warnings can be ignored as the code will be removed before release
     @SuppressLint("RestrictedApi")
     fun logBackStack(navController: NavController) {
-        //Print navController Backstack
+        // Print navController Backstack
         val backStackList = navController.currentBackStack.value
         val backStackString = backStackList.map {
-
             it.destination.label
             it.destination.displayName.split('/').last()
             it.destination.displayName.substringAfterLast('/')
-
         }
         Log.d("Backstack", backStackString.toString())
     }
@@ -131,5 +117,4 @@ class MainActivity : AppCompatActivity() {
         val dialog = InboxDialogFragment()
         dialog.show(supportFragmentManager, "InboxDialogFragment")
     }
-
 }
