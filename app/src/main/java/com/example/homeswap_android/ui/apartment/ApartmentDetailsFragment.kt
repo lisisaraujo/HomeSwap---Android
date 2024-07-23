@@ -61,6 +61,8 @@ class ApartmentDetailsFragment : Fragment() {
 
         apartmentViewModel.getApartment(apartmentID).observe(viewLifecycleOwner) { apartment ->
             if (apartment != null) {
+
+                binding.toolbar.title = "${apartment.title}"
                 Log.d(TAG, apartment.city)
                 with(binding) {
                     //type of home

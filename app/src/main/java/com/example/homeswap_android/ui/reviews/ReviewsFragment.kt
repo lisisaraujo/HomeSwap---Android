@@ -62,6 +62,7 @@ class ReviewsFragment : Fragment() {
                     Log.e(TAG, "Error fetching user reviews", error)
                     return@addSnapshotListener
                 }
+
                 Log.d(TAG, userReviews.toString())
                 reviewAdapter.submitList(userReviews!!.toObjects(Review::class.java))
             }

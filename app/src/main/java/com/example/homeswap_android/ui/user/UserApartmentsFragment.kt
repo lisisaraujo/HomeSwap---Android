@@ -8,8 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import coil.load
 import com.example.homeswap_android.adapter.EditApartmentAdapter
 import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.databinding.FragmentMyListingsBinding
@@ -19,6 +21,7 @@ import com.example.homeswap_android.ui.home.HomeFragmentDirections
 import com.example.homeswap_android.ui.personal.options.MyListingsFragmentDirections
 import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
+import kotlinx.coroutines.launch
 
 class UserApartmentsFragment : Fragment() {
 
@@ -82,6 +85,13 @@ class UserApartmentsFragment : Fragment() {
 
         }
 
+        viewLifecycleOwner.lifecycleScope.launch {
+            userViewModel.selectedUserData.collect { user ->
+                if (user != null) {
+                    binding.toolbar.title = "${user.name}'s Apartments"
+                }
+            }
+        }
     }
 
 }

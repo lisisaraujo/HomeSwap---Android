@@ -63,6 +63,7 @@ class UserDetailsFragment : Fragment() {
                     binding.rating.text = user.rating.toString()
                     binding.userDetailsReviewsTV.text = "${user.reviewsCount} reviews"
                     binding.userProfileDescriptionTV.text = user.bioDescription
+                    binding.toolbar.title = "${user.name}'s Profile"
                 }
             }
         }
@@ -122,5 +123,7 @@ class UserDetailsFragment : Fragment() {
                 )
             )
         }
+
+
     }
 }
