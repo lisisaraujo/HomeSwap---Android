@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/homeFragment"
-        android:icon="@drawable/search_48px"
+        android:icon="@drawable/travel_explore_48px"
         android:title="explore" />
     <item
         android:id="@+id/favoritesFragment"

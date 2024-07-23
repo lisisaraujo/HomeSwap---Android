@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import coil.load
@@ -45,6 +46,9 @@ class RegisterProfileDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val loadingOverlay = view.findViewById<ConstraintLayout>(R.id.loading_overlay)
+
 
         //google places API setup
         placesClient = Places.createClient(requireContext())
@@ -83,6 +87,8 @@ class RegisterProfileDetailsFragment : Fragment() {
                 }
 
                 binding.continueBTN.setOnClickListener {
+                    Utils.showLoadingOverlay(loadingOverlay)
+
                     val location = binding.registerProfileLocationET.text.toString().trim()
                     val bioDescription = binding.bioDescriptionET.text.toString()
                     val currentDate = Utils.dateFormat.format(Date())
@@ -96,12 +102,20 @@ class RegisterProfileDetailsFragment : Fragment() {
 
                             )
                         ) { success ->
-                            if (success) findNavController().navigate(R.id.homeFragment)
-                            else Toast.makeText(
-                                context,
-                                "Fill out all data to continue",
-                                Toast.LENGTH_LONG
-                            ).show()
+                            Utils.hideLoadingOverlay(loadingOverlay)
+
+                            if (success) {
+                                Utils.hideLoadingOverlay(loadingOverlay)
+                                findNavController().navigate(R.id.homeFragment)
+                            }
+                            else {
+                                Utils.hideLoadingOverlay(loadingOverlay)
+                                Toast.makeText(
+                                    context,
+                                    "Fill out all data to continue",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
                         }
                     }
                 }

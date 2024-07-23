@@ -80,12 +80,12 @@ class UserDetailsFragment : Fragment() {
             apartmentViewModel.toggleLike(apartment)
         }
 
-        apartmentAdapter = ApartmentAdapter(emptyList(), itemClickedCallback, onLikeClickListener)
+        apartmentAdapter = ApartmentAdapter( itemClickedCallback, onLikeClickListener)
         binding.userDetailsApartmentsListRV.adapter = apartmentAdapter
 
         apartmentViewModel.getUserApartments(userID).addSnapshotListener { userApartments, _ ->
             Log.d(TAG, userApartments.toString())
-            apartmentAdapter.updateApartments(userApartments!!.toObjects(Apartment::class.java))
+            apartmentAdapter.submitList(userApartments!!.toObjects(Apartment::class.java))
         }
 
         binding.toolbar.setNavigationOnClickListener {

@@ -57,7 +57,6 @@ class SearchResultsFragment : Fragment() {
         }
 
         apartmentAdapter = ApartmentAdapter(
-            emptyList(),
             itemClickedCallback,
             onLikeClickListener
         )
@@ -80,7 +79,7 @@ class SearchResultsFragment : Fragment() {
             launch {
                 apartmentsViewModel.apartmentsBySearch.collectLatest { apartmentsBySearch ->
                     if (apartmentsBySearch.isNotEmpty()) {
-                        apartmentAdapter.updateApartments(apartmentsBySearch)
+                        apartmentAdapter.submitList(apartmentsBySearch)
                         updateLoadingState(false)
                         binding.searchResultsInfoTV.text =
                             "Found ${apartmentsBySearch.size} results for your search"

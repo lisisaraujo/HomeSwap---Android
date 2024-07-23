@@ -11,14 +11,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import coil.load
-import com.example.homeswap_android.adapter.EditApartmentAdapter
 import com.example.homeswap_android.data.models.Apartment
-import com.example.homeswap_android.databinding.FragmentMyListingsBinding
 import com.example.homeswap_android.databinding.FragmentUserApartmentsBinding
-import com.example.homeswap_android.ui.apartment.ApartmentDetailsFragmentArgs
-import com.example.homeswap_android.ui.home.HomeFragmentDirections
-import com.example.homeswap_android.ui.personal.options.MyListingsFragmentDirections
 import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 import kotlinx.coroutines.launch
@@ -69,7 +63,6 @@ class UserApartmentsFragment : Fragment() {
 
 
         apartmentAdapter = ApartmentAdapter(
-            emptyList(),
             itemClickedCallback,
             onLikeClickListener
         )
@@ -77,7 +70,7 @@ class UserApartmentsFragment : Fragment() {
 
         apartmentViewModel.getUserApartments(userID!!).addSnapshotListener { userApartments, _ ->
             Log.d(TAG, userApartments.toString())
-            apartmentAdapter.updateApartments(userApartments!!.toObjects(Apartment::class.java))
+            apartmentAdapter.submitList(userApartments!!.toObjects(Apartment::class.java))
         }
 
         binding.toolbar.setNavigationOnClickListener {

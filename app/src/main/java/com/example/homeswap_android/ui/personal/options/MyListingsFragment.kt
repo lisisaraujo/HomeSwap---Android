@@ -1,5 +1,6 @@
 package com.example.homeswap_android.ui.personal.options
 
+import EditApartmentAdapter
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -12,7 +13,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.homeswap_android.R
-import com.example.homeswap_android.adapter.EditApartmentAdapter
 import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.databinding.FragmentMyListingsBinding
 import com.example.homeswap_android.ui.user.UserDetailsFragmentArgs
@@ -47,13 +47,13 @@ class MyListingsFragment : Fragment() {
         }
 
 
-        editApartmentAdapter = EditApartmentAdapter(emptyList(), itemClickedCallback)
+        editApartmentAdapter = EditApartmentAdapter(itemClickedCallback)
 
         binding.myListingsRV.adapter = editApartmentAdapter
 
         apartmentViewModel.getUserApartments(userID!!).addSnapshotListener { userApartments, _ ->
             Log.d(TAG, userApartments.toString())
-            editApartmentAdapter.updateApartments(userApartments!!.toObjects(Apartment::class.java))
+            editApartmentAdapter.submitList(userApartments!!.toObjects(Apartment::class.java))
         }
 
         binding.toolbar.setNavigationOnClickListener {

@@ -10,11 +10,13 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.homeswap_android.R
 import com.example.homeswap_android.databinding.FragmentSettingsBinding
+import com.example.homeswap_android.utils.Utils
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 
 class SettingsFragment : Fragment() {
@@ -60,6 +62,9 @@ class SettingsFragment : Fragment() {
     }
 
     private fun showDeleteAccountConfirmationDialog() {
+        val loadingOverlay = view?.findViewById<ConstraintLayout>(R.id.loading_overlay)
+
+
         val passwordEditText = EditText(requireContext())
         passwordEditText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
 
@@ -70,9 +75,12 @@ class SettingsFragment : Fragment() {
             .setPositiveButton("Delete") { _, _ ->
                 val password = passwordEditText.text.toString()
                 if (password.isNotEmpty()) {
+                    Utils.showLoadingOverlay(loadingOverlay!!)
                     userViewModel.deleteUser(
                         password,
                         onSuccess = {
+                            Utils.hideLoadingOverlay(loadingOverlay)
+                            Toast.makeText(requireContext(), "Account deleted successfully", Toast.LENGTH_LONG).show()
                             findNavController().navigate(R.id.loginFragment)
                         },
                         onFailure = { error ->

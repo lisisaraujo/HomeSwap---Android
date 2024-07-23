@@ -61,10 +61,10 @@
             android:layout_height="wrap_content"
             android:textColor="@color/background"
             android:textSize="16sp"
-            android:fontFamily="sans-serif-medium"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:text="1 / 10" />
 

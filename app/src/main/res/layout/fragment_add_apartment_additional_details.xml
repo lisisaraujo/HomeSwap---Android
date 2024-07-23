@@ -65,6 +65,7 @@
                 android:id="@+id/roomsLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textStyle="bold"
                 android:layout_marginTop="24dp"
                 android:text="Number of Rooms: 1"
                 android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
@@ -86,6 +87,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
+                android:textStyle="bold"
                 android:text="Max Guests: 1"
                 android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                 app:layout_constraintStart_toStartOf="parent"
@@ -107,6 +109,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:text="Pets Allowed"
+                android:textStyle="bold"
                 android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
                 app:layout_constraintTop_toBottomOf="@+id/maxGuestsSlider" />
 
@@ -116,6 +119,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="Home Office"
+                android:textStyle="bold"
                 android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
                 app:layout_constraintTop_toBottomOf="@+id/petsAllowedSwitch" />
 
@@ -125,6 +129,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="Has Wifi"
+                android:textStyle="bold"
                 android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
                 app:layout_constraintTop_toBottomOf="@+id/homeOfficeSwitch" />
 
@@ -134,6 +139,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
                 android:text="Submit"
+                android:textStyle="bold"
                 android:textColor="@color/background"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

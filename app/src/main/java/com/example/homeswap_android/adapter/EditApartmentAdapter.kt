@@ -1,27 +1,20 @@
-package com.example.homeswap_android.adapter
-
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import com.example.homeswap_android.R
 import com.example.homeswap_android.data.models.Apartment
 import com.example.homeswap_android.databinding.MyApartmentsListItemBinding
 import com.example.homeswap_android.ui.personal.options.MyListingsFragmentDirections
-import com.example.homeswap_android.viewModels.FirebaseApartmentsViewModel
 
 class EditApartmentAdapter(
-    private var apartments: List<Apartment>,
-    private val itemClickedCallback: (Apartment) -> Unit,
-) :
-    RecyclerView.Adapter<EditApartmentAdapter.MyViewHolder>() {
+    private val itemClickedCallback: (Apartment) -> Unit
+) : ListAdapter<Apartment, EditApartmentAdapter.MyViewHolder>(ApartmentDiffCallback()) {
 
-    class MyViewHolder(val binding: MyApartmentsListItemBinding) :
-        RecyclerView.ViewHolder(binding.root)
+    class MyViewHolder(val binding: MyApartmentsListItemBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         return MyViewHolder(
@@ -32,9 +25,8 @@ class EditApartmentAdapter(
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val apartment = apartments[position]
+        val apartment = getItem(position)
         Log.d("ApartmentID", apartment.apartmentID)
-
 
         holder.binding.apartmentTitleTV.text = apartment.title
         holder.binding.apartmentCityTV.text = apartment.city
@@ -55,12 +47,13 @@ class EditApartmentAdapter(
         }
     }
 
-    override fun getItemCount(): Int {
-        return apartments.size
-    }
+    class ApartmentDiffCallback : DiffUtil.ItemCallback<Apartment>() {
+        override fun areItemsTheSame(oldItem: Apartment, newItem: Apartment): Boolean {
+            return oldItem.apartmentID == newItem.apartmentID
+        }
 
-    fun updateApartments(newApartments: List<Apartment>) {
-        apartments = newApartments
-        notifyDataSetChanged()
+        override fun areContentsTheSame(oldItem: Apartment, newItem: Apartment): Boolean {
+            return oldItem == newItem
+        }
     }
 }

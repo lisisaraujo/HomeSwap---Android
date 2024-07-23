@@ -29,16 +29,16 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/apartmentDetailsCV"
-            android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:layout_marginBottom="16dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="2dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/apartmentDetailsCV"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
                     android:id="@+id/coverPictureIV"
@@ -46,74 +46,75 @@
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
                     tools:srcCompat="@tools:sample/backgrounds/scenic" />
-        </com.google.android.material.card.MaterialCardView>
+            </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/updatePhotosBTN"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:text="Change Photos"
-                style="@style/Widget.MaterialComponents.Button.TextButton"/>
+                android:textStyle="bold" />
 
-        <HorizontalScrollView
-            android:id="@+id/horizontalScrollView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp">
-
-            <LinearLayout
-                android:id="@+id/selectedImagesContainer"
-                android:layout_width="wrap_content"
+            <HorizontalScrollView
+                android:id="@+id/horizontalScrollView"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp" />
-        </HorizontalScrollView>
+                android:layout_marginBottom="16dp">
+
+                <LinearLayout
+                    android:id="@+id/selectedImagesContainer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp" />
+            </HorizontalScrollView>
 
             <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:hint="Apartment Title"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                android:hint="Apartment Title">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/apartmentTitleTV"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text"/>
+                    android:inputType="text" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:hint="Location"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                android:hint="Location">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/updatedApartmentLocationTV"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text"/>
+                    android:inputType="text" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:hint="Description"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                android:hint="Description">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/updatedApartmentDescriptionET"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textMultiLine"
-                    android:minLines="3"/>
+                    android:minLines="3" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -158,6 +159,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
+                        android:textStyle="bold"
                         android:text="Select Dates"
                         app:cornerRadius="30dp"
                         app:icon="@drawable/baseline_calendar_month_24" />
@@ -170,10 +172,11 @@
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Delete Apartment"
                 android:layout_marginTop="50dp"
+                android:text="Delete Apartment"
                 android:textColor="@color/design_default_color_error"
                 app:cornerRadius="30dp"
+                android:textStyle="bold"
                 app:strokeColor="@color/design_default_color_error" />
 
         </LinearLayout>
@@ -186,8 +189,12 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
+        android:backgroundTint="@color/primary"
         android:text="Save Changes"
-        app:icon="@drawable/baseline_check_24"/>
+        android:textColor="@color/background"
+        android:textStyle="bold"
+        app:icon="@drawable/baseline_check_24"
+        app:iconTint="@color/background" />
 
     <include layout="@layout/loading_overlay" />
 

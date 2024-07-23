@@ -1,5 +1,7 @@
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.homeswap_android.data.models.Apartment
@@ -7,10 +9,9 @@ import com.example.homeswap_android.databinding.ApartmentListItemBinding
 import com.example.homeswap_android.utils.Utils.updateLikeButton
 
 class ApartmentAdapter(
-    private var apartments: List<Apartment>,
     private val itemClickedCallback: (Apartment) -> Unit,
-    private val onLikeClickListener: (Apartment) -> Unit,
-) : RecyclerView.Adapter<ApartmentAdapter.MyViewHolder>() {
+    private val onLikeClickListener: (Apartment) -> Unit
+) : ListAdapter<Apartment, ApartmentAdapter.MyViewHolder>(ApartmentDiffCallback()) {
 
     val TAG = "ApartmentAdapter"
 
@@ -25,10 +26,9 @@ class ApartmentAdapter(
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-
-
-        val apartment = apartments[position]
+        val apartment = getItem(position)
         val binding = holder.binding
+
         binding.apartmentTitleTV.text = apartment.title
         binding.apartmentCityTV.text = apartment.city
 
@@ -46,20 +46,20 @@ class ApartmentAdapter(
             onLikeClickListener(apartment)
         }
 
-        apartment.rating.let {
-            binding.apartmentRatingBar.rating = apartment.rating!!
+        apartment.rating?.let {
+            binding.apartmentRatingBar.rating = it
         }
 
-       binding.apartmentRatingTV.text = "${apartment.rating} (${apartment.reviewsCount} reviews)"
+        binding.apartmentRatingTV.text = "${apartment.rating} (${apartment.reviewsCount} reviews)"
     }
 
-    override fun getItemCount(): Int {
-        return apartments.size
-    }
+    class ApartmentDiffCallback : DiffUtil.ItemCallback<Apartment>() {
+        override fun areItemsTheSame(oldItem: Apartment, newItem: Apartment): Boolean {
+            return oldItem.apartmentID == newItem.apartmentID
+        }
 
-    fun updateApartments(newApartments: List<Apartment>) {
-        apartments = newApartments
-        notifyDataSetChanged()
+        override fun areContentsTheSame(oldItem: Apartment, newItem: Apartment): Boolean {
+            return oldItem == newItem
+        }
     }
-
 }

@@ -6,9 +6,31 @@
         <item name="boxStrokeWidth">2dp</item>
     </style>
 
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Regular font -->
+        <item name="android:fontFamily">@font/montserrat_regular_font</item>
+        <item name="fontFamily">@font/montserrat_regular_font</item>
+
+        <!-- Bold font -->
+        <item name="android:textStyle">normal|bold</item>
+        <item name="android:fontFamily">@font/montserrat_bold</item>
+
+        <!-- Italic font -->
+        <item name="android:textStyle">normal|italic</item>
+        <item name="android:fontFamily">@font/montserrat_italic</item>
+    </style>
+
+    <style name="CustomTabLayoutStyle" parent="Widget.Material3.TabLayout">
+        <item name="tabTextAppearance">@style/CustomTabTextAppearance</item>
+    </style>
+
+    <style name="CustomTabTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="android:fontFamily">@font/montserrat_bold_font</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
 
     <!-- Rounded alert dialog window -->
-
     <style name="RoundedAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowIsFloating">true</item>

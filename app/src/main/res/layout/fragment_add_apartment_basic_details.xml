@@ -19,6 +19,7 @@
             android:layout_height="?attr/actionBarSize"
             app:navigationIcon="@drawable/arrow_back_24px"
             app:title="Add Apartment"
+            android:textStyle="bold"
             app:titleCentered="true"
             app:titleTextColor="@color/text" />
     </com.google.android.material.appbar.AppBarLayout>

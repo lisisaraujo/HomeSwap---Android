@@ -45,12 +45,12 @@ class FavoritesFragment : Fragment() {
             apartmentsViewModel.loadLikedApartments()
         }
 
-        apartmentAdapter = ApartmentAdapter(emptyList(), itemClickedCallback, onLikeClickListener)
+        apartmentAdapter = ApartmentAdapter(itemClickedCallback, onLikeClickListener)
         binding.favoriteApartmentsRV.adapter = apartmentAdapter
 
         apartmentsViewModel.likedApartments.observe(viewLifecycleOwner) { likedApartments ->
             Log.d("FavoritesFragment", "Received ${likedApartments.size} liked apartments")
-            apartmentAdapter.updateApartments(likedApartments)
+            apartmentAdapter.submitList(likedApartments)
         }
         binding.toolbar.setNavigationOnClickListener {
             findNavController().navigateUp()

@@ -63,6 +63,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="John Doe"
+                    android:textStyle="bold"
                     android:textAppearance="?attr/textAppearanceHeadline5"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -103,6 +104,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="15"
+                            android:textStyle="bold"
+
                             android:textAppearance="?attr/textAppearanceHeadline6"
                             android:textColor="?attr/colorPrimary" />
 
@@ -145,6 +148,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="4.8"
+                                android:textStyle="bold"
+
                                 android:textAppearance="?attr/textAppearanceHeadline6"
                                 android:textColor="?attr/colorPrimary" />
 

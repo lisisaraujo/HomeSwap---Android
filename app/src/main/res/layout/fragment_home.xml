@@ -10,17 +10,18 @@
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorSurface"
+        android:background="@color/background"
         android:fitsSystemWindows="true"
         app:liftOnScroll="true">
 
         <com.google.android.material.search.SearchBar
             android:id="@+id/searchBar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:layout_margin="16dp"
-            android:hint="@string/search_hint"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
             android:background="@color/background"
+            android:hint="@string/search_hint"
+            android:backgroundTint="@color/background_card"
             app:layout_scrollFlags="scroll|enterAlways|snap" />
 
         <com.google.android.material.tabs.TabLayout
@@ -28,14 +29,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:tabMode="fixed"
-            style="@style/Widget.Material3.TabLayout" />
+            style="@style/CustomTabLayoutStyle" />
 
     </com.google.android.material.appbar.AppBarLayout>
-
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fontFamily="@font/montserrat_bold_font"
+        android:textStyle="bold"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -6,11 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.homeswap_android.R
 import com.example.homeswap_android.data.models.UserData
 import com.example.homeswap_android.databinding.FragmentRegisterBinding
+import com.example.homeswap_android.utils.Utils
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 
 class RegisterFragment : Fragment() {
@@ -27,8 +29,12 @@ class RegisterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val loadingOverlay = view.findViewById<ConstraintLayout>(R.id.loading_overlay)
+
+
         viewModel.registerResult.observe(viewLifecycleOwner) { success ->
             if (success) {
+                Utils.hideLoadingOverlay(loadingOverlay)
                 findNavController().navigate(R.id.registerProfileDetailsFragment)
             } else {
                 Toast.makeText(requireContext(), "Registration failed. Email may already be in use.", Toast.LENGTH_SHORT).show()
@@ -36,6 +42,8 @@ class RegisterFragment : Fragment() {
         }
 
         binding.continueBTN.setOnClickListener {
+            Utils.showLoadingOverlay(loadingOverlay)
+
             val name = binding.nameET.text.toString().trim()
             val email = binding.emailET.text.toString().trim()
             val password = binding.passwordET.text.toString().trim()
@@ -48,11 +56,12 @@ class RegisterFragment : Fragment() {
                 viewModel.register(email, password, newUserData)
                 viewModel.login(email, password)
             } else {
+                Utils.hideLoadingOverlay(loadingOverlay)
                 Toast.makeText(requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show()
             }
         }
 
-        binding.registerBackBTN.setOnClickListener {
+        binding.toolbar.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
     }

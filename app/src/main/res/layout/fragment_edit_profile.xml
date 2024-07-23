@@ -51,6 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="8dp"
+                android:textStyle="bold"
                 android:text="Change Photo"
                 style="@style/Widget.MaterialComponents.Button.TextButton"/>
 
@@ -110,6 +111,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
+        android:textColor="@color/background"
+        app:iconTint="@color/background"
+        android:textStyle="bold"
+        android:backgroundTint="@color/primary"
         android:text="Save Changes"
         app:icon="@drawable/baseline_check_24"/>
 
