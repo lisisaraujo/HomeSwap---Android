@@ -99,7 +99,7 @@
                         android:gravity="center">
 
                         <TextView
-                            android:id="@+id/userDetailsReviewsTV"
+                            android:id="@+id/myProfileReviewsTV"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="15"
@@ -206,7 +206,7 @@
                     android:layout_marginTop="32dp">
 
                     <TextView
-                        android:id="@+id/myListingsTitle"
+                        android:id="@+id/userProfileApartmentsTV"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -219,7 +219,7 @@
                         android:contentDescription="Go to My Listings Page" />
 
                     <TextView
-                        android:id="@+id/seeAllListings"
+                        android:id="@+id/seeAllReviews"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/see_all"

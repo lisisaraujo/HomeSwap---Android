@@ -103,14 +103,22 @@ class UserDetailsFragment : Fragment() {
                     userReviews?.toObjects(Review::class.java)
                 Log.d(TAG, userReviewsList.toString())
                 reviewsAdapter.submitList(userReviewsList)
-                binding.userReviewsTV.text = "Reviews (${userReviewsList!!.size})"
+                binding.userDetailsReviewsTV.text = "Reviews (${userReviewsList!!.size})"
             }
 
-        binding.userReviewsTV.setOnClickListener {
+        binding.seeAllReviews.setOnClickListener {
             findNavController().navigate(
                 UserDetailsFragmentDirections.actionUserDetailsFragmentToReviewsFragment(
                     apartmentID = null,
                     userID = userID
+                )
+            )
+        }
+
+        binding.seeAllUserApartments.setOnClickListener {
+            findNavController().navigate(
+                UserDetailsFragmentDirections.actionUserDetailsFragmentToUserApartmentsFragment(
+              userID
                 )
             )
         }

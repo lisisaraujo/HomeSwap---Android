@@ -130,8 +130,8 @@
             android:id="@+id/action_userDetailsFragment_to_reviewsFragment"
             app:destination="@id/reviewsFragment" />
         <action
-            android:id="@+id/action_userDetailsFragment_to_myListingsFragment"
-            app:destination="@id/myListingsFragment" />
+            android:id="@+id/action_userDetailsFragment_to_userApartmentsFragment"
+            app:destination="@id/userApartmentsFragment" />
     </fragment>
     <fragment
         android:id="@+id/myListingsFragment"
@@ -272,6 +272,18 @@
         <argument
             android:name="userID"
             app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/userApartmentsFragment"
+        android:name="com.example.homeswap_android.ui.user.UserApartmentsFragment"
+        android:label="UserApartmentsFragment"
+        tools:layout="@layout/fragment_user_apartments">
+        <argument
+            android:name="userID"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_userApartmentsFragment_to_apartmentDetailsFragment"
+            app:destination="@id/apartmentDetailsFragment" />
     </fragment>
 
 </navigation>

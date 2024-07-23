@@ -100,7 +100,7 @@ class MyProfileFragment : Fragment() {
                     userReviews?.toObjects(Review::class.java)
                 Log.d(TAG, userReviewsList.toString())
                 reviewsAdapter.submitList(userReviewsList)
-                binding.userDetailsReviewsTV.text = "${userReviewsList!!.size}"
+                binding.myProfileReviewsTV.text = "${userReviewsList!!.size}"
             }
 
         binding.seeAllReviewsTV.setOnClickListener {
@@ -112,7 +112,7 @@ class MyProfileFragment : Fragment() {
             )
         }
 
-        binding.seeAllListings.setOnClickListener {
+        binding.seeAllReviews.setOnClickListener {
             findNavController().navigate(R.id.myListingsFragment
                 )
         }
@@ -130,7 +130,7 @@ class MyProfileFragment : Fragment() {
         binding.profileImage.load(user.profilePic)
         binding.locationTV.text = user.location
         binding.rating.text = user.rating.toString()
-        binding.userDetailsReviewsTV.text = "${user.reviewsCount} reviews"
+        binding.reviewsTitleTV.text = "Reviews (${user.reviewsCount})"
         binding.myProfileDescriptionTV.text = user.bioDescription
     }
 

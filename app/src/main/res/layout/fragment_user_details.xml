@@ -97,7 +97,7 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/userDetailsReviewsTV"
+                android:id="@+id/myProfileReviewsTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -131,13 +131,39 @@
                     android:layout_height="match_parent" />
             </com.google.android.material.card.MaterialCardView>
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:text="Apartments"
-                android:textAppearance="?attr/textAppearanceSubtitle1"
-                android:textStyle="bold" />
+                android:orientation="horizontal"
+                android:layout_marginTop="32dp">
+
+                <TextView
+                    android:id="@+id/userProfileApartmentsTV"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Apartments"
+                    android:textStyle="bold"
+                    android:textAppearance="?attr/textAppearanceSubtitle1"
+                    android:textColor="@color/text"
+                    android:padding="8dp"
+                    android:background="@color/background" />
+
+                <TextView
+                    android:id="@+id/seeAllUserApartments"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/see_all"
+                    android:textColor="@color/link_color"
+                    android:textStyle="bold"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="8dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:contentDescription="See all listings" />
+
+            </LinearLayout>
+
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/userDetailsApartmentsListRV"
@@ -156,14 +182,39 @@
                 app:layout_constraintTop_toBottomOf="@+id/reviewsTV"
                 tools:listitem="@layout/apartment_list_item" />
 
-            <TextView
-                android:id="@+id/userReviewsTV"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Reviews"
-                android:textAppearance="?attr/textAppearanceSubtitle1"
-                android:textStyle="bold" />
+                android:orientation="horizontal"
+                android:layout_marginTop="32dp">
+
+                <TextView
+                    android:id="@+id/userDetailsReviewsTV"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Reviews"
+                    android:textStyle="bold"
+                    android:textAppearance="?attr/textAppearanceSubtitle1"
+                    android:textColor="@color/text"
+                    android:padding="8dp"
+                    android:background="@color/background" />
+
+                <TextView
+                    android:id="@+id/seeAllReviews"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/see_all"
+                    android:textColor="@color/link_color"
+                    android:textStyle="bold"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="8dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:contentDescription="See all listings" />
+
+            </LinearLayout>
+
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/userDetailsReviewsRV"
