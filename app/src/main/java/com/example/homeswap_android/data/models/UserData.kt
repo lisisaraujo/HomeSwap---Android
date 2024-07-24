@@ -1,7 +1,7 @@
 package com.example.homeswap_android.data.models
 
 data class UserData (
-   val userID: String = "",
+   val userID: String? = "",
    val location: String = "",
    val name: String = "",
    val email: String = "",
