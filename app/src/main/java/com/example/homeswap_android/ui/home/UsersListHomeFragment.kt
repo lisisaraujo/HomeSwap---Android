@@ -34,7 +34,7 @@ class UsersListHomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val itemClickedCallback: (UserData) -> Unit = { userData ->
-            Log.d(TAG, userData.userID)
+            Log.d(TAG, userData.userID!!)
             findNavController().navigate(
                 HomeFragmentDirections.actionHomeFragmentToUserDetailsFragment(userData.userID)
             )
@@ -49,27 +49,27 @@ class UsersListHomeFragment : Fragment() {
             userAdapter.updateUsers(users)
         }
 
-//        userViewModel.loggedInUser.observe(viewLifecycleOwner) { user ->
-//            user?.let { currentUser ->
-//                val userID = currentUser.uid
-//                val userRef = userViewModel.getUserDocumentReference(userID)
-//
-//                userRef.addSnapshotListener { value, error ->
-//                    if (error != null) {
-//                        Log.e(TAG, "Listen failed.", error)
-//                        return@addSnapshotListener
-//                    }
-//
-//                    if (value != null && value.exists()) {
-//                        val profile = value.toObject<UserData>()
-//                        profile?.let {
-//                            userViewModel.setProfile(it)
-//                        }
-//                    } else {
-//                        Log.d(TAG, "Current data: null")
-//                    }
-//                }
-//            }
-//        }
+        userViewModel.loggedInUser.observe(viewLifecycleOwner) { user ->
+            user?.let { currentUser ->
+                val userID = currentUser.uid
+                val userRef = userViewModel.getUserDocumentReference(userID)
+
+                userRef.addSnapshotListener { value, error ->
+                    if (error != null) {
+                        Log.e(TAG, "Listen failed.", error)
+                        return@addSnapshotListener
+                    }
+
+                    if (value != null && value.exists()) {
+                        val profile = value.toObject<UserData>()
+                        profile?.let {
+                            userViewModel.setProfile(it)
+                        }
+                    } else {
+                        Log.d(TAG, "Current data: null")
+                    }
+                }
+            }
+        }
     }
 }

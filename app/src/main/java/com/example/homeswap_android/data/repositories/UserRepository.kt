@@ -61,11 +61,13 @@ class UserRepository(
 
     init {
         usersCollectionReference.addSnapshotListener { value, error ->
-            _users.postValue(value!!.toObjects(UserData::class.java))
+            Log.d(TAG, "value: ${value.toString()}")
+            val usersObject = value!!.toObjects(UserData::class.java)
+            Log.d(TAG, usersObject.toString())
+            _users.postValue(usersObject)
         }
 
         auth.currentUser?.let { setupUserEnv() }
-
         refreshLoggedInUserData()
 
     }
@@ -77,6 +79,7 @@ class UserRepository(
 
     fun setupUserEnv() {
         val user = auth.currentUser
+
         if (user != null) {
             _loggedInUser.postValue(user)
             userDataDocumentReference.postValue(usersCollectionReference.document(user.uid))
@@ -103,8 +106,7 @@ class UserRepository(
 
     fun setProfile(profile: UserData) {
         userDataDocumentReference.value?.set(profile)
-        userDataDocumentReference.value?.update("userID", userDataDocumentReference.value?.id)
-        Log.d("NewProfile", profile.userID)
+        userDataDocumentReference.value?.update("userID", auth.currentUser?.uid)
         _loggedInUserData.value = profile
     }
 
@@ -113,11 +115,9 @@ class UserRepository(
             auth.signInWithEmailAndPassword(email, password).await()
             setupUserEnv()
             _loginResult.emit(true)
-            _registerResult.postValue(false)
         } catch (e: Exception) {
             Log.e(TAG, "Login failed: ${e.message}")
             _loginResult.emit(false)
-            _registerResult.postValue(true)
         }
         refreshLoggedInUserData()
     }
@@ -128,9 +128,12 @@ class UserRepository(
             .addOnSuccessListener { authResult ->
                 setupUserEnv()
                 val user = authResult.user!!
+                Log.d(TAG, user.uid)
                 sendEmailVerification(user)
 
-                usersCollectionReference.document(user.uid).set(userData)
+                val userDataWithID = userData.copy(userID = user.uid)
+
+                usersCollectionReference.document(user.uid).set(userDataWithID)
                     .addOnSuccessListener {
                         Log.d("FirebaseViewModel", "New user profile created successfully")
                         _registerResult.value = true

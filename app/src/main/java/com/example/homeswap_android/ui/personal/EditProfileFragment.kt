@@ -128,7 +128,7 @@ class EditProfileFragment : Fragment() {
             return
         } else {
             userViewModel.updateUserData(
-                currentProfile.userID, mapOf(
+                currentProfile.userID!!, mapOf(
                     "name" to updatedName,
                     "location" to updatedLocation,
                     "bioDescription" to updatedDescription,
