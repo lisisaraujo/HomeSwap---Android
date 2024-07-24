@@ -175,8 +175,7 @@ class ApartmentDetailsFragment : Fragment() {
                 findNavController().navigate(
                     ApartmentDetailsFragmentDirections.actionApartmentDetailsFragmentToApartmentPicturesFragment(
                         apartmentID
-                    ),
-                    getLeftToRightNavOptions()
+                    )
                 )
             }
 
@@ -184,8 +183,7 @@ class ApartmentDetailsFragment : Fragment() {
                 findNavController().navigate(
                     ApartmentDetailsFragmentDirections.actionApartmentDetailsFragmentToApartmentPicturesFragment(
                         apartmentID
-                    ),
-                    getLeftToRightNavOptions()
+                    )
                 )
             }
 

@@ -28,6 +28,7 @@ class UserAdapter(
         val user = users[position]
         val binding = holder.binding
 
+
         binding.userListNameTV.text = user.name
         binding.userListLocationTV.text = user.location
         binding.ratingNumberTV.text = String.format("%.1f", user.rating)
@@ -36,7 +37,7 @@ class UserAdapter(
 
 
         binding.userListCV.setOnClickListener {
-            Log.d("ClickedUser", user.name)
+            Log.d("userAdapter", "User ID: ${user.userID}, Name: ${user.name}")
             itemClickedCallback(user)
         }
     }

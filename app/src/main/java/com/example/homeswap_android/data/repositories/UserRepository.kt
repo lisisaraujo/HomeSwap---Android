@@ -113,9 +113,11 @@ class UserRepository(
             auth.signInWithEmailAndPassword(email, password).await()
             setupUserEnv()
             _loginResult.emit(true)
+            _registerResult.postValue(false)
         } catch (e: Exception) {
             Log.e(TAG, "Login failed: ${e.message}")
             _loginResult.emit(false)
+            _registerResult.postValue(true)
         }
         refreshLoggedInUserData()
     }
@@ -189,6 +191,7 @@ class UserRepository(
                 Log.e(TAG, "Error fetching user data: $exception")
             }
     }
+
 
 
     fun uploadImage(uri: Uri) {
