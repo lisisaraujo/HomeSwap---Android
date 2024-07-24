@@ -5,18 +5,18 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
 import com.example.homeswap_android.R
 import com.example.homeswap_android.adapter.ViewPagerAdapter
 import com.example.homeswap_android.databinding.FragmentHomeBinding
+import com.example.homeswap_android.viewModels.AddApartmentViewModel
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
 import com.google.android.material.tabs.TabLayout
+import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
 
@@ -25,6 +25,9 @@ class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private val userViewModel: FirebaseUsersViewModel by activityViewModels()
     private var currentTabPosition = 0
+
+
+    private val addApartmentViewModel: AddApartmentViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,6 +51,7 @@ class HomeFragment : Fragment() {
 
         val fragments = listOf(ApartmentsListHomeFragment(), UsersListHomeFragment())
         val adapter = ViewPagerAdapter(requireActivity().supportFragmentManager, lifecycle, fragments)
+
 
         binding.viewPager.adapter = adapter
         binding.tabLayout.addTab(binding.tabLayout.newTab().setText("Apartments"))

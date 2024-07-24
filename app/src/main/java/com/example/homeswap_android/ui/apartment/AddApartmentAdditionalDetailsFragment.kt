@@ -40,8 +40,6 @@ class AddApartmentAdditionalDetailsFragment : Fragment() {
             val homeOffice = binding.homeOfficeSwitch.isChecked
             val hasWifi = binding.hasWifiSwitch.isChecked
 
-            Log.d("AddApartmentFragment", "Submitting - Rooms: $rooms, MaxGuests: $maxGuests")
-
             addApartmentViewModel.saveAdditionalDetails(
                 rooms,
                 maxGuests,

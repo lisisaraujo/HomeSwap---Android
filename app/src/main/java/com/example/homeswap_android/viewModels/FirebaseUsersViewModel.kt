@@ -50,7 +50,9 @@ class FirebaseUsersViewModel : ViewModel() {
     }
 
     fun login(email: String, password: String) {
-        userRepository.login(email, password)
+        viewModelScope.launch {
+            userRepository.login(email, password)
+        }
     }
 
     fun register(email: String, password: String, userData: UserData) {

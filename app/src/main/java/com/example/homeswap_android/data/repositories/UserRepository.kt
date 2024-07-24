@@ -14,7 +14,9 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageException
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.tasks.await
 
@@ -48,9 +50,8 @@ class UserRepository(
     val users: LiveData<List<UserData>>
         get() = _users
 
-    private val _loginResult = MutableLiveData<Boolean>()
-    val loginResult: LiveData<Boolean>
-        get() = _loginResult
+    private val _loginResult = MutableSharedFlow<Boolean>()
+    val loginResult: SharedFlow<Boolean> get() = _loginResult
 
     private val _registerResult = MutableLiveData<Boolean>()
     val registerResult: LiveData<Boolean>
@@ -107,19 +108,18 @@ class UserRepository(
         _loggedInUserData.value = profile
     }
 
-    fun login(email: String, password: String) {
-        auth.signInWithEmailAndPassword(email, password)
-            .addOnSuccessListener {
-                setupUserEnv()
-                _loginResult.value = true
-            }
-            .addOnFailureListener { exception ->
-                Log.e(TAG, "Login failed: ${exception.message}")
-                _loginResult.value = false
-            }
-
+    suspend fun login(email: String, password: String) {
+        try {
+            auth.signInWithEmailAndPassword(email, password).await()
+            setupUserEnv()
+            _loginResult.emit(true)
+        } catch (e: Exception) {
+            Log.e(TAG, "Login failed: ${e.message}")
+            _loginResult.emit(false)
+        }
         refreshLoggedInUserData()
     }
+
 
     fun register(email: String, password: String, userData: UserData) {
         auth.createUserWithEmailAndPassword(email, password)
@@ -235,7 +235,12 @@ class UserRepository(
         }, onFailure)
     }
 
-    private fun reAuthenticateUser(user: FirebaseUser, password: String, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
+    private fun reAuthenticateUser(
+        user: FirebaseUser,
+        password: String,
+        onSuccess: () -> Unit,
+        onFailure: (String) -> Unit
+    ) {
         val credential = EmailAuthProvider.getCredential(user.email!!, password)
         user.reauthenticate(credential)
             .addOnSuccessListener {
@@ -246,196 +251,234 @@ class UserRepository(
             }
     }
 
-        private fun deleteUserData(userId: String, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
-            deleteUserApartments(userId, {
-                deleteUserReviews(userId, {
-                    deleteUserProfilePicture(userId, {
-                        deleteUserDocument(userId, onSuccess, onFailure)
-                    }, onFailure)
+    private fun deleteUserData(userId: String, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
+        deleteUserApartments(userId, {
+            deleteUserReviews(userId, {
+                deleteUserProfilePicture(userId, {
+                    deleteUserDocument(userId, onSuccess, onFailure)
                 }, onFailure)
             }, onFailure)
-        }
+        }, onFailure)
+    }
 
-        private fun deleteUserApartments(userId: String, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
-            firestore.collection("apartments").whereEqualTo("userID", userId).get()
-                .addOnSuccessListener { querySnapshot ->
-                    if (querySnapshot.isEmpty) {
-                        onSuccess()
-                        return@addOnSuccessListener
-                    }
+    private fun deleteUserApartments(
+        userId: String,
+        onSuccess: () -> Unit,
+        onFailure: (String) -> Unit
+    ) {
+        firestore.collection("apartments").whereEqualTo("userID", userId).get()
+            .addOnSuccessListener { querySnapshot ->
+                if (querySnapshot.isEmpty) {
+                    onSuccess()
+                    return@addOnSuccessListener
+                }
 
-                    var deletedCount = 0
-                    val totalApartments = querySnapshot.size()
+                var deletedCount = 0
+                val totalApartments = querySnapshot.size()
 
-                    for (document in querySnapshot.documents) {
-                        val apartment = document.toObject(Apartment::class.java)
-                        apartment?.let {
-                            deleteApartmentAndRelatedData(it.apartmentID, userId, {
-                                deletedCount++
-                                if (deletedCount == totalApartments) {
-                                    onSuccess()
-                                }
-                            }, onFailure)
-                        }
+                for (document in querySnapshot.documents) {
+                    val apartment = document.toObject(Apartment::class.java)
+                    apartment?.let {
+                        deleteApartmentAndRelatedData(it.apartmentID, userId, {
+                            deletedCount++
+                            if (deletedCount == totalApartments) {
+                                onSuccess()
+                            }
+                        }, onFailure)
                     }
                 }
-                .addOnFailureListener { exception ->
-                    onFailure("Error fetching user's apartments: $exception")
-                }
-        }
+            }
+            .addOnFailureListener { exception ->
+                onFailure("Error fetching user's apartments: $exception")
+            }
+    }
 
-        private fun deleteApartmentAndRelatedData(apartmentID: String, userID: String, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
-            deleteApartmentPictures(apartmentID, userID, {
-                deleteApartmentReviews(apartmentID, {
-                    deleteApartmentDocument(apartmentID, onSuccess, onFailure)
-                }, onFailure)
+    private fun deleteApartmentAndRelatedData(
+        apartmentID: String,
+        userID: String,
+        onSuccess: () -> Unit,
+        onFailure: (String) -> Unit
+    ) {
+        deleteApartmentPictures(apartmentID, userID, {
+            deleteApartmentReviews(apartmentID, {
+                deleteApartmentDocument(apartmentID, onSuccess, onFailure)
             }, onFailure)
-        }
+        }, onFailure)
+    }
 
-        private fun deleteApartmentPictures(apartmentID: String, userID: String, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
-            val apartmentPicturesRef = storage.reference.child("images/$userID/apartments/$apartmentID")
-            apartmentPicturesRef.listAll()
-                .addOnSuccessListener { listResult ->
-                    if (listResult.items.isEmpty()) {
-                        onSuccess()
-                        return@addOnSuccessListener
-                    }
-
-                    var deletedCount = 0
-                    val totalItems = listResult.items.size
-
-                    for (item in listResult.items) {
-                        item.delete()
-                            .addOnSuccessListener {
-                                deletedCount++
-                                if (deletedCount == totalItems) {
-                                    onSuccess()
-                                }
-                            }
-                            .addOnFailureListener { exception ->
-                                onFailure("Error deleting apartment picture: $exception")
-                            }
-                    }
+    private fun deleteApartmentPictures(
+        apartmentID: String,
+        userID: String,
+        onSuccess: () -> Unit,
+        onFailure: (String) -> Unit
+    ) {
+        val apartmentPicturesRef = storage.reference.child("images/$userID/apartments/$apartmentID")
+        apartmentPicturesRef.listAll()
+            .addOnSuccessListener { listResult ->
+                if (listResult.items.isEmpty()) {
+                    onSuccess()
+                    return@addOnSuccessListener
                 }
-                .addOnFailureListener { exception ->
-                    onFailure("Error listing apartment pictures: $exception")
-                }
-        }
 
-        private fun deleteApartmentReviews(apartmentID: String, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
-            firestore.collection("apartmentReviews").whereEqualTo("apartmentID", apartmentID).get()
-                .addOnSuccessListener { querySnapshot ->
-                    if (querySnapshot.isEmpty) {
-                        onSuccess()
-                        return@addOnSuccessListener
-                    }
+                var deletedCount = 0
+                val totalItems = listResult.items.size
 
-                    var deletedCount = 0
-                    val totalReviews = querySnapshot.size()
-
-                    for (document in querySnapshot.documents) {
-                        document.reference.delete()
-                            .addOnSuccessListener {
-                                deletedCount++
-                                if (deletedCount == totalReviews) {
-                                    onSuccess()
-                                }
-                            }
-                            .addOnFailureListener { exception ->
-                                onFailure("Error deleting apartment review: $exception")
-                            }
-                    }
-                }
-                .addOnFailureListener { exception ->
-                    onFailure("Error fetching apartment reviews: $exception")
-                }
-        }
-
-        private fun deleteUserReviews(userId: String, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
-            firestore.collection("userReviews").whereEqualTo("reviewedUserID", userId).get()
-                .addOnSuccessListener { querySnapshot ->
-                    if (querySnapshot.isEmpty) {
-                        onSuccess()
-                        return@addOnSuccessListener
-                    }
-
-                    var deletedCount = 0
-                    val totalReviews = querySnapshot.size()
-
-                    for (document in querySnapshot.documents) {
-                        document.reference.delete()
-                            .addOnSuccessListener {
-                                deletedCount++
-                                if (deletedCount == totalReviews) {
-                                    onSuccess()
-                                }
-                            }
-                            .addOnFailureListener { exception ->
-                                onFailure("Error deleting user review: $exception")
-                            }
-                    }
-                }
-                .addOnFailureListener { exception ->
-                    onFailure("Error fetching user reviews: $exception")
-                }
-        }
-
-        private fun deleteUserProfilePicture(userId: String, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
-            val profilePicRef = storage.reference.child("images/$userId/profilePic")
-            profilePicRef.metadata
-                .addOnSuccessListener {
-                    // If metadata exists, delete the file
-                    profilePicRef.delete()
+                for (item in listResult.items) {
+                    item.delete()
                         .addOnSuccessListener {
-                            onSuccess()
+                            deletedCount++
+                            if (deletedCount == totalItems) {
+                                onSuccess()
+                            }
                         }
                         .addOnFailureListener { exception ->
-                            onFailure("Error deleting profile picture: $exception")
+                            onFailure("Error deleting apartment picture: $exception")
                         }
                 }
-                .addOnFailureListener { exception ->
-                    if ((exception as StorageException).errorCode == StorageException.ERROR_OBJECT_NOT_FOUND) {
-                        // Profile picture does not exist, proceed with the deletion process
+            }
+            .addOnFailureListener { exception ->
+                onFailure("Error listing apartment pictures: $exception")
+            }
+    }
+
+    private fun deleteApartmentReviews(
+        apartmentID: String,
+        onSuccess: () -> Unit,
+        onFailure: (String) -> Unit
+    ) {
+        firestore.collection("reviews").whereEqualTo("destinationID", apartmentID).get()
+            .addOnSuccessListener { querySnapshot ->
+                if (querySnapshot.isEmpty) {
+                    onSuccess()
+                    return@addOnSuccessListener
+                }
+
+                var deletedCount = 0
+                val totalReviews = querySnapshot.size()
+
+                for (document in querySnapshot.documents) {
+                    document.reference.delete()
+                        .addOnSuccessListener {
+                            deletedCount++
+                            if (deletedCount == totalReviews) {
+                                onSuccess()
+                            }
+                        }
+                        .addOnFailureListener { exception ->
+                            onFailure("Error deleting apartment review: $exception")
+                        }
+                }
+            }
+            .addOnFailureListener { exception ->
+                onFailure("Error fetching apartment reviews: $exception")
+            }
+    }
+
+    private fun deleteUserReviews(
+        userId: String,
+        onSuccess: () -> Unit,
+        onFailure: (String) -> Unit
+    ) {
+        firestore.collection("reviews").whereEqualTo("destinationID", userId).get()
+            .addOnSuccessListener { querySnapshot ->
+                if (querySnapshot.isEmpty) {
+                    onSuccess()
+                    return@addOnSuccessListener
+                }
+
+                var deletedCount = 0
+                val totalReviews = querySnapshot.size()
+
+                for (document in querySnapshot.documents) {
+                    document.reference.delete()
+                        .addOnSuccessListener {
+                            deletedCount++
+                            if (deletedCount == totalReviews) {
+                                onSuccess()
+                            }
+                        }
+                        .addOnFailureListener { exception ->
+                            onFailure("Error deleting user review: $exception")
+                        }
+                }
+            }
+            .addOnFailureListener { exception ->
+                onFailure("Error fetching user reviews: $exception")
+            }
+    }
+
+    private fun deleteUserProfilePicture(
+        userId: String,
+        onSuccess: () -> Unit,
+        onFailure: (String) -> Unit
+    ) {
+        val profilePicRef = storage.reference.child("images/$userId/profilePic")
+        profilePicRef.metadata
+            .addOnSuccessListener {
+                // If metadata exists, delete the file
+                profilePicRef.delete()
+                    .addOnSuccessListener {
                         onSuccess()
-                    } else {
-                        onFailure("Error checking profile picture existence: $exception")
                     }
-                }
-        }
-
-        private fun deleteUserDocument(userId: String, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
-            usersCollectionReference.document(userId).delete()
-                .addOnSuccessListener {
+                    .addOnFailureListener { exception ->
+                        onFailure("Error deleting profile picture: $exception")
+                    }
+            }
+            .addOnFailureListener { exception ->
+                if ((exception as StorageException).errorCode == StorageException.ERROR_OBJECT_NOT_FOUND) {
+                    // Profile picture does not exist, proceed with the deletion process
                     onSuccess()
+                } else {
+                    onFailure("Error checking profile picture existence: $exception")
                 }
-                .addOnFailureListener { exception ->
-                    onFailure("Error deleting user document: $exception")
-                }
-        }
+            }
+    }
 
-        private fun deleteApartmentDocument(apartmentID: String, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
-            firestore.collection("apartments").document(apartmentID).delete()
-                .addOnSuccessListener {
-                    Log.d(TAG, "Apartment deleted successfully: $apartmentID")
-                    onSuccess()
-                }
-                .addOnFailureListener { exception ->
-                    Log.e(TAG, "Error deleting apartment: $exception")
-                    onFailure("Error deleting apartment: $exception")
-                }
-        }
+    private fun deleteUserDocument(
+        userId: String,
+        onSuccess: () -> Unit,
+        onFailure: (String) -> Unit
+    ) {
+        usersCollectionReference.document(userId).delete()
+            .addOnSuccessListener {
+                onSuccess()
+            }
+            .addOnFailureListener { exception ->
+                onFailure("Error deleting user document: $exception")
+            }
+    }
 
-        private fun deleteAuthUser(currentUser: FirebaseUser, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
-            currentUser.delete()
-                .addOnSuccessListener {
-                    Log.d(TAG, "User deleted successfully from Authentication")
-                    signOut()
-                    onSuccess()
-                }
-                .addOnFailureListener { exception ->
-                    Log.e(TAG, "Error deleting user from Authentication: $exception")
-                    onFailure("Error deleting user from Authentication: $exception")
-                }
+    private fun deleteApartmentDocument(
+        apartmentID: String,
+        onSuccess: () -> Unit,
+        onFailure: (String) -> Unit
+    ) {
+        firestore.collection("apartments").document(apartmentID).delete()
+            .addOnSuccessListener {
+                Log.d(TAG, "Apartment deleted successfully: $apartmentID")
+                onSuccess()
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Error deleting apartment: $exception")
+                onFailure("Error deleting apartment: $exception")
+            }
+    }
+
+    private fun deleteAuthUser(
+        currentUser: FirebaseUser,
+        onSuccess: () -> Unit,
+        onFailure: (String) -> Unit
+    ) {
+        currentUser.delete()
+            .addOnSuccessListener {
+                Log.d(TAG, "User deleted successfully from Authentication")
+                signOut()
+                onSuccess()
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Error deleting user from Authentication: $exception")
+                onFailure("Error deleting user from Authentication: $exception")
+            }
     }
 
     fun checkEmailVerificationStatus(onComplete: (Boolean) -> Unit) {

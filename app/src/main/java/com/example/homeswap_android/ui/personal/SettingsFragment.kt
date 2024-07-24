@@ -81,7 +81,6 @@ class SettingsFragment : Fragment() {
                         onSuccess = {
                             Utils.hideLoadingOverlay(loadingOverlay)
                             Toast.makeText(requireContext(), "Account deleted successfully", Toast.LENGTH_LONG).show()
-                            findNavController().navigate(R.id.loginFragment)
                         },
                         onFailure = { error ->
                             Toast.makeText(requireContext(), "Error deleting account: $error", Toast.LENGTH_LONG).show()

@@ -111,44 +111,42 @@
             android:layout_height="wrap_content"
             android:padding="16dp">
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/apartmentTitleTV"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:text="Cozy Downtown Apartment"
-                android:textAppearance="?attr/textAppearanceHeadline5"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/apartmentTitleTV"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Cozy Downtown Apartment"
+                    android:textAppearance="?attr/textAppearanceHeadline6"
+                    android:textStyle="bold"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/apartmentRatingTV" />
+
+                <TextView
+                    android:id="@+id/apartmentRatingTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="4.8"
+                    android:textStyle="bold"
+                    android:textAppearance="?attr/textAppearanceBody1"
+                    android:layout_marginEnd="4dp"
+                    app:layout_constraintEnd_toStartOf="@+id/apartmentRatingStar"
+                    app:layout_constraintTop_toTopOf="@+id/apartmentTitleTV"
+                    app:layout_constraintBottom_toBottomOf="@+id/apartmentTitleTV" />
+
+                <ImageView
+                    android:id="@+id/apartmentRatingStar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/star_rate_24px__1_"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/apartmentTitleTV"
+                    app:layout_constraintBottom_toBottomOf="@+id/apartmentTitleTV"
+                    app:tint="@color/accent" />
 
 
-            <TextView
-                android:id="@+id/apartmentRatingTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="5dp"
-                android:text="4.8"
-                android:textStyle="bold"
-                android:textAppearance="?attr/textAppearanceBody1"
-                app:layout_constraintBottom_toBottomOf="@+id/apartmentRatingStar"
-                app:layout_constraintEnd_toStartOf="@+id/apartmentRatingStar"
-                app:layout_constraintTop_toTopOf="@+id/apartmentRatingStar" />
-
-            <ImageView
-                android:id="@+id/apartmentRatingStar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/star_rate_24px__1_"
-
-                app:layout_constraintBottom_toBottomOf="@+id/apartmentTitleTV"
-                app:layout_constraintEnd_toEndOf="@+id/apartmentTitleTV"
-                app:layout_constraintTop_toTopOf="@+id/apartmentTitleTV"
-                app:tint="@color/accent" />
-
-
-
-            <!-- Location -->
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/locationTV"
                 android:layout_width="0dp"

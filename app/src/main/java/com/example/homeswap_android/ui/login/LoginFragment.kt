@@ -9,10 +9,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.homeswap_android.R
 import com.example.homeswap_android.databinding.FragmentLoginBinding
 import com.example.homeswap_android.viewModels.FirebaseUsersViewModel
+import kotlinx.coroutines.launch
 
 
 class LoginFragment : Fragment() {
@@ -44,11 +46,13 @@ class LoginFragment : Fragment() {
             }
         }
 
-        viewModel.loginResult.observe(viewLifecycleOwner) { success ->
-            if (success) {
-                findNavController().navigate(R.id.homeFragment)
-            } else {
-                showToastInCenter("Invalid email or password. Please try again.")
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.loginResult.collect { success ->
+                if (success) {
+                    findNavController().navigate(R.id.homeFragment)
+                } else {
+                    showToastInCenter("Invalid email or password. Please try again.")
+                }
             }
         }
 

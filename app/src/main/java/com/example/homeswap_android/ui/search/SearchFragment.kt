@@ -2,6 +2,9 @@ package com.example.homeswap_android.ui.search
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -71,10 +74,27 @@ class SearchFragment : Fragment() {
             binding.searchLocationET,
             placesClient
         ) { selectedPlace ->
-            destination = selectedPlace.split(",").firstOrNull()?.trim()
-            binding.searchLocationET.setText(selectedPlace)
+            updateDestination()
         }
+
+        binding.searchLocationET.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                updateDestination()
+            }
+        })
     }
+
+
+    // make my destination be whatever is in my textfield, regardless if it was the selected destination or just the users input
+    private fun updateDestination() {
+        destination = binding.searchLocationET.text.toString().trim()
+         destination = binding.searchLocationET.text.toString().split(",").firstOrNull()?.trim() ?: ""
+
+        Log.d(TAG, "Destination updated: $destination")
+    }
+
 
     @SuppressLint("SetTextI18n")
     private fun setupDateRangePicker() {
@@ -138,7 +158,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun updateFilters() {
-        filters["city"] = destination?.takeIf { it.isNotBlank() }
+        filters["city"] = destination?.takeIf { it.isNotBlank() }?.lowercase()?.trim()
         filters["startDate"] = startDate?.takeIf { it.isNotEmpty() }
         filters["endDate"] = endDate?.takeIf { it.isNotEmpty() }
 
@@ -169,7 +189,10 @@ class SearchFragment : Fragment() {
         } else {
             filters.remove("maxGuests")
         }
+
+        Log.d(TAG, "Filters updated: $filters")
     }
+
 
     private fun clearSearch() {
         binding.searchLocationET.text?.clear()

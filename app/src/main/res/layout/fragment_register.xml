@@ -127,5 +127,5 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>
-
+    <include layout="@layout/loading_overlay" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.tasks.await
 import java.text.ParseException
+import java.util.Date
 
 val TAG = "ApartmentRepository"
 
@@ -165,6 +166,7 @@ class ApartmentRepository(
             }
         }
     }
+
 
     fun addApartment(apartment: Apartment, imageUris: List<Uri>, onComplete: (Apartment?) -> Unit) {
         val currentUser = auth.currentUser ?: run {
@@ -369,9 +371,13 @@ class ApartmentRepository(
         }
     }
 
+
     private fun filterByCity(query: Query, city: String?): Query {
         return if (!city.isNullOrBlank()) {
-            query.whereEqualTo("cityLower", city.lowercase())
+            val formattedCity = "$city, ".lowercase().trim()
+            Log.d(TAG, "Filtering by city: $formattedCity")
+            query.whereGreaterThanOrEqualTo("cityLower", formattedCity)
+                .whereLessThanOrEqualTo("cityLower", formattedCity + "\uf8ff")
         } else {
             query
         }
