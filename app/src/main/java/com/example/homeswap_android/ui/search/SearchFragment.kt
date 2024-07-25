@@ -89,11 +89,10 @@ class SearchFragment : Fragment() {
 
     // make my destination be whatever is in my textfield, regardless if it was the selected destination or just the users input
     private fun updateDestination() {
-        destination = binding.searchLocationET.text.toString().trim()
-         destination = binding.searchLocationET.text.toString().split(",").firstOrNull()?.trim() ?: ""
-
+        destination = binding.searchLocationET.text.toString().split(",").firstOrNull()?.lowercase()?.trim() ?: ""
         Log.d(TAG, "Destination updated: $destination")
     }
+
 
 
     @SuppressLint("SetTextI18n")

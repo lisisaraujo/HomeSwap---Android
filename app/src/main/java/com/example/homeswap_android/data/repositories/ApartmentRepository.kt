@@ -136,7 +136,8 @@ class ApartmentRepository(
         var uploadedCount = 0
 
         uris.forEachIndexed { index, uri ->
-            val imageRef = storage.reference.child("images/${user.uid}/apartments/$apartmentID/image_$index")
+            val imageRef =
+                storage.reference.child("images/${user.uid}/apartments/$apartmentID/image_$index")
             imageRef.putFile(uri).addOnSuccessListener { taskSnapshot ->
                 taskSnapshot.storage.downloadUrl.addOnSuccessListener { downloadUrl ->
                     uploadedUrls.add(downloadUrl.toString())
@@ -335,14 +336,19 @@ class ApartmentRepository(
         _loadingApartments.value = true
 
         try {
+//            val testQuery: Query = apartmentsCollectionReference
+//                .whereEqualTo("petsAllowed", true)
+//                .whereGreaterThanOrEqualTo("cityLower", "ber")
+//                .whereLessThanOrEqualTo("cityLower", "ber" + "\uf8ff")
+
+
             var query: Query = apartmentsCollectionReference
 
-            if (!city.isNullOrBlank()) {
-                query = filterByCity(query, city)
-            }
+
             if (!typeOfHome.isNullOrBlank()) {
                 query = filterByTypeOfHome(query, typeOfHome)
             }
+
             if (!amenities.isNullOrEmpty()) {
                 query = filterByAmenities(query, amenities)
             }
@@ -353,12 +359,19 @@ class ApartmentRepository(
                 query = filterByMaxGuests(query, maxGuests)
             }
 
+            if (!city.isNullOrBlank()) {
+                query = filterByCity(query, city)
+            }
+
             val querySnapshot = query.get().await()
+//            val querySnapshot = testQuery.get().await()
             var apartments = querySnapshot.toObjects(Apartment::class.java)
 
             if (!startDate.isNullOrBlank() && !endDate.isNullOrBlank()) {
                 apartments = filterByDate(apartments, startDate, endDate)
             }
+
+
 
             Log.d(TAG, "Filtered Apartments: ${apartments.size}")
             _apartmentsBySearch.value = apartments
@@ -374,7 +387,7 @@ class ApartmentRepository(
 
     private fun filterByCity(query: Query, city: String?): Query {
         return if (!city.isNullOrBlank()) {
-            val formattedCity = "$city, ".lowercase().trim()
+            val formattedCity = city.lowercase().trim()
             Log.d(TAG, "Filtering by city: $formattedCity")
             query.whereGreaterThanOrEqualTo("cityLower", formattedCity)
                 .whereLessThanOrEqualTo("cityLower", formattedCity + "\uf8ff")
@@ -382,6 +395,7 @@ class ApartmentRepository(
             query
         }
     }
+
 
     private fun filterByTypeOfHome(query: Query, typeOfHome: String?): Query {
         return if (!typeOfHome.isNullOrBlank()) {

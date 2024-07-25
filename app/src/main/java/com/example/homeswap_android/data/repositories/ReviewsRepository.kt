@@ -15,12 +15,7 @@ class ReviewsRepository(
     private val reviewsCollectionReference: CollectionReference,
     private val apartmentsCollectionReference: CollectionReference,
     private val usersCollectionReference: CollectionReference
-
-
 ) {
-
-    private val _reviews = MutableLiveData<List<Review>>()
-    val reviews: LiveData<List<Review>> = _reviews
 
     private val _apartmentReviews = MutableLiveData<List<Review>>()
     val apartmentReviews: LiveData<List<Review>> = _apartmentReviews
@@ -28,6 +23,8 @@ class ReviewsRepository(
     private val _userReviews = MutableLiveData<List<Review>>()
     val userReviews: LiveData<List<Review>> = _userReviews
 
+    private val _reviews = MutableLiveData<List<Review>>()
+    val reviews: LiveData<List<Review>> = _reviews
 
     fun getUserReviews(userID: String): Query {
         return reviewsCollectionReference
@@ -91,12 +88,11 @@ class ReviewsRepository(
                 var validReviewCount = 0
 
                 for (review in reviews) {
-                    review.rating?.let {
-                        totalRating += it
+                    review.rating?.let {currentRating ->
+                        totalRating += currentRating
                         validReviewCount++
                     }
                 }
-
                 val averageRating = if (validReviewCount > 0) {
                     (totalRating / validReviewCount * 10).roundToInt() / 10f
                 } else {

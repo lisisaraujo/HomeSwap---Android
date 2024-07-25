@@ -177,6 +177,7 @@
                 android:textColor="@color/design_default_color_error"
                 app:cornerRadius="30dp"
                 android:textStyle="bold"
+                android:layout_marginBottom="80dp"
                 app:strokeColor="@color/design_default_color_error" />
 
         </LinearLayout>

@@ -33,8 +33,29 @@ class FlightsRepository {
 
     private val flightsApiService = FlightsApi.flightsApiService
 
+    suspend fun loadFlights(
+        origin: String,
+        destination: String,
+        departureDate: String,
+        adults: Int = 1
+    ): List<FlightOffer> {
+        return try {
+            val flightsResponse = flightsApiService.getFlights(
+                origin = origin,
+                destination = destination,
+                departureDate = departureDate,
+                adults = adults
+            )
+            Log.d(TAG, "Flights loaded successfully: $flightsResponse")
+            _flights.postValue(flightsResponse.data)
+            flightsResponse.data
+        } catch (e: Exception) {
+            Log.e(TAG, "Error loading flights", e)
+            throw e
+        }
+    }
 
-    private suspend fun searchFlightsByCity(
+    suspend fun searchFlightsByCity(
         originCity: String,
         destinationCity: String,
         departureDate: String,
@@ -66,6 +87,7 @@ class FlightsRepository {
             val response = searchFlights(originCity, destinationCity, departureDate, null, adults)
             val oneWayFlights = response.data.filter { it.oneWay || it.itineraries.size == 1 }
             _flightResponse.postValue(FlightResponse(data = oneWayFlights, dictionaries = response.dictionaries))
+            Log.d(TAG, flightResponse.value.toString())
             _flights.postValue(oneWayFlights)
         } catch (e: Exception) {
             _errorMessage.postValue("Failed to search one-way flights: ${e.localizedMessage}")

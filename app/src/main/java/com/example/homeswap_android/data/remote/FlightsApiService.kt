@@ -52,7 +52,7 @@ val retrofit: Retrofit = Retrofit.Builder()
     .build()
 
 interface FlightsApiService {
-    @GET("v2/shopping/flight-offers?max=15")
+    @GET("v2/shopping/flight-offers?max=10")
     suspend fun getFlights(
         @Query("originLocationCode") origin: String,
         @Query("destinationLocationCode") destination: String,
@@ -64,7 +64,7 @@ interface FlightsApiService {
     suspend fun searchAirports(
         @Query("subType") subType: String = "CITY",
         @Query("keyword") keyword: String,
-        @Query("page[limit]") limit: Int = 100
+        @Query("page[limit]") limit: Int = 1
     ): AirportSearchResponse
 
 }

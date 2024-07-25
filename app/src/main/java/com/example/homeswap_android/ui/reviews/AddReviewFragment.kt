@@ -71,7 +71,6 @@ class AddReviewFragment : Fragment() {
                     destinationID = userID
                 )
             }
-
             reviewsViewModel.addReview(
                 newReview,
                 onSuccess = {

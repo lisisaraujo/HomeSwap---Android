@@ -166,6 +166,7 @@ class UserRepository(
     fun signOut() {
         auth.signOut()
         _loggedInUser.postValue(null)
+        setupUserEnv()
         Log.d(TAG, loggedInUser.value?.email ?: "No user logged in")
 
     }
