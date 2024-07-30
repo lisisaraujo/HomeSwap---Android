@@ -2,6 +2,9 @@
 
 HomeSwap is an Android application that facilitates home exchanges between users. It allows people to swap their homes for vacations or temporary stays, providing a cost-effective and unique way to travel.
 
+![pictures2](https://github.com/user-attachments/assets/6f97d858-a80c-435d-96e4-fffc605b65a3)
+![pictures1](https://github.com/user-attachments/assets/880ce8de-c2a9-45e9-8814-f161938d94c4)
+
 ## Main Features
 
 - **Registrations/Login**: Users can create an account or log in to their existing account.
